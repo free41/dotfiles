@@ -1,0 +1,6 @@
+# Machine-specific configuration
+# Copy this file to config.mk and customize for your machine
+
+# VSCode Windows User directory (for WSL setups)
+# Example: /mnt/c/Users/yourusername/AppData/Roaming/Code/User
+VSCODE_WIN_USER := /mnt/c/Users/yourusername/AppData/Roaming/Code/User

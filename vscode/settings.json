@@ -1,0 +1,17 @@
+{
+    "workbench.colorTheme": "Everforest Dark",
+    "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
+    "terminal.integrated.defaultLocation": "editor",
+    "editor.fontSize": 13,
+    "chat.agent.enabled": false,
+    "chat.checkpoints.enabled": false,
+    "chat.detectParticipant.enabled": false,
+    "chat.disableAIFeatures": true,
+    "git.autofetch": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "[ipynb]": {
+        "files.autoSave": "afterDelay",
+        "files.autoSaveDelay": 500
+  }
+}
