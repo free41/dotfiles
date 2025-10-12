@@ -9,7 +9,7 @@ CODE_BIN := code
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help stow unstow stow-adopt stow-bash stow-git stow-vim unstow-bash unstow-git unstow-vim vscode-fetch vscode-push vscode-extensions-backup vscode-extensions-install
+.PHONY: all help stow unstow stow-adopt stow-bash stow-git stow-vim stow-matplotlib unstow-bash unstow-git unstow-vim unstow-matplotlib vscode-fetch vscode-push vscode-extensions-backup vscode-extensions-install
 
 all: stow vscode-fetch vscode-extensions-backup
 	@echo "All dotfiles configured!"
@@ -17,30 +17,32 @@ all: stow vscode-fetch vscode-extensions-backup
 help:
 	@echo "Available targets:"
 	@echo "  all                       - Setup everything (stow + vscode-fetch + extensions backup)"
-	@echo "  stow                      - Stow all packages (bash, git, vim)"
+	@echo "  stow                      - Stow all packages (bash, git, vim, matplotlib)"
 	@echo "  stow-adopt                - Stow with --adopt (replaces repo files with existing ones)"
 	@echo "  unstow                    - Unstow all packages"
 	@echo "  stow-bash                 - Stow bash configuration"
 	@echo "  stow-git                  - Stow git configuration"
 	@echo "  stow-vim                  - Stow vim configuration"
+	@echo "  stow-matplotlib           - Stow matplotlib configuration"
 	@echo "  unstow-bash               - Unstow bash configuration"
 	@echo "  unstow-git                - Unstow git configuration"
 	@echo "  unstow-vim                - Unstow vim configuration"
+	@echo "  unstow-matplotlib         - Unstow matplotlib configuration"
 	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo"
 	@echo "  vscode-push               - Copy VSCode config from repo to Windows"
 	@echo "  vscode-extensions-backup  - Export list of installed extensions to vscode/extensions.txt"
 	@echo "  vscode-extensions-install - Install extensions from vscode/extensions.txt"
 
 # Stow targets
-stow: stow-bash stow-git stow-vim
+stow: stow-bash stow-git stow-vim stow-matplotlib
 	@echo "All packages stowed!"
 
 stow-adopt:
 	@echo "Adopting existing files and stowing..."
-	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim
+	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim matplotlib
 	@echo "All packages stowed with --adopt! Check git diff to see what changed."
 
-unstow: unstow-bash unstow-git unstow-vim
+unstow: unstow-bash unstow-git unstow-vim unstow-matplotlib
 	@echo "All packages unstowed!"
 
 stow-bash:
@@ -66,6 +68,15 @@ unstow-git:
 unstow-vim:
 	@echo "Unstowing vim..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D vim
+
+stow-matplotlib:
+	@echo "Stowing matplotlib..."
+	@mkdir -p ~/.config/matplotlib
+	@stow -d $(DOTFILES_DIR) -t ~/.config matplotlib
+
+unstow-matplotlib:
+	@echo "Unstowing matplotlib..."
+	@stow -d $(DOTFILES_DIR) -t ~/.config -D matplotlib
 
 # VSCode targets
 vscode-fetch:

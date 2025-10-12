@@ -116,3 +116,6 @@ if ! shopt -oq posix; then
   fi
 fi
 export PATH="$HOME/.local/bin:$PATH"
+
+# Matplotlib configuration directory
+export MPLCONFIGDIR="$HOME/.config/matplotlib"

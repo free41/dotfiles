@@ -1,0 +1,50 @@
+# Matplotlib configuration
+# Works on Windows, WSL, Linux, and in virtual environments
+# Set MPLCONFIGDIR environment variable to point to this directory
+
+# Figure properties
+figure.figsize: 3.3, 3.0
+figure.dpi: 100
+savefig.dpi: 300
+savefig.format: png
+savefig.bbox: tight
+
+# Font sizes
+font.size: 9
+axes.labelsize: 9
+axes.titlesize: 9
+xtick.labelsize: 9
+ytick.labelsize: 9
+legend.fontsize: 9
+
+# Tick direction (inset)
+xtick.direction: in
+ytick.direction: in
+xtick.top: True
+ytick.right: True
+
+# Paul Tol's vibrant color scheme (colorblind-safe) + cycle through markers
+# https://personal.sron.nl/~pault/
+axes.prop_cycle: cycler('color', ['EE7733', '0077BB', '33BBEE', 'EE3377', 'CC3311', '009988', 'BBBBBB']) + cycler('marker', ['o', 's', '^', 'v', 'D', 'p', '*'])
+
+# Default to markers only (no lines)
+lines.linestyle: None
+lines.markersize: 6
+
+# Grid
+axes.grid: False
+
+# Legend
+legend.frameon: True
+legend.framealpha: 0.8
+
+# Axes
+axes.linewidth: 0.8
+axes.spines.top: True
+axes.spines.right: True
+
+# Tick properties
+xtick.major.width: 0.8
+ytick.major.width: 0.8
+xtick.minor.width: 0.6
+ytick.minor.width: 0.6
