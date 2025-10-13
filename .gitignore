@@ -1,3 +1,6 @@
 # Machine-specific configuration
 config.mk
 
+# Generated files
+git/.gitconfig
+

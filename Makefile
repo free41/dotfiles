@@ -5,6 +5,8 @@
 DOTFILES_DIR := $(shell pwd)
 VSCODE_DIR := $(DOTFILES_DIR)/vscode
 CODE_BIN := code
+GIT_USER_NAME := your-git-username
+GIT_USER_EMAIL := your-email@example.com
 
 # Include machine-specific config if it exists
 -include config.mk
@@ -51,6 +53,9 @@ stow-bash:
 
 stow-git:
 	@echo "Stowing git..."
+	@echo "Generating .gitconfig from template..."
+	@sed 's/@GIT_USER_NAME@/$(GIT_USER_NAME)/g; s/@GIT_USER_EMAIL@/$(GIT_USER_EMAIL)/g' \
+		$(DOTFILES_DIR)/git/.gitconfig.template > $(DOTFILES_DIR)/git/.gitconfig
 	@stow -d $(DOTFILES_DIR) -t ~ git
 
 stow-vim:
@@ -64,6 +69,8 @@ unstow-bash:
 unstow-git:
 	@echo "Unstowing git..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D git
+	@rm -f $(DOTFILES_DIR)/git/.gitconfig
+	@echo "Removed generated .gitconfig"
 
 unstow-vim:
 	@echo "Unstowing vim..."
@@ -107,7 +114,7 @@ vscode-push:
 vscode-extensions-backup:
 	@echo "Backing up VSCode extensions list..."
 	@mkdir -p $(VSCODE_DIR)
-	@$(CODE_BIN) --list-extensions > $(VSCODE_DIR)/extensions.txt
+	@cmd.exe /c "code --list-extensions" 2>/dev/null | sed 's/\r$$//' > $(VSCODE_DIR)/extensions.txt
 	@echo "Extensions list saved to $(VSCODE_DIR)/extensions.txt"
 
 vscode-extensions-install:
@@ -116,5 +123,7 @@ vscode-extensions-install:
 		echo "Error: $(VSCODE_DIR)/extensions.txt not found!"; \
 		exit 1; \
 	fi
-	@cat $(VSCODE_DIR)/extensions.txt | xargs -L 1 $(CODE_BIN) --install-extension
+	@cat $(VSCODE_DIR)/extensions.txt | while read ext; do \
+		cmd.exe /c "code --install-extension $$ext" 2>/dev/null | sed 's/\r$$//'; \
+	done
 	@echo "Extensions installation complete!"

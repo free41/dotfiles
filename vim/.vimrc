@@ -20,6 +20,9 @@ let g:everforest_background = 'medium'
 let g:everforest_better_performance = 1
 colorscheme everforest
 
+" Leader key
+let mapleader = " "         " Set leader key to space
+
 " Basic settings
 set number                  " Show line numbers
 set relativenumber          " Show relative line numbers

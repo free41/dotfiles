@@ -1,0 +1,28 @@
+[user]
+	name = @GIT_USER_NAME@
+	email = @GIT_USER_EMAIL@
+
+[core]
+	editor = vim
+	autocrlf = input
+
+[init]
+	defaultBranch = dev
+
+[pull]
+	rebase = false
+
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	lg = log --oneline --graph --decorate --all
+	last = log -1 HEAD
+	unstage = reset HEAD --
+
+[color]
+	ui = auto
+
+[push]
+	default = simple

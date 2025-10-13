@@ -4,3 +4,7 @@
 # VSCode Windows User directory (for WSL setups)
 # Example: /mnt/c/Users/yourusername/AppData/Roaming/Code/User
 VSCODE_WIN_USER := /mnt/c/Users/yourusername/AppData/Roaming/Code/User
+
+# Git user configuration
+GIT_USER_NAME := free41
+GIT_USER_EMAIL := free41@users.noreply.github.com
