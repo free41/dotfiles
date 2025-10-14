@@ -123,7 +123,7 @@ vscode-extensions-install:
 		echo "Error: $(VSCODE_DIR)/extensions.txt not found!"; \
 		exit 1; \
 	fi
-	@cat $(VSCODE_DIR)/extensions.txt | while read ext; do \
-		cmd.exe /c "code --install-extension $$ext" 2>/dev/null | sed 's/\r$$//'; \
+	@for ext in $$(cat $(VSCODE_DIR)/extensions.txt); do \
+		cmd.exe /c "code --install-extension $$ext" 2>/dev/null | sed 's/\r$$//' || true; \
 	done
 	@echo "Extensions installation complete!"
