@@ -83,6 +83,10 @@ set fileencoding=utf-8        " UTF-8 file encoding
 set autoread                  " Auto-reload files changed outside vim
 set backspace=indent,eol,start " Backspace through everything
 
+" Spell checking
+set spelllang=en_us           " Set spell check language
+set spellfile=~/.vim/spell/en.utf-8.add " Custom word dictionary
+
 " System clipboard integration
 set clipboard=unnamedplus
 
@@ -117,8 +121,11 @@ autocmd FileChangedShellPost *
 " File Type Specific Settings
 " ----------------------------------------------------------------------------
 
-" Markdown - autowrap at 80 characters
-autocmd FileType markdown setlocal textwidth=80 formatoptions+=t
+" Markdown - autowrap at 80 characters and enable spell check
+autocmd FileType markdown setlocal textwidth=80 formatoptions+=t spell
+
+" Enable spell check for text files, git commits, and documentation
+autocmd FileType text,gitcommit,rst setlocal spell
 
 " ----------------------------------------------------------------------------
 " Plugin Configuration
@@ -203,3 +210,10 @@ nnoremap <C-w>q :q<CR>                              " Close window (Ctrl+w q)
 nnoremap <C-w>0 :tabfirst<CR>                       " Go to first tab (Ctrl+w 0)
 nnoremap <C-w>= <C-w>=                              " Equalize windows (Ctrl+w =)
 nnoremap <C-w>_ <C-w>_                              " Maximize height (Ctrl+w _)
+
+" Spell check shortcuts
+nnoremap <leader>sp :setlocal spell!<CR>            " Toggle spell check (Space sp)
+nnoremap <leader>sn ]s                              " Next spelling error (Space sn)
+nnoremap <leader>sb [s                              " Previous spelling error (Space sb)
+nnoremap <leader>sa zg                              " Add word to dictionary (Space sa)
+nnoremap <leader>s? z=                              " Suggest corrections (Space s?)

@@ -20,7 +20,7 @@ Each directory represents a package that can be independently installed:
 Install required packages (Ubuntu/Debian/WSL):
 
 ```bash
-sudo apt install stow tmux universal-ctags ripgrep
+sudo apt install stow tmux universal-ctags ripgrep tree
 ```
 
 ## Installation
@@ -134,6 +134,7 @@ Standard aliases included in the dotfiles:
 | `ll`     | `ls -alF`            | Long listing with all files and indicators       |
 | `la`     | `ls -A`              | List all files except . and ..                   |
 | `l`      | `ls -CF`             | List in columns with indicators                  |
+| `t`      | `tree -I "..."`      | Tree view excluding `.git`, `__pycache__`, `node_modules`, etc. |
 | `ls`     | `ls --color=auto`    | Colorized ls output                              |
 | `grep`   | `grep --color=auto`  | Colorized grep output                            |
 | `fgrep`  | `fgrep --color=auto` | Colorized fgrep output                           |
@@ -211,6 +212,12 @@ These commands work similarly in both vim and tmux for consistent muscle memory:
 | `ds"`                   | Delete surrounding "                              | vim-surround    |
 | `ysiw]`                 | Surround word with []                             | vim-surround    |
 | `S{char}` (visual)      | Surround selection with character                 | vim-surround    |
+| **Spell Check**         |                                                   |                 |
+| `Space sp`              | Toggle spell check on/off                         | -               |
+| `Space sn`              | Jump to next spelling error                       | -               |
+| `Space sb`              | Jump to previous spelling error                   | -               |
+| `Space sa`              | Add word to dictionary                            | -               |
+| `Space s?`              | Show spelling suggestions                         | -               |
 | **Other**               |                                                   |                 |
 | `Space w`               | Quick save                                        | -               |
 | `Esc`                   | Clear search highlighting                         | -               |
