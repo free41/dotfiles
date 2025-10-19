@@ -125,6 +125,23 @@ Run `make help` to see all available commands:
 - `make vscode-extensions-backup` - Export installed extensions
 - `make vscode-extensions-install` - Install extensions from list
 
+## Bash Aliases
+
+Standard aliases included in the dotfiles:
+
+| Alias    | Command              | Description                                      |
+|----------|----------------------|--------------------------------------------------|
+| `ll`     | `ls -alF`            | Long listing with all files and indicators       |
+| `la`     | `ls -A`              | List all files except . and ..                   |
+| `l`      | `ls -CF`             | List in columns with indicators                  |
+| `ls`     | `ls --color=auto`    | Colorized ls output                              |
+| `grep`   | `grep --color=auto`  | Colorized grep output                            |
+| `fgrep`  | `fgrep --color=auto` | Colorized fgrep output                           |
+| `egrep`  | `egrep --color=auto` | Colorized egrep output                           |
+| `alert`  | (notification)       | Send notification when long command finishes     |
+
+> **Note**: Custom aliases can be added to `~/.bash_aliases` (git-ignored) and will be loaded automatically.
+
 ## Custom Keybindings
 
 ### Window Management (Parallel Bindings)
