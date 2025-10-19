@@ -11,7 +11,7 @@ GIT_USER_EMAIL := your-email@example.com
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help stow unstow stow-adopt stow-bash stow-git stow-vim stow-matplotlib unstow-bash unstow-git unstow-vim unstow-matplotlib vscode-fetch vscode-push vscode-extensions-backup vscode-extensions-install
+.PHONY: all help stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux stow-matplotlib unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib vscode-fetch vscode-push vscode-extensions-backup vscode-extensions-install
 
 all: stow vscode-fetch vscode-extensions-backup
 	@echo "All dotfiles configured!"
@@ -19,16 +19,18 @@ all: stow vscode-fetch vscode-extensions-backup
 help:
 	@echo "Available targets:"
 	@echo "  all                       - Setup everything (stow + vscode-fetch + extensions backup)"
-	@echo "  stow                      - Stow all packages (bash, git, vim, matplotlib)"
+	@echo "  stow                      - Stow all packages (bash, git, vim, tmux, matplotlib)"
 	@echo "  stow-adopt                - Stow with --adopt (replaces repo files with existing ones)"
 	@echo "  unstow                    - Unstow all packages"
 	@echo "  stow-bash                 - Stow bash configuration"
 	@echo "  stow-git                  - Stow git configuration"
 	@echo "  stow-vim                  - Stow vim configuration"
+	@echo "  stow-tmux                 - Stow tmux configuration"
 	@echo "  stow-matplotlib           - Stow matplotlib configuration"
 	@echo "  unstow-bash               - Unstow bash configuration"
 	@echo "  unstow-git                - Unstow git configuration"
 	@echo "  unstow-vim                - Unstow vim configuration"
+	@echo "  unstow-tmux               - Unstow tmux configuration"
 	@echo "  unstow-matplotlib         - Unstow matplotlib configuration"
 	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo"
 	@echo "  vscode-push               - Copy VSCode config from repo to Windows"
@@ -36,15 +38,15 @@ help:
 	@echo "  vscode-extensions-install - Install extensions from vscode/extensions.txt"
 
 # Stow targets
-stow: stow-bash stow-git stow-vim stow-matplotlib
+stow: stow-bash stow-git stow-vim stow-tmux stow-matplotlib
 	@echo "All packages stowed!"
 
 stow-adopt:
 	@echo "Adopting existing files and stowing..."
-	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim matplotlib
+	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim tmux matplotlib
 	@echo "All packages stowed with --adopt! Check git diff to see what changed."
 
-unstow: unstow-bash unstow-git unstow-vim unstow-matplotlib
+unstow: unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib
 	@echo "All packages unstowed!"
 
 stow-bash:
@@ -62,6 +64,10 @@ stow-vim:
 	@echo "Stowing vim..."
 	@stow -d $(DOTFILES_DIR) -t ~ vim
 
+stow-tmux:
+	@echo "Stowing tmux..."
+	@stow -d $(DOTFILES_DIR) -t ~ tmux
+
 unstow-bash:
 	@echo "Unstowing bash..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D bash
@@ -75,6 +81,10 @@ unstow-git:
 unstow-vim:
 	@echo "Unstowing vim..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D vim
+
+unstow-tmux:
+	@echo "Unstowing tmux..."
+	@stow -d $(DOTFILES_DIR) -t ~ -D tmux
 
 stow-matplotlib:
 	@echo "Stowing matplotlib..."

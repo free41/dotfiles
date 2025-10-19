@@ -4,3 +4,6 @@ config.mk
 # Generated files
 git/.gitconfig
 
+# Private aliases
+bash/.bash_aliases
+

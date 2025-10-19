@@ -1,48 +1,90 @@
-" Vim-Plug automatic installation
+" ============================================================================
+" VIM CONFIGURATION
+" ============================================================================
+
+" ----------------------------------------------------------------------------
+" Plugin Manager (vim-plug)
+" ----------------------------------------------------------------------------
+
+" Automatic installation of vim-plug
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
   silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" ----------------------------------------------------------------------------
 " Plugins
+" ----------------------------------------------------------------------------
+
 call plug#begin('~/.vim/plugged')
 
-" Everforest colorscheme
+" Color scheme
 Plug 'sainnhe/everforest'
+
+" Navigation
+Plug 'christoomey/vim-tmux-navigator'    " Seamless tmux/vim navigation
+Plug 'preservim/tagbar'                  " Tag browser for code navigation
+
+" Fuzzy finder
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" Editing
+Plug 'tpope/vim-commentary'              " Easy commenting with gc
+Plug 'tpope/vim-surround'                " Manipulate surrounding quotes/brackets
 
 call plug#end()
 
-" Colorscheme settings
+" ----------------------------------------------------------------------------
+" Color Scheme
+" ----------------------------------------------------------------------------
+
 set termguicolors
 set background=dark
 let g:everforest_background = 'medium'
 let g:everforest_better_performance = 1
 colorscheme everforest
 
-" Leader key
-let mapleader = " "         " Set leader key to space
+" ----------------------------------------------------------------------------
+" General Settings
+" ----------------------------------------------------------------------------
 
-" Basic settings
-set number                  " Show line numbers
-set relativenumber          " Show relative line numbers
-set cursorline              " Highlight current line
-set showcmd                 " Show command in bottom bar
-set wildmenu                " Visual autocomplete for command menu
-set showmatch               " Highlight matching brackets
-set incsearch               " Search as characters are entered
-set hlsearch                " Highlight search matches
-set ignorecase              " Case insensitive search
-set smartcase               " Case sensitive when uppercase present
-set autoindent              " Auto-indent new lines
-set smartindent             " Smart indent
-set tabstop=4               " Number of visual spaces per TAB
-set shiftwidth=4            " Number of spaces for auto-indent
-set expandtab               " Tabs are spaces
-set encoding=utf-8          " UTF-8 encoding
-set fileencoding=utf-8      " UTF-8 file encoding
-set backspace=indent,eol,start  " Backspace through everything
-set clipboard=unnamedplus   " Use system clipboard
+" Leader key
+let mapleader = " "
+
+" Line numbers
+set number
+set relativenumber
+
+" Display
+set cursorline                " Highlight current line
+set showcmd                   " Show command in bottom bar
+set wildmenu                  " Visual autocomplete for command menu
+set showmatch                 " Highlight matching brackets
+set laststatus=2              " Always show status line
+
+" Search
+set incsearch                 " Search as characters are entered
+set hlsearch                  " Highlight search matches
+set ignorecase                " Case insensitive search
+set smartcase                 " Case sensitive when uppercase present
+
+" Indentation
+set autoindent                " Auto-indent new lines
+set smartindent               " Smart indent
+set tabstop=4                 " Number of visual spaces per TAB
+set shiftwidth=4              " Number of spaces for auto-indent
+set expandtab                 " Tabs are spaces
+
+" Files
+set encoding=utf-8            " UTF-8 encoding
+set fileencoding=utf-8        " UTF-8 file encoding
+set autoread                  " Auto-reload files changed outside vim
+set backspace=indent,eol,start " Backspace through everything
+
+" System clipboard integration
+set clipboard=unnamedplus
 
 " Disable backup files
 set nobackup
@@ -53,5 +95,111 @@ set noswapfile
 syntax enable
 filetype plugin indent on
 
-" Markdown settings - autowrap at 80 characters
+" ----------------------------------------------------------------------------
+" Mouse Support (works in tmux)
+" ----------------------------------------------------------------------------
+
+set mouse=a                   " Enable mouse in all modes
+set ttymouse=xterm2           " Mouse support for tmux
+
+" ----------------------------------------------------------------------------
+" Auto-reload Files
+" ----------------------------------------------------------------------------
+
+" Trigger autoread when changing buffers or focus
+au FocusGained,BufEnter * :checktime
+
+" Notification after file change
+autocmd FileChangedShellPost *
+  \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
+
+" ----------------------------------------------------------------------------
+" File Type Specific Settings
+" ----------------------------------------------------------------------------
+
+" Markdown - autowrap at 80 characters
 autocmd FileType markdown setlocal textwidth=80 formatoptions+=t
+
+" ----------------------------------------------------------------------------
+" Plugin Configuration
+" ----------------------------------------------------------------------------
+
+" vim-tmux-navigator: Seamless navigation between vim and tmux
+" Uses Ctrl+hjkl to navigate between splits and tmux panes
+let g:tmux_navigator_no_mappings = 1
+nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+
+" Tagbar: Code structure browser
+nmap <leader>t :TagbarToggle<CR>
+let g:tagbar_autofocus = 1
+let g:tagbar_sort = 0
+
+" Generate tags automatically using ctags
+" Respects .gitignore by using git ls-files
+function! GenerateTags()
+    " Check if we're in a git repository
+    let l:git_root = system('git rev-parse --show-toplevel 2>/dev/null')
+    if v:shell_error == 0
+        " We're in a git repo - use git ls-files to respect .gitignore
+        let l:git_root = substitute(l:git_root, '\n', '', '')
+        execute 'silent !cd ' . shellescape(l:git_root) . ' && git ls-files | ctags -L - -f tags 2>/dev/null &'
+        echom "Generating tags from git-tracked files..."
+    else
+        " Not in a git repo - generate tags for all files in current directory
+        execute 'silent !ctags -R . 2>/dev/null &'
+        echom "Generating tags for current directory..."
+    endif
+    redraw!
+endfunction
+
+" Map to generate tags manually
+nnoremap <leader>gt :call GenerateTags()<CR>
+
+" Auto-generate tags on save for certain file types
+autocmd BufWritePost *.c,*.cpp,*.h,*.py,*.js,*.ts,*.go,*.rs call GenerateTags()
+
+" FZF: Fuzzy finder
+nnoremap <leader>f :Files<CR>
+nnoremap <C-p> :Files<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>g :Rg<CR>
+nnoremap <leader>s :Tags<CR>
+
+" FZF layout and configuration
+let g:fzf_layout = { 'down': '40%' }
+
+" Use git ls-files when in a git repo, otherwise fall back to find
+let $FZF_DEFAULT_COMMAND = 'git ls-files --cached --others --exclude-standard 2>/dev/null || find . -type f'
+
+" vim-commentary: VSCode-style commenting with Ctrl+/
+" Note: In terminal vim, Ctrl+/ sends Ctrl+_
+nnoremap <C-_> :Commentary<CR>
+vnoremap <C-_> :Commentary<CR>
+
+" ----------------------------------------------------------------------------
+" Custom Key Mappings
+" ----------------------------------------------------------------------------
+
+" Clear search highlighting with Esc
+nnoremap <silent> <Esc> :nohlsearch<CR>
+
+" Better window navigation (in addition to Ctrl+hjkl)
+nnoremap <leader>h <C-w>h
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+nnoremap <leader>l <C-w>l
+
+" Quick save
+nnoremap <leader>w :w<CR>
+
+" Window management with Ctrl+w prefix (matching tmux Prefix bindings)
+" These mirror the tmux bindings for consistency:
+nnoremap <C-w>h :split<CR>                          " Horizontal split (Ctrl+w h)
+nnoremap <C-w>v :vsplit<CR>                         " Vertical split (Ctrl+w v)
+nnoremap <C-w>q :q<CR>                              " Close window (Ctrl+w q)
+nnoremap <C-w>0 :tabfirst<CR>                       " Go to first tab (Ctrl+w 0)
+nnoremap <C-w>= <C-w>=                              " Equalize windows (Ctrl+w =)
+nnoremap <C-w>_ <C-w>_                              " Maximize height (Ctrl+w _)

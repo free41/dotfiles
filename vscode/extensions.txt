@@ -1,3 +1,4 @@
+anthropic.claude-code
 gitlab.gitlab-workflow
 ms-python.debugpy
 ms-python.python

@@ -10,13 +10,14 @@ Each directory represents a package that can be independently installed:
 
 - `bash/` - Bash configuration (.bashrc, .bash_logout)
 - `git/` - Git configuration (.gitconfig with privacy settings)
-- `vim/` - Vim configuration (.vimrc)
+- `vim/` - Vim configuration (.vimrc with Everforest theme)
+- `tmux/` - Tmux configuration (.tmux.conf with Everforest theme)
 - `matplotlib/` - Matplotlib configuration (matplotlibrc with Paul Tol color scheme)
 - `vscode/` - VSCode configuration (settings.json, extensions.txt)
 
 ## Requirements
 
-Install GNU Stow:
+### GNU Stow
 
 ```bash
 # Debian/Ubuntu/WSL
@@ -27,6 +28,45 @@ brew install stow
 
 # Arch Linux
 sudo pacman -S stow
+```
+
+### Universal Ctags (for vim tag generation)
+
+```bash
+# Debian/Ubuntu/WSL
+sudo apt install universal-ctags
+
+# macOS
+brew install universal-ctags
+
+# Arch Linux
+sudo pacman -S ctags
+```
+
+### Ripgrep (for FZF text search in vim)
+
+```bash
+# Debian/Ubuntu/WSL
+sudo apt install ripgrep
+
+# macOS
+brew install ripgrep
+
+# Arch Linux
+sudo pacman -S ripgrep
+```
+
+### Tmux
+
+```bash
+# Debian/Ubuntu/WSL
+sudo apt install tmux
+
+# macOS
+brew install tmux
+
+# Arch Linux
+sudo pacman -S tmux
 ```
 
 ## Installation
@@ -62,17 +102,28 @@ Or install individual packages:
 make stow-bash
 make stow-git
 make stow-vim
+make stow-tmux
 make stow-matplotlib
 ```
 
 ### Machine-Specific Configuration
 
-Copy the example config and customize for your machine:
+Some settings are machine-specific and shouldn't be committed to the repository. Create a local configuration file:
 
 ```bash
 cp config.mk.example config.mk
-# Edit config.mk with your Windows paths (if using WSL)
+# Edit config.mk with your settings
 ```
+
+The `config.mk` file (git-ignored) allows you to customize:
+
+| Variable            | Purpose                                        | Example                                                   |
+|---------------------|------------------------------------------------|-----------------------------------------------------------|
+| `VSCODE_WIN_USER`   | VSCode User directory path for WSL/Windows     | `/mnt/c/Users/yourusername/AppData/Roaming/Code/User`    |
+| `GIT_USER_NAME`     | Git author name for commit signing             | `yourusername`                                            |
+| `GIT_USER_EMAIL`    | Git author email for commit signing            | `youremail@example.com`                                   |
+
+These variables override the defaults in the Makefile and are used when stowing git configuration or syncing VSCode settings.
 
 ## Features
 
@@ -89,6 +140,18 @@ cp config.mk.example config.mk
 - Cycles through both colors and marker symbols
 - Default: markers only (no lines)
 - Works in virtual environments via `MPLCONFIGDIR`
+
+### Vim Configuration
+- **Theme**: Everforest dark medium
+- **Leader key**: Space
+- **Plugins**: vim-tmux-navigator, tagbar, fzf, vim-commentary, vim-surround
+- **Features**: Auto-reload files, mouse support in tmux, seamless tmux navigation
+
+### Tmux Configuration
+- **Theme**: Everforest dark medium
+- **Prefix**: Ctrl+a (instead of default Ctrl+b)
+- **Features**: Mouse support, 50,000 line scrollback, new windows/panes open in current path
+- **Navigation**: Seamless vim/tmux pane switching with Ctrl+hjkl
 
 ### VSCode Integration
 - Fetch/push settings between Windows and WSL
@@ -108,6 +171,80 @@ Run `make help` to see all available commands:
 - `make vscode-extensions-backup` - Export installed extensions
 - `make vscode-extensions-install` - Install extensions from list
 
+## Custom Keybindings
+
+### Window Management (Parallel Bindings)
+
+These commands work similarly in both vim and tmux for consistent muscle memory:
+
+| Action                    | Vim          | Tmux         |
+|---------------------------|--------------|--------------|
+| **Horizontal split**      | `Ctrl+w h`   | `Ctrl+a h`   |
+| **Vertical split**        | `Ctrl+w v`   | `Ctrl+a v`   |
+| **Close window/pane**     | `Ctrl+w q`   | `Ctrl+a q`   |
+| **Go to first window/tab**| `Ctrl+w 0`   | `Ctrl+a 0`   |
+| **Equalize sizes**        | `Ctrl+w =`   | `Ctrl+a =`   |
+| **Maximize/zoom**         | `Ctrl+w _`   | `Ctrl+a _`   |
+| **Navigate left**         | `Ctrl+h`     | `Ctrl+h`     |
+| **Navigate down**         | `Ctrl+j`     | `Ctrl+j`     |
+| **Navigate up**           | `Ctrl+k`     | `Ctrl+k`     |
+| **Navigate right**        | `Ctrl+l`     | `Ctrl+l`     |
+
+> **Note**: Navigation with `Ctrl+hjkl` works seamlessly across vim splits and tmux panes!
+
+### Tmux Keybindings
+
+**Prefix Key**: `Ctrl+a` (replaces default `Ctrl+b`)
+
+| Keybinding          | Action                                             |
+|---------------------|----------------------------------------------------|
+| `Ctrl+a c`          | Create new window (in current path)                |
+| `Ctrl+a ,`          | Rename current window                              |
+| `Ctrl+a d`          | Detach from session                                |
+| `Ctrl+a r`          | Reload tmux configuration                          |
+| `Ctrl+a Ctrl+l`     | Clear screen (since Ctrl+l is used for navigation) |
+| **Copy Mode**       |                                                    |
+| `Escape`            | Enter copy mode                                    |
+| `Ctrl+a a`          | Enter copy mode (double-tap)                       |
+| `v` (in copy mode)  | Begin selection                                    |
+| `y` (in copy mode)  | Yank/copy to system clipboard                      |
+| `Ctrl+a p`          | Paste                                              |
+| **Mouse Support**   |                                                    |
+| Scroll              | Navigate history                                   |
+| Click               | Select panes                                       |
+| Drag border         | Resize panes                                       |
+| Click window name   | Switch windows                                     |
+
+### Vim Keybindings
+
+**Leader Key**: `Space`
+
+| Keybinding              | Action                                            | Plugin          |
+|-------------------------|---------------------------------------------------|-----------------|
+| **Fuzzy Finding (FZF)** |                                                   |                 |
+| `Space f` or `Ctrl+p`   | Find files                                        | fzf.vim         |
+| `Space b`               | Switch buffers                                    | fzf.vim         |
+| `Space g`               | Search with ripgrep                               | fzf.vim         |
+| `Space s`               | Search tags (functions, classes, etc.)            | fzf.vim         |
+| **Navigation**          |                                                   |                 |
+| `Space h/j/k/l`         | Navigate to window (alternative)                  | -               |
+| `Space t`               | Toggle Tagbar (code structure)                    | tagbar          |
+| **Tags**                |                                                   |                 |
+| `Space gt`              | Generate/update ctags (respects .gitignore)       | -               |
+| Auto-generates on save  | For `.c`, `.cpp`, `.h`, `.py`, `.js`, `.ts`, `.go`, `.rs` files | -               |
+| **Editing**             |                                                   |                 |
+| `Ctrl+/`                | Toggle comment line/selection                     | vim-commentary  |
+| `gc{motion}`            | Comment using motion (e.g., `gcap` for paragraph) | vim-commentary  |
+| `gcc`                   | Comment current line                              | vim-commentary  |
+| `cs"'`                  | Change surrounding " to '                         | vim-surround    |
+| `ds"`                   | Delete surrounding "                              | vim-surround    |
+| `ysiw]`                 | Surround word with []                             | vim-surround    |
+| `S{char}` (visual)      | Surround selection with character                 | vim-surround    |
+| **Other**               |                                                   |                 |
+| `Space w`               | Quick save                                        | -               |
+| `Esc`                   | Clear search highlighting                         | -               |
+| Mouse                   | Full mouse support (scroll, click, select)        | -               |
+
 ## Uninstalling
 
 Remove symlinks for all packages:
@@ -120,6 +257,7 @@ Or remove individual packages:
 
 ```bash
 make unstow-bash
+make unstow-tmux
 make unstow-matplotlib
 ```
 
