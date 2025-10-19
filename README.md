@@ -17,56 +17,10 @@ Each directory represents a package that can be independently installed:
 
 ## Requirements
 
-### GNU Stow
+Install required packages (Ubuntu/Debian/WSL):
 
 ```bash
-# Debian/Ubuntu/WSL
-sudo apt install stow
-
-# macOS
-brew install stow
-
-# Arch Linux
-sudo pacman -S stow
-```
-
-### Universal Ctags (for vim tag generation)
-
-```bash
-# Debian/Ubuntu/WSL
-sudo apt install universal-ctags
-
-# macOS
-brew install universal-ctags
-
-# Arch Linux
-sudo pacman -S ctags
-```
-
-### Ripgrep (for FZF text search in vim)
-
-```bash
-# Debian/Ubuntu/WSL
-sudo apt install ripgrep
-
-# macOS
-brew install ripgrep
-
-# Arch Linux
-sudo pacman -S ripgrep
-```
-
-### Tmux
-
-```bash
-# Debian/Ubuntu/WSL
-sudo apt install tmux
-
-# macOS
-brew install tmux
-
-# Arch Linux
-sudo pacman -S tmux
+sudo apt install stow tmux universal-ctags ripgrep
 ```
 
 ## Installation
