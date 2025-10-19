@@ -204,7 +204,7 @@ nnoremap <leader>w :w<CR>
 
 " Window management with Ctrl+w prefix (matching tmux Prefix bindings)
 " These mirror the tmux bindings for consistency:
-nnoremap <C-w>h :split<CR>                          " Horizontal split (Ctrl+w h)
+nnoremap <C-w>s :split<CR>                          " Horizontal split (Ctrl+w s)
 nnoremap <C-w>v :vsplit<CR>                         " Vertical split (Ctrl+w v)
 nnoremap <C-w>q :q<CR>                              " Close window (Ctrl+w q)
 nnoremap <C-w>0 :tabfirst<CR>                       " Go to first tab (Ctrl+w 0)

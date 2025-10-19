@@ -151,7 +151,7 @@ These commands work similarly in both vim and tmux for consistent muscle memory:
 
 | Action                    | Vim          | Tmux         |
 |---------------------------|--------------|--------------|
-| **Horizontal split**      | `Ctrl+w h`   | `Ctrl+a h`   |
+| **Horizontal split**      | `Ctrl+w s`   | `Ctrl+a s`   |
 | **Vertical split**        | `Ctrl+w v`   | `Ctrl+a v`   |
 | **Close window/pane**     | `Ctrl+w q`   | `Ctrl+a q`   |
 | **Go to first window/tab**| `Ctrl+w 0`   | `Ctrl+a 0`   |
