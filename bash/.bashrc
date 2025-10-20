@@ -169,13 +169,7 @@ export NVM_DIR="$HOME/.nvm"
 # - tmux is installed
 # - not already inside a tmux session
 # - running in an interactive shell
-# - not in VSCode integrated terminal (to avoid conflicts)
-if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -z "$VSCODE_INJECTION" ]; then
-    # If there's no session, create one named "default"
-    # Otherwise, attach to the first available session
-    if ! tmux has-session 2>/dev/null; then
-        exec tmux new-session -s default
-    else
-        exec tmux attach-session
-    fi
+if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+    # Always create a new session (tmux will auto-name it)
+    exec tmux new-session
 fi
