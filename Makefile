@@ -11,10 +11,39 @@ GIT_USER_EMAIL := your-email@example.com
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux stow-matplotlib unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib tmux-reload vscode-fetch vscode-push vscode-extensions-backup vscode-extensions-install
+.PHONY: all help stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux stow-matplotlib unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib vscode-fetch vscode-push
 
-all: stow vscode-fetch vscode-extensions-backup tmux-reload
-	@echo "All dotfiles configured!"
+all:
+	@echo "========================================="
+	@echo "Setting up dotfiles..."
+	@echo "========================================="
+	@echo ""
+	@echo "Step 1: Stowing all packages..."
+	@if $(MAKE) stow 2>/dev/null; then \
+		echo "✓ All packages stowed successfully!"; \
+	else \
+		echo ""; \
+		echo "⚠ Stow failed! This usually happens when files already exist."; \
+		echo "  Run 'make stow-adopt' to merge existing files into the repo."; \
+		exit 1; \
+	fi
+	@echo ""
+	@echo "Step 2: Fetching VSCode configuration..."
+	@$(MAKE) vscode-fetch
+	@if git diff --quiet vscode/ 2>/dev/null; then \
+		echo "✓ No VSCode config changes detected."; \
+	else \
+		echo ""; \
+		echo "⚠ VSCode configuration has changed!"; \
+		echo "  Review changes with: git diff vscode/"; \
+		echo "  To discard changes: git restore vscode/"; \
+		echo "  To keep changes: git add vscode/ && git commit"; \
+		echo "  To push to Windows: make vscode-push"; \
+	fi
+	@echo ""
+	@echo "========================================="
+	@echo "✓ All dotfiles configured successfully!"
+	@echo "========================================="
 
 help:
 	@echo "Available targets:"
@@ -32,31 +61,38 @@ help:
 	@echo "  unstow-vim                - Unstow vim configuration"
 	@echo "  unstow-tmux               - Unstow tmux configuration"
 	@echo "  unstow-matplotlib         - Unstow matplotlib configuration"
-	@echo "  tmux-reload               - Reload tmux configuration"
-	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo"
-	@echo "  vscode-push               - Copy VSCode config from repo to Windows"
-	@echo "  vscode-extensions-backup  - Export list of installed extensions to vscode/extensions.txt"
-	@echo "  vscode-extensions-install - Install extensions from vscode/extensions.txt"
+	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo and backup extensions"
+	@echo "  vscode-push               - Copy VSCode config from repo to Windows and install extensions"
 
 # Stow targets
 stow: stow-bash stow-git stow-vim stow-tmux stow-matplotlib
-	@echo "All packages stowed!"
+	@echo "✓ All packages stowed successfully!"
 
 stow-adopt:
 	@echo "Adopting existing files and stowing..."
-	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim tmux matplotlib
-	@echo "All packages stowed with --adopt! Check git diff to see what changed."
+	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim tmux
+	@mkdir -p ~/.config/matplotlib
+	@stow -d $(DOTFILES_DIR) -t ~/.config --adopt matplotlib
+	@echo ""
+	@echo "✓ All packages stowed with --adopt!"
+	@echo ""
+	@echo "⚠ Important: Check what changed in the repo:"
+	@echo "  git diff"
+	@echo ""
+	@echo "  To keep repo version: git restore ."
+	@echo "  To keep adopted version: git add . && git commit"
 
 unstow: unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib
-	@echo "All packages unstowed!"
+	@echo "✓ All packages unstowed successfully!"
 
 stow-bash:
 	@echo "Stowing bash..."
 	@stow -d $(DOTFILES_DIR) -t ~ bash
 	@if [ -n "$$BASH_VERSION" ]; then \
-		bash -c "source ~/.bashrc" && echo "Bash configuration reloaded!"; \
+		bash -c "source ~/.bashrc" && echo "✓ Bash configuration stowed and reloaded!"; \
 	else \
-		echo "Not in a bash shell. Run 'source ~/.bashrc' manually to reload."; \
+		echo "✓ Bash configuration stowed!"; \
+		echo "  Run 'source ~/.bashrc' to reload in current shell."; \
 	fi
 
 stow-git:
@@ -65,14 +101,22 @@ stow-git:
 	@sed 's/@GIT_USER_NAME@/$(GIT_USER_NAME)/g; s/@GIT_USER_EMAIL@/$(GIT_USER_EMAIL)/g' \
 		$(DOTFILES_DIR)/git/.gitconfig.template > $(DOTFILES_DIR)/git/.gitconfig
 	@stow -d $(DOTFILES_DIR) -t ~ git
+	@echo "✓ Git configuration stowed!"
 
 stow-vim:
 	@echo "Stowing vim..."
 	@stow -d $(DOTFILES_DIR) -t ~ vim
+	@echo "✓ Vim configuration stowed!"
 
 stow-tmux:
 	@echo "Stowing tmux..."
 	@stow -d $(DOTFILES_DIR) -t ~ tmux
+	@if [ -n "$$TMUX" ]; then \
+		tmux source-file ~/.tmux.conf && echo "✓ Tmux configuration stowed and reloaded!"; \
+	else \
+		echo "✓ Tmux configuration stowed!"; \
+		echo "  Config will load on next tmux session."; \
+	fi
 
 unstow-bash:
 	@echo "Unstowing bash..."
@@ -96,19 +140,11 @@ stow-matplotlib:
 	@echo "Stowing matplotlib..."
 	@mkdir -p ~/.config/matplotlib
 	@stow -d $(DOTFILES_DIR) -t ~/.config matplotlib
+	@echo "✓ Matplotlib configuration stowed!"
 
 unstow-matplotlib:
 	@echo "Unstowing matplotlib..."
 	@stow -d $(DOTFILES_DIR) -t ~/.config -D matplotlib
-
-# Tmux reload target
-tmux-reload:
-	@echo "Reloading tmux configuration..."
-	@if [ -n "$$TMUX" ]; then \
-		tmux source-file ~/.tmux.conf && echo "Tmux config reloaded!"; \
-	else \
-		echo "Not in a tmux session. Start tmux first."; \
-	fi
 
 # VSCode targets
 vscode-fetch:
@@ -116,39 +152,43 @@ vscode-fetch:
 	@mkdir -p $(VSCODE_DIR)
 	@if [ -f "$(VSCODE_WIN_USER)/settings.json" ]; then \
 		cp "$(VSCODE_WIN_USER)/settings.json" "$(VSCODE_DIR)/settings.json"; \
-		echo "Copied settings.json to $(VSCODE_DIR)"; \
+		echo "  ✓ Copied settings.json"; \
+	else \
+		echo "  ⚠ settings.json not found at $(VSCODE_WIN_USER)"; \
 	fi
 	@if [ -f "$(VSCODE_WIN_USER)/keybindings.json" ]; then \
 		cp "$(VSCODE_WIN_USER)/keybindings.json" "$(VSCODE_DIR)/keybindings.json"; \
-		echo "Copied keybindings.json to $(VSCODE_DIR)"; \
+		echo "  ✓ Copied keybindings.json"; \
+	else \
+		echo "  ⚠ keybindings.json not found"; \
 	fi
-	@echo "VSCode config fetched!"
+	@echo "Backing up VSCode extensions list..."
+	@cmd.exe /c "code --list-extensions" 2>/dev/null | sed 's/\r$$//' > $(VSCODE_DIR)/extensions.txt
+	@echo "  ✓ Saved $(shell wc -l < $(VSCODE_DIR)/extensions.txt 2>/dev/null || echo 0) extensions to extensions.txt"
+	@echo "✓ VSCode config and extensions fetched!"
 
 vscode-push:
 	@echo "Pushing VSCode configuration to Windows..."
 	@if [ -f "$(VSCODE_DIR)/settings.json" ]; then \
 		cp "$(VSCODE_DIR)/settings.json" "$(VSCODE_WIN_USER)/settings.json"; \
-		echo "Copied settings.json to Windows"; \
+		echo "  ✓ Copied settings.json to Windows"; \
+	else \
+		echo "  ⚠ settings.json not found in repo"; \
 	fi
 	@if [ -f "$(VSCODE_DIR)/keybindings.json" ]; then \
 		cp "$(VSCODE_DIR)/keybindings.json" "$(VSCODE_WIN_USER)/keybindings.json"; \
-		echo "Copied keybindings.json to Windows"; \
+		echo "  ✓ Copied keybindings.json to Windows"; \
+	else \
+		echo "  ⚠ keybindings.json not found in repo"; \
 	fi
-	@echo "VSCode config pushed!"
-
-vscode-extensions-backup:
-	@echo "Backing up VSCode extensions list..."
-	@mkdir -p $(VSCODE_DIR)
-	@cmd.exe /c "code --list-extensions" 2>/dev/null | sed 's/\r$$//' > $(VSCODE_DIR)/extensions.txt
-	@echo "Extensions list saved to $(VSCODE_DIR)/extensions.txt"
-
-vscode-extensions-install:
-	@echo "Installing VSCode extensions from $(VSCODE_DIR)/extensions.txt..."
+	@echo "Installing VSCode extensions..."
 	@if [ ! -f "$(VSCODE_DIR)/extensions.txt" ]; then \
-		echo "Error: $(VSCODE_DIR)/extensions.txt not found!"; \
-		exit 1; \
+		echo "  ⚠ extensions.txt not found! Skipping extension install."; \
+	else \
+		echo "  Installing $(shell wc -l < $(VSCODE_DIR)/extensions.txt) extensions..."; \
+		for ext in $$(cat $(VSCODE_DIR)/extensions.txt); do \
+			cmd.exe /c "code --install-extension $$ext" 2>/dev/null | sed 's/\r$$//' || true; \
+		done; \
+		echo "  ✓ Extensions installation complete!"; \
 	fi
-	@for ext in $$(cat $(VSCODE_DIR)/extensions.txt); do \
-		cmd.exe /c "code --install-extension $$ext" 2>/dev/null | sed 's/\r$$//' || true; \
-	done
-	@echo "Extensions installation complete!"
+	@echo "✓ VSCode config and extensions pushed!"
