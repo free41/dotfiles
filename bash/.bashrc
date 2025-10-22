@@ -199,6 +199,6 @@ export NVM_DIR="$HOME/.nvm"
 # - not already inside a tmux session
 # - running in an interactive shell
 if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    # Always create a new session (tmux will auto-name it)
-    exec tmux new-session
+    # Attach to existing session or create new one
+    tmux attach-session -t default || tmux new-session -s default
 fi

@@ -104,7 +104,11 @@ filetype plugin indent on
 " ----------------------------------------------------------------------------
 
 set mouse=a                   " Enable mouse in all modes
-set ttymouse=xterm2           " Mouse support for tmux
+if has('mouse_sgr')
+    set ttymouse=sgr          " SGR mouse protocol (better tmux support)
+else
+    set ttymouse=xterm2       " Fallback for older systems
+endif
 
 " ----------------------------------------------------------------------------
 " Auto-reload Files
