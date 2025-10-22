@@ -11,9 +11,9 @@ GIT_USER_EMAIL := your-email@example.com
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux stow-matplotlib unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib vscode-fetch vscode-push vscode-extensions-backup vscode-extensions-install
+.PHONY: all help stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux stow-matplotlib unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib tmux-reload vscode-fetch vscode-push vscode-extensions-backup vscode-extensions-install
 
-all: stow vscode-fetch vscode-extensions-backup
+all: stow vscode-fetch vscode-extensions-backup tmux-reload
 	@echo "All dotfiles configured!"
 
 help:
@@ -32,6 +32,7 @@ help:
 	@echo "  unstow-vim                - Unstow vim configuration"
 	@echo "  unstow-tmux               - Unstow tmux configuration"
 	@echo "  unstow-matplotlib         - Unstow matplotlib configuration"
+	@echo "  tmux-reload               - Reload tmux configuration"
 	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo"
 	@echo "  vscode-push               - Copy VSCode config from repo to Windows"
 	@echo "  vscode-extensions-backup  - Export list of installed extensions to vscode/extensions.txt"
@@ -52,6 +53,11 @@ unstow: unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib
 stow-bash:
 	@echo "Stowing bash..."
 	@stow -d $(DOTFILES_DIR) -t ~ bash
+	@if [ -n "$$BASH_VERSION" ]; then \
+		bash -c "source ~/.bashrc" && echo "Bash configuration reloaded!"; \
+	else \
+		echo "Not in a bash shell. Run 'source ~/.bashrc' manually to reload."; \
+	fi
 
 stow-git:
 	@echo "Stowing git..."
@@ -94,6 +100,15 @@ stow-matplotlib:
 unstow-matplotlib:
 	@echo "Unstowing matplotlib..."
 	@stow -d $(DOTFILES_DIR) -t ~/.config -D matplotlib
+
+# Tmux reload target
+tmux-reload:
+	@echo "Reloading tmux configuration..."
+	@if [ -n "$$TMUX" ]; then \
+		tmux source-file ~/.tmux.conf && echo "Tmux config reloaded!"; \
+	else \
+		echo "Not in a tmux session. Start tmux first."; \
+	fi
 
 # VSCode targets
 vscode-fetch:

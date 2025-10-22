@@ -141,6 +141,27 @@ Standard aliases included in the dotfiles:
 | `egrep`  | `egrep --color=auto` | Colorized egrep output                           |
 | `alert`  | (notification)       | Send notification when long command finishes     |
 
+### Git Aliases
+
+| Alias    | Command                           | Description                                      |
+|----------|-----------------------------------|--------------------------------------------------|
+| `gs`     | `git status`                      | Show working tree status                         |
+| `ga`     | `git add`                         | Add file contents to the index                   |
+| `gaa`    | `git add --all`                   | Add all changes to the index                     |
+| `gc`     | `git commit`                      | Record changes to the repository                 |
+| `gcm`    | `git commit -m`                   | Commit with inline message                       |
+| `gacm`   | `git add --all && git commit -m`  | Add all and commit with message                  |
+| `gp`     | `git push`                        | Push to remote repository                        |
+| `gpl`    | `git pull`                        | Pull from remote repository                      |
+| `gf`     | `git fetch`                       | Fetch from remote repository                     |
+| `gd`     | `git diff`                        | Show changes between commits, commit and working tree, etc |
+| `gdc`    | `git diff --cached`               | Show changes staged for commit                   |
+| `gl`     | `git log --oneline --graph --decorate` | Show commit logs in graph format            |
+| `gla`    | `git log --oneline --graph --decorate --all` | Show all branches in graph format  |
+| `gco`    | `git checkout`                    | Switch branches or restore working tree files    |
+| `gb`     | `git branch`                      | List, create, or delete branches                 |
+| `gba`    | `git branch -a`                   | List all branches (local and remote)             |
+
 > **Note**: Custom aliases can be added to `~/.bash_aliases` (git-ignored) and will be loaded automatically.
 
 ## Custom Keybindings
@@ -203,6 +224,8 @@ These commands work similarly in both vim and tmux for consistent muscle memory:
 | `Space t`               | Toggle Tagbar (code structure)                    | tagbar          |
 | **Tags**                |                                                   |                 |
 | `Space gt`              | Generate/update ctags (respects .gitignore)       | -               |
+| `Ctrl+]`                | Jump to tag definition under cursor               | -               |
+| `Ctrl+t`                | Jump back from tag                                | -               |
 | Auto-generates on save  | For `.c`, `.cpp`, `.h`, `.py`, `.js`, `.ts`, `.go`, `.rs` files | -               |
 | **Editing**             |                                                   |                 |
 | `Ctrl+/`                | Toggle comment line/selection                     | vim-commentary  |

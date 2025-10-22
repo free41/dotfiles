@@ -28,12 +28,45 @@
 
     // Vim settings
     "vim.leader": "<space>",
+    "vim.useSystemClipboard": true,
+    "vim.hlsearch": true,
+    "vim.ignorecase": true,
+    "vim.smartcase": true,
+    "vim.incsearch": true,
+    "vim.useCtrlKeys": true,
     "vim.handleKeys": {
         "<C-p>": false
     },
     "vim.normalModeKeyBindingsNonRecursive": [
+        // Clear search highlighting with Esc
+        {
+            "before": ["<Esc>"],
+            "commands": [":nohl"]
+        },
+        // Ctrl+hjkl navigation (vim-tmux-navigator style)
+        {
+            "before": ["<C-h>"],
+            "commands": ["workbench.action.navigateLeft"]
+        },
+        {
+            "before": ["<C-j>"],
+            "commands": ["workbench.action.navigateDown"]
+        },
+        {
+            "before": ["<C-k>"],
+            "commands": ["workbench.action.navigateUp"]
+        },
+        {
+            "before": ["<C-l>"],
+            "commands": ["workbench.action.navigateRight"]
+        },
+        // FZF/File navigation
         {
             "before": ["<leader>", "f"],
+            "commands": ["workbench.action.quickOpen"]
+        },
+        {
+            "before": ["<C-p>"],
             "commands": ["workbench.action.quickOpen"]
         },
         {
@@ -41,9 +74,90 @@
             "commands": ["workbench.action.showAllEditors"]
         },
         {
-            "before": ["<leader>", "p"],
-            "commands": ["workbench.action.tasks.runTask"],
-            "args": "convert to PDF"
+            "before": ["<leader>", "g"],
+            "commands": ["workbench.action.findInFiles"]
+        },
+        {
+            "before": ["<leader>", "s"],
+            "commands": ["workbench.action.gotoSymbol"]
+        },
+        // Quick save
+        {
+            "before": ["<leader>", "w"],
+            "commands": [":w"]
+        },
+        // Window navigation (alternative)
+        {
+            "before": ["<leader>", "h"],
+            "commands": ["workbench.action.navigateLeft"]
+        },
+        {
+            "before": ["<leader>", "j"],
+            "commands": ["workbench.action.navigateDown"]
+        },
+        {
+            "before": ["<leader>", "k"],
+            "commands": ["workbench.action.navigateUp"]
+        },
+        {
+            "before": ["<leader>", "l"],
+            "commands": ["workbench.action.navigateRight"]
+        },
+        // Tagbar equivalent
+        {
+            "before": ["<leader>", "t"],
+            "commands": ["outline.focus"]
+        },
+        // Spell check shortcuts
+        {
+            "before": ["<leader>", "s", "p"],
+            "commands": ["editor.action.toggleSpellCheck"]
+        },
+        {
+            "before": ["<leader>", "s", "n"],
+            "commands": ["editor.action.marker.nextInFiles"]
+        },
+        {
+            "before": ["<leader>", "s", "b"],
+            "commands": ["editor.action.marker.prevInFiles"]
+        }
+    ],
+    "vim.insertModeKeyBindingsNonRecursive": [
+        // Ctrl+hjkl navigation in insert mode
+        {
+            "before": ["<C-h>"],
+            "commands": ["workbench.action.navigateLeft"]
+        },
+        {
+            "before": ["<C-j>"],
+            "commands": ["workbench.action.navigateDown"]
+        },
+        {
+            "before": ["<C-k>"],
+            "commands": ["workbench.action.navigateUp"]
+        },
+        {
+            "before": ["<C-l>"],
+            "commands": ["workbench.action.navigateRight"]
+        }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        // Ctrl+hjkl navigation in visual mode
+        {
+            "before": ["<C-h>"],
+            "commands": ["workbench.action.navigateLeft"]
+        },
+        {
+            "before": ["<C-j>"],
+            "commands": ["workbench.action.navigateDown"]
+        },
+        {
+            "before": ["<C-k>"],
+            "commands": ["workbench.action.navigateUp"]
+        },
+        {
+            "before": ["<C-l>"],
+            "commands": ["workbench.action.navigateRight"]
         }
     ],
 

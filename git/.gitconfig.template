@@ -12,6 +12,12 @@
 [pull]
 	rebase = false
 
+[diff]
+	tool = vimdiff
+
+[difftool]
+	prompt = false
+
 [alias]
 	st = status
 	co = checkout
@@ -20,6 +26,7 @@
 	lg = log --oneline --graph --decorate --all
 	last = log -1 HEAD
 	unstage = reset HEAD --
+	dv = difftool
 
 [color]
 	ui = auto

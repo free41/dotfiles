@@ -122,6 +122,25 @@ alias l='ls -CF'
 # tree alias with common exclusions
 alias t='tree -I ".git|__pycache__|*.egg-info|node_modules|.venv|venv|dist|build|*.pyc|.pytest_cache|.mypy_cache|.tox"'
 
+# Git aliases
+alias gs='git status'
+alias ga='git add'
+alias gaa='git add --all'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gacm='git add --all && git commit -m'
+alias gp='git push'
+alias gpl='git pull'
+alias gf='git fetch'
+alias gd='git diff'
+alias gdc='git diff --cached'
+alias gdv='git difftool'
+alias gl='git log --oneline --graph --decorate'
+alias gla='git log --oneline --graph --decorate --all'
+alias gco='git checkout'
+alias gb='git branch'
+alias gba='git branch -a'
+
 # Alert alias for long running commands
 # Usage: sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
