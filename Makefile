@@ -11,7 +11,44 @@ GIT_USER_EMAIL := your-email@example.com
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux stow-matplotlib unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib vscode-fetch vscode-push
+.PHONY: all help install stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux stow-matplotlib unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib vscode-fetch vscode-push
+
+install:
+	@echo "========================================="
+	@echo "Installing required dependencies..."
+	@echo "========================================="
+	@echo ""
+	@echo "Updating package lists..."
+	@sudo apt update
+	@echo ""
+	@echo "Installing core packages..."
+	@sudo apt install -y \
+		stow \
+		git \
+		tmux \
+		vim \
+		curl \
+		build-essential \
+		universal-ctags \
+		ripgrep \
+		tree \
+		xclip \
+		cargo
+	@echo ""
+	@echo "Installing code-minimap (required for minimap.vim)..."
+	@if command -v code-minimap >/dev/null 2>&1; then \
+		echo "  ✓ code-minimap already installed"; \
+	else \
+		cargo install --locked code-minimap && echo "  ✓ code-minimap installed via cargo"; \
+	fi
+	@echo ""
+	@echo "========================================="
+	@echo "✓ All dependencies installed!"
+	@echo "========================================="
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Run 'make all' to setup dotfiles"
+	@echo "  2. Restart your shell or run 'source ~/.bashrc'"
 
 all:
 	@echo "========================================="
@@ -47,6 +84,7 @@ all:
 
 help:
 	@echo "Available targets:"
+	@echo "  install                   - Install all required dependencies (stow, git, vim, tmux, etc.)"
 	@echo "  all                       - Setup everything (stow + vscode-fetch + extensions backup)"
 	@echo "  stow                      - Stow all packages (bash, git, vim, tmux, matplotlib)"
 	@echo "  stow-adopt                - Stow with --adopt (replaces repo files with existing ones)"
@@ -107,6 +145,9 @@ stow-vim:
 	@echo "Stowing vim..."
 	@stow -d $(DOTFILES_DIR) -t ~ vim
 	@echo "✓ Vim configuration stowed!"
+	@echo "Installing Vim plugins..."
+	@vim +PlugInstall +qall 2>/dev/null || echo "  ⚠ Plugin install failed. Run ':PlugInstall' manually in vim."
+	@echo "✓ Vim plugins installed!"
 
 stow-tmux:
 	@echo "Stowing tmux..."

@@ -15,14 +15,6 @@ Each directory represents a package that can be independently installed:
 - `matplotlib/` - Matplotlib configuration (matplotlibrc with Paul Tol color scheme)
 - `vscode/` - VSCode configuration (settings.json, extensions.txt)
 
-## Requirements
-
-Install required packages (Ubuntu/Debian/WSL):
-
-```bash
-sudo apt install stow tmux universal-ctags ripgrep tree
-```
-
 ## Installation
 
 Clone this repository:
@@ -32,15 +24,21 @@ git clone https://github.com/free41/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-### Quick Setup
+### Quick Setup (Recommended)
 
-Use the Makefile for automated setup:
+Install dependencies and setup dotfiles in one go:
 
 ```bash
-make all
+make install  # Install all required packages
+make all      # Setup dotfiles
 ```
 
-This will stow all packages, fetch VSCode config (if on Windows/WSL), and backup extensions.
+The `make install` command will install:
+- **Core tools**: stow, git, tmux, vim, curl, build-essential
+- **Development tools**: universal-ctags, ripgrep, tree, xclip, cargo
+- **Vim plugins dependencies**: code-minimap (for minimap.vim)
+
+Then `make all` will stow all packages, fetch VSCode config (if on Windows/WSL), and backup extensions.
 
 ### Manual Installation
 
@@ -98,13 +96,13 @@ These variables override the defaults in the Makefile and are used when stowing 
 ### Vim Configuration
 - **Theme**: Everforest dark medium
 - **Leader key**: Space
-- **Plugins**: vim-tmux-navigator, tagbar, fzf, vim-commentary, vim-surround
-- **Features**: Auto-reload files, mouse support in tmux, seamless tmux navigation
+- **Plugins**: vim-tmux-navigator, tagbar, NERDTree, minimap.vim, fzf, vim-commentary, vim-surround
+- **Features**: Auto-reload files, mouse support in tmux, seamless tmux navigation, pipe cursor in insert mode, code minimap, file tree explorer
 
 ### Tmux Configuration
 - **Theme**: Everforest dark medium
 - **Prefix**: Ctrl+a (instead of default Ctrl+b)
-- **Features**: Mouse support, 50,000 line scrollback, new windows/panes open in current path
+- **Features**: Mouse support, 50,000 line scrollback, new windows/panes open in current path, automatic window naming based on directory
 - **Navigation**: Seamless vim/tmux pane switching with Ctrl+hjkl
 
 ### VSCode Integration
@@ -116,14 +114,14 @@ These variables override the defaults in the Makefile and are used when stowing 
 
 Run `make help` to see all available commands:
 
-- `make all` - Setup everything
+- `make install` - Install all required dependencies (stow, git, vim, tmux, ctags, ripgrep, code-minimap, etc.)
+- `make all` - Setup everything (stow all packages + install vim plugins)
 - `make stow` - Stow all packages
 - `make unstow` - Remove all symlinks
 - `make stow-adopt` - Adopt existing files (useful for initial setup)
-- `make vscode-fetch` - Copy VSCode config from Windows to repo
-- `make vscode-push` - Copy VSCode config from repo to Windows
-- `make vscode-extensions-backup` - Export installed extensions
-- `make vscode-extensions-install` - Install extensions from list
+- `make stow-vim` - Stow vim configuration and auto-install plugins
+- `make vscode-fetch` - Copy VSCode config from Windows to repo (WSL only)
+- `make vscode-push` - Copy VSCode config from repo to Windows (WSL only)
 
 ## Bash Aliases
 
@@ -159,8 +157,21 @@ Standard aliases included in the dotfiles:
 | `gl`     | `git log --oneline --graph --decorate` | Show commit logs in graph format            |
 | `gla`    | `git log --oneline --graph --decorate --all` | Show all branches in graph format  |
 | `gco`    | `git checkout`                    | Switch branches or restore working tree files    |
+| `gsw`    | `git switch`                      | Switch branches (newer alternative to checkout)  |
 | `gb`     | `git branch`                      | List, create, or delete branches                 |
 | `gba`    | `git branch -a`                   | List all branches (local and remote)             |
+| `gdd`    | `gdd [options] [file]`            | Git diff against dev branch (see below)          |
+
+#### gdd - Git Diff Against Dev Branch
+
+Compare your current branch with the dev branch:
+
+```bash
+gdd              # Show full diff: current branch vs dev
+gdd filename     # Show diff of specific file vs dev
+gdd -v           # Open full diff in vim using git difftool
+gdd -v filename  # Open specific file diff in vim
+```
 
 > **Note**: Custom aliases can be added to `~/.bash_aliases` (git-ignored) and will be loaded automatically.
 
@@ -197,10 +208,11 @@ These commands work similarly in both vim and tmux for consistent muscle memory:
 | `Ctrl+a r`          | Reload tmux configuration                          |
 | `Ctrl+a Ctrl+l`     | Clear screen (since Ctrl+l is used for navigation) |
 | **Copy Mode**       |                                                    |
-| `Escape`            | Enter copy mode                                    |
+| `Ctrl+a [`          | Enter copy mode                                    |
 | `Ctrl+a a`          | Enter copy mode (double-tap)                       |
 | `v` (in copy mode)  | Begin selection                                    |
 | `y` (in copy mode)  | Yank/copy to system clipboard                      |
+| `q` (in copy mode)  | Exit copy mode                                     |
 | `Ctrl+a p`          | Paste                                              |
 | **Mouse Support**   |                                                    |
 | Scroll              | Navigate history                                   |
@@ -221,6 +233,8 @@ These commands work similarly in both vim and tmux for consistent muscle memory:
 | `Space s`               | Search tags (functions, classes, etc.)            | fzf.vim         |
 | **Navigation**          |                                                   |                 |
 | `Space h/j/k/l`         | Navigate to window (alternative)                  | -               |
+| `Space n`               | Toggle NERDTree (file explorer)                   | NERDTree        |
+| `Space m`               | Toggle minimap (code overview)                    | minimap.vim     |
 | `Space t`               | Toggle Tagbar (code structure)                    | tagbar          |
 | **Tags**                |                                                   |                 |
 | `Space gt`              | Generate/update ctags (respects .gitignore)       | -               |

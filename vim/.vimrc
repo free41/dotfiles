@@ -25,6 +25,8 @@ Plug 'sainnhe/everforest'
 " Navigation
 Plug 'christoomey/vim-tmux-navigator'    " Seamless tmux/vim navigation
 Plug 'preservim/tagbar'                  " Tag browser for code navigation
+Plug 'preservim/nerdtree'                " File tree explorer
+Plug 'wfxr/minimap.vim'                  " Code minimap
 
 " Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -114,12 +116,17 @@ endif
 " Auto-reload Files
 " ----------------------------------------------------------------------------
 
-" Trigger autoread when changing buffers or focus
-au FocusGained,BufEnter * :checktime
+" Automatically reload files changed outside vim
+set autoread
 
-" Notification after file change
-autocmd FileChangedShellPost *
-  \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
+" ----------------------------------------------------------------------------
+" Cursor Style
+" ----------------------------------------------------------------------------
+
+" Use pipe cursor in insert mode, block in normal mode
+let &t_SI = "\e[6 q"  " Insert mode - pipe cursor
+let &t_EI = "\e[2 q"  " Normal mode - block cursor
+let &t_SR = "\e[4 q"  " Replace mode - underline cursor
 
 " ----------------------------------------------------------------------------
 " File Type Specific Settings
@@ -142,6 +149,17 @@ nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
 nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
 nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+
+" NERDTree: File tree explorer
+nnoremap <leader>n :NERDTreeToggle<CR>
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.git$', '__pycache__', '\.pyc$', 'node_modules', '\.egg-info$']
+
+" Minimap: Code overview
+let g:minimap_width = 10
+let g:minimap_auto_start = 1
+let g:minimap_auto_start_win_enter = 1
+nnoremap <leader>m :MinimapToggle<CR>
 
 " Tagbar: Code structure browser
 nmap <leader>t :TagbarToggle<CR>

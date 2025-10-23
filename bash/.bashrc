@@ -138,8 +138,45 @@ alias gdv='git difftool'
 alias gl='git log --oneline --graph --decorate'
 alias gla='git log --oneline --graph --decorate --all'
 alias gco='git checkout'
+alias gsw='git switch'
 alias gb='git branch'
 alias gba='git branch -a'
+
+# Git diff against dev branch
+# Usage: gdd [file]           - diff current branch vs dev
+# Usage: gdd -v [file]        - open diff in vim
+gdd() {
+    local use_vim=0
+    local file=""
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -v|--vim)
+                use_vim=1
+                shift
+                ;;
+            *)
+                file="$1"
+                shift
+                ;;
+        esac
+    done
+
+    if [ $use_vim -eq 1 ]; then
+        if [ -n "$file" ]; then
+            vim -c "DiffviewOpen dev...HEAD -- $file"
+        else
+            git difftool dev...HEAD
+        fi
+    else
+        if [ -n "$file" ]; then
+            git diff dev...HEAD -- "$file"
+        else
+            git diff dev...HEAD
+        fi
+    fi
+}
 
 # Alert alias for long running commands
 # Usage: sleep 10; alert
