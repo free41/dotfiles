@@ -32,19 +32,19 @@ install:
 		universal-ctags \
 		ripgrep \
 		tree \
-		xclip \
-		cargo
-	@echo ""
-	@echo "Installing code-minimap (required for minimap.vim)..."
-	@if command -v code-minimap >/dev/null 2>&1; then \
-		echo "  ✓ code-minimap already installed"; \
-	else \
-		cargo install --locked code-minimap && echo "  ✓ code-minimap installed via cargo"; \
-	fi
+		xclip
 	@echo ""
 	@echo "========================================="
 	@echo "✓ All dependencies installed!"
 	@echo "========================================="
+	@echo ""
+	@echo "ℹ Optional: Install code-minimap for minimap.vim"
+	@echo "  The minimap plugin requires code-minimap, which needs Rust."
+	@echo "  To install:"
+	@echo "    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+	@echo "    source ~/.cargo/env"
+	@echo "    cargo install --locked code-minimap"
+	@echo "  Or skip it - minimap.vim will be disabled if not found."
 	@echo ""
 	@echo "Next steps:"
 	@echo "  1. Run 'make all' to setup dotfiles"
