@@ -13,6 +13,9 @@ GIT_USER_EMAIL := your-email@example.com
 
 .PHONY: all help install stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux stow-matplotlib unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib vscode-fetch vscode-push
 
+# Default target
+.DEFAULT_GOAL := all
+
 install:
 	@echo "========================================="
 	@echo "Installing required dependencies..."
