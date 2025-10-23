@@ -58,7 +58,7 @@ all:
 	@echo "Setting up dotfiles..."
 	@echo "========================================="
 	@echo ""
-	@echo "Step 1: Stowing all packages..."
+	@echo "Stowing all packages..."
 	@if $(MAKE) stow 2>/dev/null; then \
 		echo "✓ All packages stowed successfully!"; \
 	else \
@@ -68,22 +68,13 @@ all:
 		exit 1; \
 	fi
 	@echo ""
-	@echo "Step 2: Fetching VSCode configuration..."
-	@$(MAKE) vscode-fetch
-	@if git diff --quiet vscode/ 2>/dev/null; then \
-		echo "✓ No VSCode config changes detected."; \
-	else \
-		echo ""; \
-		echo "⚠ VSCode configuration has changed!"; \
-		echo "  Review changes with: git diff vscode/"; \
-		echo "  To discard changes: git restore vscode/"; \
-		echo "  To keep changes: git add vscode/ && git commit"; \
-		echo "  To push to Windows: make vscode-push"; \
-	fi
-	@echo ""
 	@echo "========================================="
 	@echo "✓ All dotfiles configured successfully!"
 	@echo "========================================="
+	@echo ""
+	@echo "Optional: Sync VSCode settings (WSL only)"
+	@echo "  make vscode-fetch  - Copy VSCode config from Windows to repo"
+	@echo "  make vscode-push   - Copy VSCode config from repo to Windows"
 
 help:
 	@echo "Available targets:"
