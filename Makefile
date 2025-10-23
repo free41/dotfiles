@@ -79,13 +79,13 @@ all:
 help:
 	@echo "Available targets:"
 	@echo "  install                   - Install all required dependencies (stow, git, vim, tmux, etc.)"
-	@echo "  all                       - Setup everything (stow + vscode-fetch + extensions backup)"
+	@echo "  all                       - Setup dotfiles (stow all packages + install vim plugins)"
 	@echo "  stow                      - Stow all packages (bash, git, vim, tmux, matplotlib)"
 	@echo "  stow-adopt                - Stow with --adopt (replaces repo files with existing ones)"
 	@echo "  unstow                    - Unstow all packages"
 	@echo "  stow-bash                 - Stow bash configuration"
 	@echo "  stow-git                  - Stow git configuration"
-	@echo "  stow-vim                  - Stow vim configuration"
+	@echo "  stow-vim                  - Stow vim configuration and auto-install plugins"
 	@echo "  stow-tmux                 - Stow tmux configuration"
 	@echo "  stow-matplotlib           - Stow matplotlib configuration"
 	@echo "  unstow-bash               - Unstow bash configuration"
@@ -93,8 +93,8 @@ help:
 	@echo "  unstow-vim                - Unstow vim configuration"
 	@echo "  unstow-tmux               - Unstow tmux configuration"
 	@echo "  unstow-matplotlib         - Unstow matplotlib configuration"
-	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo and backup extensions"
-	@echo "  vscode-push               - Copy VSCode config from repo to Windows and install extensions"
+	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo (WSL only)"
+	@echo "  vscode-push               - Copy VSCode config from repo to Windows (WSL only)"
 
 # Stow targets
 stow: stow-bash stow-git stow-vim stow-tmux stow-matplotlib
