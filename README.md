@@ -10,8 +10,8 @@ Each directory represents a package that can be independently installed:
 
 - `bash/` - Bash configuration (.bashrc, .bash_logout)
 - `git/` - Git configuration (.gitconfig with privacy settings)
-- `vim/` - Vim configuration (.vimrc with Everforest theme)
-- `tmux/` - Tmux configuration (.tmux.conf with Everforest theme)
+- `vim/` - Vim configuration (.vimrc with nord theme)
+- `tmux/` - Tmux configuration (.tmux.conf with nord theme)
 - `matplotlib/` - Matplotlib configuration (matplotlibrc with Paul Tol color scheme)
 - `vscode/` - VSCode configuration (settings.json, extensions.txt)
 
@@ -94,13 +94,13 @@ These variables override the defaults in the Makefile and are used when stowing 
 - Works in virtual environments via `MPLCONFIGDIR`
 
 ### Vim Configuration
-- **Theme**: Everforest dark medium
+- **Theme**: Nord
 - **Leader key**: Space
 - **Plugins**: vim-tmux-navigator, tagbar, NERDTree, minimap.vim, fzf, vim-commentary, vim-surround
 - **Features**: Auto-reload files, mouse support in tmux, seamless tmux navigation, pipe cursor in insert mode, code minimap, file tree explorer
 
 ### Tmux Configuration
-- **Theme**: Everforest dark medium
+- **Theme**: Nord
 - **Prefix**: Ctrl+a (instead of default Ctrl+b)
 - **Features**: Mouse support, 50,000 line scrollback, new windows/panes open in current path, automatic window naming based on directory
 - **Navigation**: Seamless vim/tmux pane switching with Ctrl+hjkl
@@ -289,6 +289,7 @@ make unstow-matplotlib
 - Configure `config.mk` with your Windows VSCode paths
 - Use `make vscode-fetch` and `make vscode-push` to sync settings
 - Matplotlib config works in both environments via `MPLCONFIGDIR`
+- Configure windows terminal to use Nord color scheme
 
 ### Environment Variables
 The bashrc exports:

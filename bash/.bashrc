@@ -63,43 +63,39 @@ parse_git_dirty() {
     [[ $(git status --porcelain 2>/dev/null) ]] && echo "*"
 }
 
-# Set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
+ # Set a fancy prompt (non-color, unless we know we "want" color)
+ case "$TERM" in
+     xterm-color|*-256color) color_prompt=yes;;
+ esac
 
-# Uncomment for a colored prompt, if the terminal has the capability
-#force_color_prompt=yes
+ # Uncomment for a colored prompt, if the terminal has the capability
+force_color_prompt=yes
 
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48 (ISO/IEC-6429)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
+ if [ -n "$force_color_prompt" ]; then
+     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+ 	# We have color support; assume it's compliant with Ecma-48 (ISO/IEC-6429)
+ 	color_prompt=yes
+     else
+ 	color_prompt=
+     fi
+ fi
 
-# Configure the prompt based on color support
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;33m\]$(parse_git_branch)\[\033[01;31m\]$(parse_git_dirty)\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch)$(parse_git_dirty)\$ '
-fi
-unset color_prompt force_color_prompt
+ # Configure the prompt based on color support
+ if [ "$color_prompt" = yes ]; then
+     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;33m\]$(parse_git_branch)\[\033[01;31m\]$(parse_git_dirty)\[\033[00m\]\$ '
+ else
+     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch)$(parse_git_dirty)\$ '
+ fi
+ unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
-# ----------------------------------------------------------------------------
-# Color Support and Aliases
-# ----------------------------------------------------------------------------
+ # If this is an xterm set the title to user@host:dir
+ case "$TERM" in
+ xterm*|rxvt*)
+     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+     ;;
+ *)
+     ;;
+ esac
 
 # Enable color support of ls and add handy aliases
 if [ -x /usr/bin/dircolors ]; then

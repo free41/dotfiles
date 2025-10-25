@@ -20,7 +20,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " Color scheme
-Plug 'sainnhe/everforest'
+" Plug 'sainnhe/everforest'
 
 " Navigation
 Plug 'christoomey/vim-tmux-navigator'    " Seamless tmux/vim navigation
@@ -42,11 +42,11 @@ call plug#end()
 " Color Scheme
 " ----------------------------------------------------------------------------
 
-set termguicolors
-set background=dark
-let g:everforest_background = 'medium'
-let g:everforest_better_performance = 1
-colorscheme everforest
+" set termguicolors
+" set background=dark
+" let g:everforest_background = 'medium'
+" let g:everforest_better_performance = 1
+" colorscheme everforest
 
 " ----------------------------------------------------------------------------
 " General Settings
@@ -54,6 +54,9 @@ colorscheme everforest
 
 " Leader key
 let mapleader = " "
+
+" Reduce delay for leader key combinations
+set timeoutlen=300
 
 " Line numbers
 set number
@@ -119,6 +122,13 @@ endif
 " Automatically reload files changed outside vim
 set autoread
 
+" Trigger autoread when changing buffers or gaining focus
+autocmd FocusGained,BufEnter * :checktime
+
+" Trigger autoread on cursor hold (after 'updatetime' milliseconds of inactivity)
+set updatetime=300
+autocmd CursorHold * :checktime
+
 " ----------------------------------------------------------------------------
 " Cursor Style
 " ----------------------------------------------------------------------------
@@ -159,7 +169,16 @@ let NERDTreeIgnore=['\.git$', '__pycache__', '\.pyc$', 'node_modules', '\.egg-in
 let g:minimap_width = 10
 let g:minimap_auto_start = 1
 let g:minimap_auto_start_win_enter = 1
+let g:minimap_highlight_range = 1
+let g:minimap_highlight_search = 1
+let g:minimap_git_colors = 1
 nnoremap <leader>m :MinimapToggle<CR>
+
+" Enable mouse scrolling in minimap window
+augroup MinimapMouse
+    autocmd!
+    autocmd FileType minimap setlocal mouse=a
+augroup END
 
 " Tagbar: Code structure browser
 nmap <leader>t :TagbarToggle<CR>
@@ -203,6 +222,15 @@ let g:fzf_layout = { 'down': '40%' }
 " Use git ls-files when in a git repo, otherwise fall back to find
 let $FZF_DEFAULT_COMMAND = 'git ls-files --cached --others --exclude-standard 2>/dev/null || find . -type f'
 
+" Enhanced Ripgrep command with better defaults
+" Search hidden files, follow symlinks, respect .gitignore, smart case
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case --hidden --follow --glob "!.git/*" -- '.shellescape(<q-args>),
+  \   1,
+  \   fzf#vim#with_preview(),
+  \   <bang>0)
+
 " vim-commentary: VSCode-style commenting with Ctrl+/
 " Note: In terminal vim, Ctrl+/ sends Ctrl+_
 nnoremap <C-_> :Commentary<CR>
@@ -223,6 +251,9 @@ nnoremap <leader>l <C-w>l
 
 " Quick save
 nnoremap <leader>w :w<CR>
+
+" Reload current file
+nnoremap <leader>r :edit<CR>
 
 " Window management with Ctrl+w prefix (matching tmux Prefix bindings)
 " These mirror the tmux bindings for consistency:
