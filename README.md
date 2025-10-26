@@ -1,21 +1,11 @@
 # Dotfiles
 
-Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/) and Make.
+Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/)
+and Make.
 
 Works across Windows, WSL, and Linux environments.
 
-## Structure
-
-Each directory represents a package that can be independently installed:
-
-- `bash/` - Bash configuration (.bashrc, .bash_logout)
-- `git/` - Git configuration (.gitconfig with privacy settings)
-- `vim/` - Vim configuration (.vimrc with nord theme)
-- `tmux/` - Tmux configuration (.tmux.conf with nord theme)
-- `matplotlib/` - Matplotlib configuration (matplotlibrc with Paul Tol color scheme)
-- `vscode/` - VSCode configuration (settings.json, extensions.txt)
-
-## Installation
+## Installation and Setup
 
 Clone this repository with submodules:
 
@@ -30,7 +20,13 @@ Or if you've already cloned it:
 git submodule update --init --recursive
 ```
 
-### Quick Setup (Recommended)
+Some settings are machine-specific and shouldn't be committed to the repository.
+Create a local configuration file:
+
+```bash
+cp config.mk.example config.mk
+# Edit config.mk with your settings
+```
 
 Install dependencies and setup dotfiles in one go:
 
@@ -41,8 +37,7 @@ make all      # Setup dotfiles
 
 The `make install` command will install:
 - **Core tools**: stow, git, tmux, vim, curl, build-essential
-- **Development tools**: universal-ctags, ripgrep, tree, xclip, cargo
-- **Vim plugins dependencies**: code-minimap (for minimap.vim)
+- **Development tools**: universal-ctags, ripgrep, tree, xclip
 
 Then `make all` will:
 1. Initialize git submodules (including TPM for tmux)
@@ -50,49 +45,36 @@ Then `make all` will:
 3. Install vim plugins via vim-plug
 4. Install tmux plugins via TPM
 
-### Manual Installation
+## VSCode Setup
 
-Install all packages:
-
-```bash
-make stow
-```
-
-Or install individual packages:
-
-```bash
-make stow-bash
-make stow-git
-make stow-vim
-make stow-tmux
-make stow-matplotlib
-```
-
-### Machine-Specific Configuration
-
-Some settings are machine-specific and shouldn't be committed to the repository. Create a local configuration file:
+VSCode settings are synced between WSL and Windows via copy commands (not
+stowed). Configure your Windows path in `config.mk`:
 
 ```bash
 cp config.mk.example config.mk
-# Edit config.mk with your settings
+# Edit VSCODE_WIN_USER to match your Windows VSCode user directory
 ```
 
-The `config.mk` file (git-ignored) allows you to customize:
+Sync workflow:
+- `make vscode-fetch` - Copy settings from Windows to repo (includes extensions
+  list)
+- `make vscode-push` - Copy settings from repo to Windows and install extensions
 
-| Variable            | Purpose                                        | Example                                                   |
-|---------------------|------------------------------------------------|-----------------------------------------------------------|
-| `VSCODE_WIN_USER`   | VSCode User directory path for WSL/Windows     | `/mnt/c/Users/yourusername/AppData/Roaming/Code/User`    |
-| `GIT_USER_NAME`     | Git author name for commit signing             | `yourusername`                                            |
-| `GIT_USER_EMAIL`    | Git author email for commit signing            | `youremail@example.com`                                   |
+Managed files: `settings.json`, `keybindings.json`, `extensions.txt`
 
-These variables override the defaults in the Makefile and are used when stowing git configuration or syncing VSCode settings.
+## Structure
+
+Each directory represents a package that can be independently installed:
+
+- `bash/` - Bash configuration (.bashrc, .bash_logout)
+- `git/` - Git configuration (.gitconfig with privacy settings)
+- `vim/` - Vim configuration (.vimrc with nord theme)
+- `tmux/` - Tmux configuration (.tmux.conf with nord theme)
+- `matplotlib/` - Matplotlib configuration (matplotlibrc with Paul Tol color
+  scheme)
+- `vscode/` - VSCode configuration (settings.json, extensions.txt)
 
 ## Features
-
-### Git Configuration
-- Uses GitHub no-reply email for privacy
-- Configured with sensible defaults and useful aliases
-- Author: free41 <free41@users.noreply.github.com>
 
 ### Matplotlib Configuration
 - Figure size: 3.3" x 3.0", 300 DPI
@@ -106,15 +88,19 @@ These variables override the defaults in the Makefile and are used when stowing 
 ### Vim Configuration
 - **Theme**: Nord
 - **Leader key**: Space
-- **Plugins**: vim-tmux-navigator, tagbar, NERDTree, minimap.vim, fzf, vim-commentary, vim-surround
-- **Features**: Auto-reload files, mouse support in tmux, seamless tmux navigation, pipe cursor in insert mode, code minimap, file tree explorer
+- **Plugins**: vim-tmux-navigator, tagbar, NERDTree, minimap.vim, fzf,
+  vim-commentary, vim-surround
+- **Features**: Auto-reload files, mouse support in tmux, seamless tmux
+  navigation, pipe cursor in insert mode, code minimap, file tree explorer
 
 ### Tmux Configuration
 - **Theme**: Nord (via [TPM](https://github.com/tmux-plugins/tpm))
 - **Prefix**: Ctrl+a (instead of default Ctrl+b)
-- **Features**: Mouse support, 50,000 line scrollback, new windows/panes open in current path, automatic window naming based on directory
+- **Features**: Mouse support, 50,000 line scrollback, new windows/panes open in
+  current path, automatic window naming based on directory
 - **Navigation**: Seamless vim/tmux pane switching with Ctrl+hjkl
-- **Plugin Manager**: TPM (Tmux Plugin Manager) is included as a git submodule and installed automatically
+- **Plugin Manager**: TPM (Tmux Plugin Manager) is included as a git submodule
+  and installed automatically
 
 ### VSCode Integration
 - Fetch/push settings between Windows and WSL
@@ -125,7 +111,8 @@ These variables override the defaults in the Makefile and are used when stowing 
 
 Run `make help` to see all available commands:
 
-- `make install` - Install all required dependencies (stow, git, vim, tmux, ctags, ripgrep, code-minimap, etc.)
+- `make install` - Install all required dependencies (stow, git, vim, tmux,
+  ctags, ripgrep, code-minimap, etc.)
 - `make all` - Setup everything (stow all packages + install vim plugins)
 - `make stow` - Stow all packages
 - `make unstow` - Remove all symlinks
@@ -184,7 +171,8 @@ gdd -v           # Open full diff in vim using git difftool
 gdd -v filename  # Open specific file diff in vim
 ```
 
-> **Note**: Custom aliases can be added to `~/.bash_aliases` (git-ignored) and will be loaded automatically.
+> **Note**: Custom aliases can be added to `~/.bash_aliases` (git-ignored) and
+> will be loaded automatically.
 
 ## Custom Keybindings
 
@@ -286,14 +274,6 @@ make unstow-bash
 make unstow-tmux
 make unstow-matplotlib
 ```
-
-## Adding New Dotfiles
-
-1. Create a new directory for the package
-2. Add your config files with the same structure as they appear in your home directory
-3. Add stow targets to the Makefile
-4. Run `make stow-<package-name>`
-
 ## Cross-Platform Notes
 
 ### Windows + WSL
@@ -306,3 +286,4 @@ make unstow-matplotlib
 The bashrc exports:
 - `PATH`: Includes `~/.local/bin`
 - `MPLCONFIGDIR`: Points to `~/.config/matplotlib` for matplotlib settings
+
