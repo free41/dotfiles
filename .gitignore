@@ -7,3 +7,6 @@ git/.gitconfig
 # Private aliases
 bash/.bash_aliases
 
+# Tmux plugins (except tpm submodule)
+tmux/.tmux/plugins/*
+!tmux/.tmux/plugins/tpm

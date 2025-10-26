@@ -20,7 +20,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " Color scheme
-" Plug 'sainnhe/everforest'
+Plug 'arcticicestudio/nord-vim'
 
 " Navigation
 Plug 'christoomey/vim-tmux-navigator'    " Seamless tmux/vim navigation
@@ -42,11 +42,9 @@ call plug#end()
 " Color Scheme
 " ----------------------------------------------------------------------------
 
-" set termguicolors
-" set background=dark
-" let g:everforest_background = 'medium'
-" let g:everforest_better_performance = 1
-" colorscheme everforest
+set termguicolors
+set background=dark
+colorscheme nord
 
 " ----------------------------------------------------------------------------
 " General Settings

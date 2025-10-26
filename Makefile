@@ -58,6 +58,9 @@ all:
 	@echo "Setting up dotfiles..."
 	@echo "========================================="
 	@echo ""
+	@echo "Initializing git submodules..."
+	@git submodule update --init --recursive
+	@echo ""
 	@echo "Stowing all packages..."
 	@if $(MAKE) stow 2>/dev/null; then \
 		echo "✓ All packages stowed successfully!"; \
@@ -146,6 +149,12 @@ stow-vim:
 stow-tmux:
 	@echo "Stowing tmux..."
 	@stow -d $(DOTFILES_DIR) -t ~ tmux
+	@echo "Installing TPM plugins..."
+	@if [ ! -d ~/.tmux/plugins/tpm ]; then \
+		echo "  ⚠ TPM not found. Run 'git submodule update --init --recursive' first."; \
+	else \
+		~/.tmux/plugins/tpm/bin/install_plugins 2>/dev/null || echo "  ⚠ TPM plugin install failed. Press Prefix + I in tmux to install manually."; \
+	fi
 	@if [ -n "$$TMUX" ]; then \
 		tmux source-file ~/.tmux.conf && echo "✓ Tmux configuration stowed and reloaded!"; \
 	else \

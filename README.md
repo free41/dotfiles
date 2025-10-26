@@ -17,11 +17,17 @@ Each directory represents a package that can be independently installed:
 
 ## Installation
 
-Clone this repository:
+Clone this repository with submodules:
 
 ```bash
-git clone https://github.com/free41/dotfiles.git ~/dotfiles
+git clone --recursive https://github.com/free41/dotfiles.git ~/dotfiles
 cd ~/dotfiles
+```
+
+Or if you've already cloned it:
+
+```bash
+git submodule update --init --recursive
 ```
 
 ### Quick Setup (Recommended)
@@ -38,7 +44,11 @@ The `make install` command will install:
 - **Development tools**: universal-ctags, ripgrep, tree, xclip, cargo
 - **Vim plugins dependencies**: code-minimap (for minimap.vim)
 
-Then `make all` will stow all packages, fetch VSCode config (if on Windows/WSL), and backup extensions.
+Then `make all` will:
+1. Initialize git submodules (including TPM for tmux)
+2. Stow all packages
+3. Install vim plugins via vim-plug
+4. Install tmux plugins via TPM
 
 ### Manual Installation
 
@@ -100,10 +110,11 @@ These variables override the defaults in the Makefile and are used when stowing 
 - **Features**: Auto-reload files, mouse support in tmux, seamless tmux navigation, pipe cursor in insert mode, code minimap, file tree explorer
 
 ### Tmux Configuration
-- **Theme**: Nord
+- **Theme**: Nord (via [TPM](https://github.com/tmux-plugins/tpm))
 - **Prefix**: Ctrl+a (instead of default Ctrl+b)
 - **Features**: Mouse support, 50,000 line scrollback, new windows/panes open in current path, automatic window naming based on directory
 - **Navigation**: Seamless vim/tmux pane switching with Ctrl+hjkl
+- **Plugin Manager**: TPM (Tmux Plugin Manager) is included as a git submodule and installed automatically
 
 ### VSCode Integration
 - Fetch/push settings between Windows and WSL
