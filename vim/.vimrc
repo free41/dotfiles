@@ -26,7 +26,11 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'christoomey/vim-tmux-navigator'    " Seamless tmux/vim navigation
 Plug 'preservim/tagbar'                  " Tag browser for code navigation
 Plug 'preservim/nerdtree'                " File tree explorer
-Plug 'wfxr/minimap.vim'                  " Code minimap
+
+" Code minimap (only if code-minimap binary is installed)
+if executable('code-minimap')
+  Plug 'wfxr/minimap.vim'
+endif
 
 " Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -163,20 +167,22 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 let NERDTreeShowHidden=1
 let NERDTreeIgnore=['\.git$', '__pycache__', '\.pyc$', 'node_modules', '\.egg-info$']
 
-" Minimap: Code overview
-let g:minimap_width = 10
-let g:minimap_auto_start = 1
-let g:minimap_auto_start_win_enter = 1
-let g:minimap_highlight_range = 1
-let g:minimap_highlight_search = 1
-let g:minimap_git_colors = 1
-nnoremap <leader>m :MinimapToggle<CR>
+" Minimap: Code overview (only if code-minimap binary is installed)
+if executable('code-minimap')
+  let g:minimap_width = 10
+  let g:minimap_auto_start = 1
+  let g:minimap_auto_start_win_enter = 1
+  let g:minimap_highlight_range = 1
+  let g:minimap_highlight_search = 1
+  let g:minimap_git_colors = 1
+  nnoremap <leader>m :MinimapToggle<CR>
 
-" Enable mouse scrolling in minimap window
-augroup MinimapMouse
-    autocmd!
-    autocmd FileType minimap setlocal mouse=a
-augroup END
+  " Enable mouse scrolling in minimap window
+  augroup MinimapMouse
+      autocmd!
+      autocmd FileType minimap setlocal mouse=a
+  augroup END
+endif
 
 " Tagbar: Code structure browser
 nmap <leader>t :TagbarToggle<CR>
