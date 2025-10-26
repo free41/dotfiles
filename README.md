@@ -231,7 +231,9 @@ These commands work similarly in both vim and tmux for consistent muscle memory:
 | `Space g`               | Search with ripgrep                               | fzf.vim         |
 | `Space s`               | Search tags (functions, classes, etc.)            | fzf.vim         |
 | **Navigation**          |                                                   |                 |
-| `Space h/j/k/l`         | Navigate to window (alternative)                  | -               |
+| `Space h`               | Previous buffer                                   | -               |
+| `Space l`               | Next buffer                                       | -               |
+| `Space j/k`             | Navigate to window down/up (alternative)          | -               |
 | `Space n`               | Toggle NERDTree (file explorer)                   | NERDTree        |
 | `Space m`               | Toggle minimap (code overview)                    | minimap.vim     |
 | `Space t`               | Toggle Tagbar (code structure)                    | tagbar          |

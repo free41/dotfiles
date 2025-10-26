@@ -247,11 +247,13 @@ vnoremap <C-_> :Commentary<CR>
 " Clear search highlighting with Esc
 nnoremap <silent> <Esc> :nohlsearch<CR>
 
+" Buffer navigation
+nnoremap <leader>h :bprevious<CR>
+nnoremap <leader>l :bnext<CR>
+
 " Better window navigation (in addition to Ctrl+hjkl)
-nnoremap <leader>h <C-w>h
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
-nnoremap <leader>l <C-w>l
 
 " Quick save
 nnoremap <leader>w :w<CR>
