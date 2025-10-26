@@ -46,7 +46,17 @@ call plug#end()
 " Color Scheme
 " ----------------------------------------------------------------------------
 
-set termguicolors
+" Enable true color support if available
+" Check for tmux and set appropriate overrides
+if exists('+termguicolors')
+  " Enable true colors in tmux
+  if &term =~# '^screen' || &term =~# '^tmux'
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  endif
+  set termguicolors
+endif
+
 set background=dark
 colorscheme nord
 
@@ -136,9 +146,9 @@ autocmd CursorHold * :checktime
 " ----------------------------------------------------------------------------
 
 " Use pipe cursor in insert mode, block in normal mode
-let &t_SI = "\e[6 q"  " Insert mode - pipe cursor
-let &t_EI = "\e[2 q"  " Normal mode - block cursor
-let &t_SR = "\e[4 q"  " Replace mode - underline cursor
+let &t_SI = "\<Esc>[6 q"  " Insert mode - pipe cursor
+let &t_EI = "\<Esc>[2 q"  " Normal mode - block cursor
+let &t_SR = "\<Esc>[4 q"  " Replace mode - underline cursor
 
 " ----------------------------------------------------------------------------
 " File Type Specific Settings
