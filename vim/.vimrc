@@ -46,19 +46,19 @@ call plug#end()
 " Color Scheme
 " ----------------------------------------------------------------------------
 
-" Enable true color support if available
-" Check for tmux and set appropriate overrides
-if exists('+termguicolors')
-  " Enable true colors in tmux
-  if &term =~# '^screen' || &term =~# '^tmux'
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  endif
-  " Disable termguicolors over SSH to prevent terminal queries
-  if empty($SSH_CONNECTION)
-    set termguicolors
-  endif
-endif
+" " Enable true color support if available
+" " Check for tmux and set appropriate overrides
+" if exists('+termguicolors')
+"   " Enable true colors in tmux
+"   if &term =~# '^screen' || &term =~# '^tmux'
+"     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+"     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+"   endif
+"   " Disable termguicolors over SSH to prevent terminal queries
+"   if empty($SSH_CONNECTION)
+"     set termguicolors
+"   endif
+" endif
 
 set background=dark
 colorscheme nord
