@@ -4,5 +4,13 @@
   "python.analysis.inlayHints.functionReturnTypes": false,
   "python.analysis.inlayHints.pytestParameters": false,
   "pyright.inlayHints.variableTypes": false,
-  "pyright.inlayHints.functionReturnTypes": false
+  "pyright.inlayHints.functionReturnTypes": false,
+
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportGeneralTypeIssues": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportAttributeAccessIssue": "none",
+    "reportCallIssue": "none",
+    "reportArgumentType": "none"
+  }
 }
