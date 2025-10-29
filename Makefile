@@ -41,6 +41,31 @@ install:
 	@echo "✓ All dependencies installed!"
 	@echo "========================================="
 	@echo ""
+	@echo "Checking Node.js installation..."
+	@if command -v node >/dev/null 2>&1; then \
+		NODE_VERSION=$$(node -v | sed 's/v//'); \
+		NODE_MAJOR=$$(echo $$NODE_VERSION | cut -d. -f1); \
+		NODE_MINOR=$$(echo $$NODE_VERSION | cut -d. -f2); \
+		if [ $$NODE_MAJOR -gt 14 ] || ([ $$NODE_MAJOR -eq 14 ] && [ $$NODE_MINOR -ge 14 ]); then \
+			echo "✓ Node.js $$NODE_VERSION is installed (coc.nvim requires >= 14.14)"; \
+		else \
+			echo "⚠ Node.js $$NODE_VERSION is installed but coc.nvim requires >= 14.14"; \
+			echo "  Please upgrade Node.js"; \
+		fi; \
+	else \
+		echo "⚠ Node.js not found!"; \
+		echo ""; \
+		echo "  coc.nvim (LSP support) requires Node.js >= 14.14"; \
+		echo ""; \
+		echo "  Install Node.js via nvm (Node Version Manager):"; \
+		echo "    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"; \
+		echo "    source ~/.bashrc"; \
+		echo "    nvm install --lts"; \
+		echo "    nvm use --lts"; \
+		echo ""; \
+		echo "  Or skip it - vim will work without LSP features."; \
+	fi
+	@echo ""
 	@echo "ℹ Optional: Install code-minimap for minimap.vim"
 	@echo "  The minimap plugin requires code-minimap, which needs Rust."
 	@echo "  To install:"
@@ -150,6 +175,11 @@ stow-vim:
 		vim +'CocInstall -sync coc-pyright' +qall 2>/dev/null && echo "✓ coc-pyright installed!" || echo "  ⚠ coc-pyright install failed. Run ':CocInstall coc-pyright' manually in vim."; \
 	else \
 		echo "  ⚠ Node.js not found! coc.nvim requires Node.js >= 14.14"; \
+		echo "  Install via nvm:"; \
+		echo "    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"; \
+		echo "    source ~/.bashrc"; \
+		echo "    nvm install --lts"; \
+		echo "    Then run 'make stow-vim' again."; \
 	fi
 
 stow-tmux:

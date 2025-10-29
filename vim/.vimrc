@@ -234,10 +234,12 @@ nnoremap <leader>f :Files<CR>
 nnoremap <C-p> :Files<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>g :Rg<CR>
+nnoremap <leader>/ :BLines<CR>
 nnoremap <leader>s :Tags<CR>
 
 " FZF layout and configuration
-let g:fzf_layout = { 'down': '40%' }
+" Centered floating window
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 
 " Use git ls-files when in a git repo, otherwise fall back to find
 let $FZF_DEFAULT_COMMAND = 'git ls-files --cached --others --exclude-standard 2>/dev/null || find . -type f'

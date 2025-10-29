@@ -89,9 +89,10 @@ Each directory represents a package that can be independently installed:
 - **Theme**: Nord
 - **Leader key**: Space
 - **Plugins**: vim-tmux-navigator, tagbar, NERDTree, minimap.vim, fzf,
-  vim-commentary, vim-surround
+  vim-commentary, vim-surround, coc.nvim
 - **Features**: Auto-reload files, mouse support in tmux, seamless tmux
-  navigation, pipe cursor in insert mode, code minimap, file tree explorer
+  navigation, pipe cursor in insert mode, code minimap, file tree explorer, LSP
+  support with Python language server (coc-pyright)
 
 ### Tmux Configuration
 - **Theme**: Nord (via [TPM](https://github.com/tmux-plugins/tpm))
@@ -228,7 +229,8 @@ These commands work similarly in both vim and tmux for consistent muscle memory:
 | **Fuzzy Finding (FZF)** |                                                   |                 |
 | `Space f` or `Ctrl+p`   | Find files                                        | fzf.vim         |
 | `Space b`               | Switch buffers                                    | fzf.vim         |
-| `Space g`               | Search with ripgrep                               | fzf.vim         |
+| `Space g`               | Search with ripgrep (all files)                   | fzf.vim         |
+| `Space /`               | Search lines in current buffer                    | fzf.vim         |
 | `Space s`               | Search tags (functions, classes, etc.)            | fzf.vim         |
 | **Navigation**          |                                                   |                 |
 | `Space h`               | Previous buffer                                   | -               |
@@ -256,6 +258,22 @@ These commands work similarly in both vim and tmux for consistent muscle memory:
 | `Space sb`              | Jump to previous spelling error                   | -               |
 | `Space sa`              | Add word to dictionary                            | -               |
 | `Space s?`              | Show spelling suggestions                         | -               |
+| **LSP and Completion**  |                                                   | coc.nvim        |
+| `Tab`                   | Navigate to next completion item                  | coc.nvim        |
+| `Shift+Tab`             | Navigate to previous completion item              | coc.nvim        |
+| `Ctrl+Space`            | Trigger completion manually                       | coc.nvim        |
+| `Enter`                 | Accept selected completion                        | coc.nvim        |
+| `gd`                    | Go to definition                                  | coc.nvim        |
+| `gy`                    | Go to type definition                             | coc.nvim        |
+| `gi`                    | Go to implementation                              | coc.nvim        |
+| `gr`                    | Go to references                                  | coc.nvim        |
+| `K`                     | Show documentation in preview window              | coc.nvim        |
+| `[g`                    | Previous diagnostic/error                         | coc.nvim        |
+| `]g`                    | Next diagnostic/error                             | coc.nvim        |
+| `Space rn`              | Rename symbol                                     | coc.nvim        |
+| `Space qf`              | Apply quickfix to current line                    | coc.nvim        |
+| `:Format`               | Format current buffer                             | coc.nvim        |
+| `:OR`                   | Organize imports                                  | coc.nvim        |
 | **Other**               |                                                   |                 |
 | `Space w`               | Quick save                                        | -               |
 | `Esc`                   | Clear search highlighting                         | -               |
