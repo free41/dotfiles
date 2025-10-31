@@ -39,11 +39,17 @@ The `make install` command will install:
 - **Core tools**: stow, git, tmux, vim, curl, build-essential
 - **Development tools**: universal-ctags, ripgrep, tree, xclip
 
+`make install` will also display instructions for optional dependencies:
+- **Node.js** (via nvm) - Required for coc.nvim LSP support
+- **code-minimap** (via Rust/cargo) - Optional minimap visualization
+- **Marksman** - Optional Markdown language server
+
 Then `make all` will:
 1. Initialize git submodules (including TPM for tmux)
 2. Stow all packages
 3. Install vim plugins via vim-plug
 4. Install tmux plugins via TPM
+5. Install coc-pyright (if Node.js is available)
 
 ## VSCode Setup
 
@@ -92,7 +98,7 @@ Each directory represents a package that can be independently installed:
   vim-commentary, vim-surround, coc.nvim
 - **Features**: Auto-reload files, mouse support in tmux, seamless tmux
   navigation, pipe cursor in insert mode, code minimap, file tree explorer, LSP
-  support with Python language server (coc-pyright)
+  support with Python (coc-pyright) and Markdown (Marksman) language servers
 
 ### Tmux Configuration
 - **Theme**: Nord (via [TPM](https://github.com/tmux-plugins/tpm))

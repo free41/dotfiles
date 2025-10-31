@@ -12,5 +12,13 @@
     "reportAttributeAccessIssue": "none",
     "reportCallIssue": "none",
     "reportArgumentType": "none"
+  },
+
+  "languageserver": {
+    "marksman": {
+      "command": "marksman",
+      "args": ["server"],
+      "filetypes": ["markdown"]
+    }
   }
 }
