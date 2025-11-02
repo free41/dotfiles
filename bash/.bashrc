@@ -138,6 +138,10 @@ alias gsw='git switch'
 alias gb='git branch'
 alias gba='git branch -a'
 
+# WSL/Windows integration aliases
+alias open='explorer.exe .'
+alias e='explorer.exe .'
+
 # Git diff against dev branch
 # Usage: gdd [file]           - diff current branch vs dev
 # Usage: gdd -v [file]        - open diff in vim
