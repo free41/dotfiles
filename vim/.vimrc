@@ -40,8 +40,10 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'              " Easy commenting with gc
 Plug 'tpope/vim-surround'                " Manipulate surrounding quotes/brackets
 
-" Completion and LSP
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Completion and LSP (requires Vim 9.0.0438+)
+if has('patch-9.0.0438') || has('nvim-0.8.0')
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+endif
 
 call plug#end()
 
@@ -258,7 +260,8 @@ command! -bang -nargs=* Rg
 nnoremap <C-_> :Commentary<CR>
 vnoremap <C-_> :Commentary<CR>
 
-" coc.nvim: Completion and LSP
+" coc.nvim: Completion and LSP (only if Vim 9.0.0438+ or Neovim 0.8.0+)
+if has('patch-9.0.0438') || has('nvim-0.8.0')
 " Use tab for trigger completion with characters ahead and navigate
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :
@@ -327,6 +330,8 @@ command! -nargs=0 Format :call CocActionAsync('format')
 
 " Add `:OR` command for organize imports
 command! -nargs=0 OR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
+
+endif " End coc.nvim version check
 
 " ----------------------------------------------------------------------------
 " Custom Key Mappings
