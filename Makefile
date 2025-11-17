@@ -29,7 +29,7 @@ install:
 		stow \
 		git \
 		tmux \
-		vim \
+		vim-gtk3 \
 		curl \
 		build-essential \
 		universal-ctags \
