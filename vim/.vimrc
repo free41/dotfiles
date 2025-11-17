@@ -259,6 +259,12 @@ nnoremap <C-_> :Commentary<CR>
 vnoremap <C-_> :Commentary<CR>
 
 " coc.nvim: Completion and LSP
+" Auto-install coc extensions
+let g:coc_global_extensions = [
+  \ 'coc-yaml',
+  \ 'coc-json',
+  \ ]
+
 " Use tab for trigger completion with characters ahead and navigate
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :

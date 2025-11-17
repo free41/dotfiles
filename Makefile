@@ -74,10 +74,22 @@ install:
 	@echo "    cargo install --locked code-minimap"
 	@echo "  Or skip it - minimap.vim will be disabled if not found."
 	@echo ""
+	@echo "ℹ Optional: Install uv (Python package and tool manager)"
+	@echo "  To install:"
+	@echo "    curl -LsSf https://astral.sh/uv/install.sh | sh"
+	@echo "    source ~/.bashrc"
+	@echo "  Or skip it - Python tools will work without uv."
+	@echo ""
 	@echo "ℹ Optional: Install Marksman for Markdown LSP support"
 	@echo "  To install:"
 	@echo "    sudo snap install marksman"
 	@echo "  Or skip it - Markdown files will work without LSP features."
+	@echo ""
+	@echo "ℹ Optional: Install Ruff for Python LSP support"
+	@echo "  Ruff has built-in LSP server support (requires ruff >= 0.3.3)"
+	@echo "  To install:"
+	@echo "    uv tool install ruff"
+	@echo "  Or skip it - Python files will work without LSP features."
 	@echo ""
 	@echo "Next steps:"
 	@echo "  1. Run 'make all' to setup dotfiles"
@@ -118,7 +130,7 @@ help:
 	@echo "  unstow                    - Unstow all packages"
 	@echo "  stow-bash                 - Stow bash configuration"
 	@echo "  stow-git                  - Stow git configuration"
-	@echo "  stow-vim                  - Stow vim configuration and auto-install plugins + coc-pyright"
+	@echo "  stow-vim                  - Stow vim configuration and auto-install plugins + coc extensions"
 	@echo "  stow-tmux                 - Stow tmux configuration"
 	@echo "  stow-matplotlib           - Stow matplotlib configuration"
 	@echo "  unstow-bash               - Unstow bash configuration"
@@ -175,16 +187,21 @@ stow-vim:
 	@echo "Installing Vim plugins..."
 	@vim +PlugInstall +qall 2>/dev/null || echo "  ⚠ Plugin install failed. Run ':PlugInstall' manually in vim."
 	@echo "✓ Vim plugins installed!"
-	@echo "Installing coc.nvim extensions..."
-	@if command -v node >/dev/null 2>&1; then \
-		vim +'CocInstall -sync coc-pyright' +qall 2>/dev/null && echo "✓ coc-pyright installed!" || echo "  ⚠ coc-pyright install failed. Run ':CocInstall coc-pyright' manually in vim."; \
-	else \
+	@echo ""
+	@echo "ℹ coc.nvim extensions will auto-install when you first open vim"
+	@echo "  Extensions: coc-yaml, coc-json"
+	@echo "  Language servers: ruff (Python), marksman (Markdown)"
+	@echo ""
+	@if ! command -v node >/dev/null 2>&1; then \
 		echo "  ⚠ Node.js not found! coc.nvim requires Node.js >= 14.14"; \
 		echo "  Install via nvm:"; \
 		echo "    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"; \
 		echo "    source ~/.bashrc"; \
 		echo "    nvm install --lts"; \
-		echo "    Then run 'make stow-vim' again."; \
+	fi
+	@if ! command -v ruff >/dev/null 2>&1; then \
+		echo "  ⚠ Ruff not found! Python LSP requires ruff"; \
+		echo "  Install with: uv tool install ruff"; \
 	fi
 
 stow-tmux:
