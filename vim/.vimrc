@@ -40,6 +40,9 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'              " Easy commenting with gc
 Plug 'tpope/vim-surround'                " Manipulate surrounding quotes/brackets
 
+" Git integration
+Plug 'tpope/vim-fugitive'                " Git wrapper for vim
+
 " Completion and LSP (requires Vim 9.0.0438+)
 if has('patch-9.0.0438') || has('nvim-0.8.0')
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -88,6 +91,26 @@ set showcmd                   " Show command in bottom bar
 set wildmenu                  " Visual autocomplete for command menu
 set showmatch                 " Highlight matching brackets
 set laststatus=2              " Always show status line
+
+" Custom statusline with git branch
+set statusline=
+set statusline+=%#DiffAdd#%{(mode()=='n')?'\ \ NORMAL\ ':''}
+set statusline+=%#DiffChange#%{(mode()=='i')?'\ \ INSERT\ ':''}
+set statusline+=%#DiffDelete#%{(mode()=='r')?'\ \ RPLACE\ ':''}
+set statusline+=%#Cursor#%{(mode()=='v')?'\ \ VISUAL\ ':''}
+set statusline+=\ %#LineNr#
+set statusline+=\ %{FugitiveHead()!=''?'\ '.FugitiveHead().'\ ':''}
+set statusline+=%#CursorLine#
+set statusline+=\ %f                         " File path
+set statusline+=%m                           " Modified flag
+set statusline+=%=                           " Right align
+set statusline+=%#CursorColumn#
+set statusline+=\ %y                         " File type
+set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
+set statusline+=\ [%{&fileformat}]
+set statusline+=\ %p%%                       " Percentage through file
+set statusline+=\ %l:%c                      " Line:Column
+set statusline+=\
 
 " Search
 set incsearch                 " Search as characters are entered
