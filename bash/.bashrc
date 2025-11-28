@@ -100,7 +100,7 @@ force_color_prompt=yes
 # Enable color support of ls and add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
+    alias ls='ls --color=auto -F --group-directories-first'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -111,9 +111,10 @@ fi
 # ----------------------------------------------------------------------------
 
 # ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+alias l='ls -Fx --group-directories-first'         # Vertical list, no hidden files
+alias ll='ls -AFx --group-directories-first'       # Vertical list with hidden files
+alias lll='ls -lAFx --group-directories-first'      # Long format with details and hidden files
+alias la='ls -lAFx --group-directories-first'       # Long format with details and hidden files
 
 # tree alias with common exclusions
 alias t='tree -I ".git|__pycache__|*.egg-info|node_modules|.venv|venv|dist|build|*.pyc|.pytest_cache|.mypy_cache|.tox"'
