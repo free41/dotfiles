@@ -273,7 +273,7 @@ let $FZF_DEFAULT_COMMAND = 'git ls-files --cached --others --exclude-standard 2>
 " Search hidden files, follow symlinks, respect .gitignore, smart case
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case --hidden --follow --glob "!.git/*" -- '.shellescape(<q-args>),
+  \   'rg --column --line-number --no-heading --color=always --smart-case --follow --glob "!.git/*" -- '.shellescape(<q-args>),
   \   1,
   \   fzf#vim#with_preview(),
   \   <bang>0)
