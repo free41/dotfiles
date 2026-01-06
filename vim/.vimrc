@@ -189,7 +189,8 @@ let &t_SR = "\<Esc>[4 q"  " Replace mode - underline cursor
 autocmd FileType markdown setlocal textwidth=80 formatoptions+=t spell
 
 " Enable spell check for text files, git commits, and documentation
-autocmd FileType text,gitcommit,rst setlocal spell
+autocmd FileType text,gitcommit,rst,yml,yaml setlocal spell
+
 
 " ----------------------------------------------------------------------------
 " Plugin Configuration
