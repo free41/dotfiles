@@ -8,3 +8,7 @@ VSCODE_WIN_USER := /mnt/c/Users/yourusername/AppData/Roaming/Code/User
 # Git user configuration
 GIT_USER_NAME := free41
 GIT_USER_EMAIL := free41@users.noreply.github.com
+
+# Obsidian vault path (for syncing .obsidian folder and templates)
+# Example: ~/Documents/obsidian/MyVault
+OBSIDIAN_VAULT_PATH := ~/Vault

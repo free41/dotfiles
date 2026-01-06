@@ -4,14 +4,16 @@
 # Default variables
 DOTFILES_DIR := $(shell pwd)
 VSCODE_DIR := $(DOTFILES_DIR)/vscode
+OBSIDIAN_DIR := $(DOTFILES_DIR)/obsidian
 CODE_BIN := code
 GIT_USER_NAME := your-git-username
 GIT_USER_EMAIL := your-email@example.com
+OBSIDIAN_VAULT_PATH := ~/Vault
 
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help install stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux unstow-bash unstow-git unstow-vim unstow-tmux vscode-fetch vscode-push
+.PHONY: all help install stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux unstow-bash unstow-git unstow-vim unstow-tmux vscode-fetch vscode-push obsidian-fetch obsidian-push
 
 # Default target
 .DEFAULT_GOAL := all
@@ -120,6 +122,10 @@ all:
 	@echo "Optional: Sync VSCode settings (WSL only)"
 	@echo "  make vscode-fetch  - Copy VSCode config from Windows to repo"
 	@echo "  make vscode-push   - Copy VSCode config from repo to Windows"
+	@echo ""
+	@echo "Optional: Sync Obsidian vault settings"
+	@echo "  make obsidian-fetch - Copy .obsidian settings from vault to repo"
+	@echo "  make obsidian-push  - Copy .obsidian settings from repo to vault"
 
 help:
 	@echo "Available targets:"
@@ -138,6 +144,8 @@ help:
 	@echo "  unstow-tmux               - Unstow tmux configuration"
 	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo (WSL only)"
 	@echo "  vscode-push               - Copy VSCode config from repo to Windows (WSL only)"
+	@echo "  obsidian-fetch            - Copy .obsidian settings from vault to repo (existing files only)"
+	@echo "  obsidian-push             - Copy .obsidian settings from repo to vault"
 
 # Stow targets
 stow: stow-bash stow-git stow-vim stow-tmux
@@ -280,3 +288,93 @@ vscode-push:
 		echo "  ✓ Extensions installation complete!"; \
 	fi
 	@echo "✓ VSCode config and extensions pushed!"
+
+# Obsidian targets
+obsidian-fetch:
+	@echo "Fetching Obsidian settings from vault..."
+	@if [ ! -d "$(OBSIDIAN_VAULT_PATH)" ]; then \
+		echo "  ⚠ Vault not found at $(OBSIDIAN_VAULT_PATH)"; \
+		echo "  Set OBSIDIAN_VAULT_PATH in config.mk"; \
+		exit 1; \
+	fi
+	@mkdir -p $(OBSIDIAN_DIR)/.obsidian $(OBSIDIAN_DIR)/templates
+	@# Sync .obsidian folder - only copy files that already exist in repo
+	@echo "Syncing .obsidian settings..."
+	@COPIED=0; \
+	for file in $(OBSIDIAN_DIR)/.obsidian/*; do \
+		if [ -f "$$file" ]; then \
+			filename=$$(basename "$$file"); \
+			if [ -f "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$filename" ]; then \
+				cp "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$filename" "$(OBSIDIAN_DIR)/.obsidian/$$filename"; \
+				echo "  ✓ .obsidian/$$filename"; \
+				COPIED=$$((COPIED + 1)); \
+			else \
+				echo "  ⚠ .obsidian/$$filename not found in vault"; \
+			fi; \
+		fi; \
+	done; \
+	if [ $$COPIED -eq 0 ]; then \
+		echo "  ⚠ No .obsidian files copied (add files to $(OBSIDIAN_DIR)/.obsidian first)"; \
+	fi
+	@# Sync templates folder - only copy files that already exist in repo
+	@echo "Syncing templates..."
+	@COPIED=0; \
+	if [ -d "$(OBSIDIAN_VAULT_PATH)/templates" ]; then \
+		for file in $(OBSIDIAN_DIR)/templates/*; do \
+			if [ -f "$$file" ]; then \
+				filename=$$(basename "$$file"); \
+				if [ -f "$(OBSIDIAN_VAULT_PATH)/templates/$$filename" ]; then \
+					cp "$(OBSIDIAN_VAULT_PATH)/templates/$$filename" "$(OBSIDIAN_DIR)/templates/$$filename"; \
+					echo "  ✓ templates/$$filename"; \
+					COPIED=$$((COPIED + 1)); \
+				else \
+					echo "  ⚠ templates/$$filename not found in vault"; \
+				fi; \
+			fi; \
+		done; \
+	else \
+		echo "  ⚠ templates folder not found in vault"; \
+	fi; \
+	if [ $$COPIED -eq 0 ]; then \
+		echo "  ⚠ No template files copied (add files to $(OBSIDIAN_DIR)/templates first)"; \
+	fi
+	@echo "✓ Obsidian fetch complete!"
+
+obsidian-push:
+	@echo "Pushing Obsidian settings to vault..."
+	@if [ ! -d "$(OBSIDIAN_VAULT_PATH)" ]; then \
+		echo "  ⚠ Vault not found at $(OBSIDIAN_VAULT_PATH)"; \
+		echo "  Set OBSIDIAN_VAULT_PATH in config.mk"; \
+		exit 1; \
+	fi
+	@# Sync .obsidian folder
+	@echo "Pushing .obsidian settings..."
+	@mkdir -p "$(OBSIDIAN_VAULT_PATH)/.obsidian"
+	@COPIED=0; \
+	for file in $(OBSIDIAN_DIR)/.obsidian/*; do \
+		if [ -f "$$file" ]; then \
+			filename=$$(basename "$$file"); \
+			cp "$$file" "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$filename"; \
+			echo "  ✓ .obsidian/$$filename"; \
+			COPIED=$$((COPIED + 1)); \
+		fi; \
+	done; \
+	if [ $$COPIED -eq 0 ]; then \
+		echo "  ⚠ No .obsidian files to push"; \
+	fi
+	@# Sync templates folder
+	@echo "Pushing templates..."
+	@mkdir -p "$(OBSIDIAN_VAULT_PATH)/templates"
+	@COPIED=0; \
+	for file in $(OBSIDIAN_DIR)/templates/*; do \
+		if [ -f "$$file" ]; then \
+			filename=$$(basename "$$file"); \
+			cp "$$file" "$(OBSIDIAN_VAULT_PATH)/templates/$$filename"; \
+			echo "  ✓ templates/$$filename"; \
+			COPIED=$$((COPIED + 1)); \
+		fi; \
+	done; \
+	if [ $$COPIED -eq 0 ]; then \
+		echo "  ⚠ No template files to push"; \
+	fi
+	@echo "✓ Obsidian push complete!"
