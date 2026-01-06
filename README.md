@@ -78,20 +78,26 @@ Each directory represents a package that can be independently installed:
 - `git/` - Git configuration (.gitconfig with privacy settings)
 - `vim/` - Vim configuration (.vimrc with nord theme)
 - `tmux/` - Tmux configuration (.tmux.conf with nord theme)
-- `matplotlib/` - Matplotlib configuration (matplotlibrc with Paul Tol color
-  scheme)
+- `python/` - Python project templates and tooling
 - `vscode/` - VSCode configuration (settings.json, extensions.txt)
 
 ## Features
 
-### Matplotlib Configuration
-- Figure size: 3.3" x 3.0", 300 DPI
-- Font size: 9pt
+### Python Project Templates
+- **Quick setup**: `py-new project-name` creates a new project with modern Python tooling
+- **Pre-configured**: ruff formatting/linting, pre-commit hooks, pytest
+- **matplotlib style**: Includes `base.mplstyle` with Paul Tol's colorblind-safe palette
+- **Template-based**: Easily customizable templates in `python/template/`
+- **Style usage**: `plt.style.use("project_name.base")` - style is distributed with package
+- **Managed by uv**: Modern Python package and tool manager
+
+The matplotlib style includes:
+- Figure size: 4" x 3.5", 120 DPI (600 DPI for saved figures)
+- Font: 9pt Century Gothic
 - Inset ticks on all sides
-- Paul Tol's vibrant color scheme (colorblind-safe)
-- Cycles through both colors and marker symbols
+- Paul Tol's vibrant color scheme (colorblind-safe): #EE7733, #0077BB, #33BBEE, #EE3377, #CC3311, #009988, #BBBBBB
+- Cycles through both colors and marker symbols (o, s, ^, v, D, p, *)
 - Default: markers only (no lines)
-- Works in virtual environments via `MPLCONFIGDIR`
 
 ### Vim Configuration
 - **Theme**: Nord
@@ -141,11 +147,41 @@ Standard aliases included in the dotfiles:
 | `la`     | `ls -A`              | List all files except . and ..                   |
 | `l`      | `ls -CF`             | List in columns with indicators                  |
 | `t`      | `tree -I "..."`      | Tree view excluding `.git`, `__pycache__`, `node_modules`, etc. |
+| `py-new` | `python/new-project.sh` | Create new Python project with templates      |
 | `ls`     | `ls --color=auto`    | Colorized ls output                              |
 | `grep`   | `grep --color=auto`  | Colorized grep output                            |
 | `fgrep`  | `fgrep --color=auto` | Colorized fgrep output                           |
 | `egrep`  | `egrep --color=auto` | Colorized egrep output                           |
 | `alert`  | (notification)       | Send notification when long command finishes     |
+
+### Python Project Creation
+
+Create a new Python project with the `py-new` alias:
+
+```bash
+py-new my-project
+```
+
+This creates a new project with:
+- **Modern tooling**: uv for dependency management, ruff for linting/formatting
+- **Pre-commit hooks**: Auto-configured with ruff and uv-lock
+- **Testing setup**: pytest included as dev dependency
+- **matplotlib style**: `base.mplstyle` included in package (Paul Tol colorblind-safe palette)
+- **Clean structure**: src layout with tests directory
+
+To use matplotlib in your project:
+```bash
+cd my-project
+uv add matplotlib  # Add matplotlib as dependency
+```
+
+Then in your Python code:
+```python
+import matplotlib.pyplot as plt
+plt.style.use("my_project.base")  # Load the custom style
+```
+
+The style is distributed as part of your package, so it works anywhere your package is installed!
 
 ### Git Aliases
 
@@ -301,18 +337,17 @@ Or remove individual packages:
 ```bash
 make unstow-bash
 make unstow-tmux
-make unstow-matplotlib
+make unstow-vim
 ```
 ## Cross-Platform Notes
 
 ### Windows + WSL
 - Configure `config.mk` with your Windows VSCode paths
 - Use `make vscode-fetch` and `make vscode-push` to sync settings
-- Matplotlib config works in both environments via `MPLCONFIGDIR`
-- Configure windows terminal to use Nord color scheme
+- Configure Windows Terminal to use Nord color scheme
+- Python projects work seamlessly in both environments
 
 ### Environment Variables
 The bashrc exports:
 - `PATH`: Includes `~/.local/bin`
-- `MPLCONFIGDIR`: Points to `~/.config/matplotlib` for matplotlib settings
 
