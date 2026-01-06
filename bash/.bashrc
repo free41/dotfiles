@@ -226,11 +226,3 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # Load nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # Load nvm bash_completion
 
-# ----------------------------------------------------------------------------
-# Tmux Auto-start (disabled by default)
-# ----------------------------------------------------------------------------
-
-# Uncomment to automatically start tmux on shell launch:
-# if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-#     tmux attach-session -t default || tmux new-session -s default
-# fi
