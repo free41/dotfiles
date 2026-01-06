@@ -111,10 +111,8 @@ fi
 # ----------------------------------------------------------------------------
 
 # ls aliases
-alias l='ls -Fx --group-directories-first'         # Vertical list, no hidden files
-alias ll='ls -AFx --group-directories-first'       # Vertical list with hidden files
-alias lll='ls -lAFx --group-directories-first'      # Long format with details and hidden files
-alias la='ls -lAFx --group-directories-first'       # Long format with details and hidden files
+alias l='ls --group-directories-first'         # Vertical list, no hidden files
+alias ll='ls -la --group-directories-first'       # Vertical list with hidden files
 
 # tree alias with common exclusions
 alias t='tree -I ".git|__pycache__|*.egg-info|node_modules|.venv|venv|dist|build|*.pyc|.pytest_cache|.mypy_cache|.tox"'
