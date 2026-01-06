@@ -10,5 +10,5 @@ GIT_USER_NAME := free41
 GIT_USER_EMAIL := free41@users.noreply.github.com
 
 # Obsidian vault path (for syncing .obsidian folder and templates)
-# Example: ~/Documents/obsidian/MyVault
-OBSIDIAN_VAULT_PATH := ~/Vault
+# Example: $(HOME)/Documents/obsidian/MyVault
+OBSIDIAN_VAULT_PATH := $(HOME)/Vault
