@@ -185,6 +185,9 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # Custom Aliases
 # ----------------------------------------------------------------------------
 
+# Python project creation
+alias py-new='$HOME/dotfiles/python/new-project.sh'
+
 # Load custom aliases from ~/.bash_aliases if it exists
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
