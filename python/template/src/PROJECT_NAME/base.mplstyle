@@ -1,6 +1,6 @@
-# Matplotlib configuration
-# Works on Windows, WSL, Linux, and in virtual environments
-# Set MPLCONFIGDIR environment variable to point to this directory
+# Base matplotlib style
+# Paul Tol colorblind-safe palette with optimized defaults
+# Load with: plt.style.use("PROJECT_NAME.base")
 
 # Figure properties
 figure.figsize: 4, 3.5

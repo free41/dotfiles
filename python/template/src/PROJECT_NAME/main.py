@@ -13,5 +13,10 @@ def hello(name: str = "World") -> str:
     return f"Hello, {name}!"
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """Run the main function."""
     print(hello())
+
+
+if __name__ == "__main__":
+    main()

@@ -9,40 +9,47 @@ if [ -z "$1" ]; then
 fi
 
 PROJECT_NAME="$1"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATE_DIR="$SCRIPT_DIR/template"
 
 echo "Creating new Python project: $PROJECT_NAME"
 uv init "$PROJECT_NAME"
 cd "$PROJECT_NAME"
 
-echo "Adding dev dependencies..."
-uv add --dev ruff pre-commit pytest
+echo "Copying template files..."
 
-echo "Creating .pre-commit-config.yaml..."
-cat > .pre-commit-config.yaml << 'EOF'
-repos:
-  - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.5.16
-    hooks:
-      - id: uv-lock
+# Copy template files
+cp "$TEMPLATE_DIR/.pre-commit-config.yaml" .
+cp "$TEMPLATE_DIR/.gitignore" .
+cp "$TEMPLATE_DIR/pyproject.toml" .
+cp "$TEMPLATE_DIR/README.md" .
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.5
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
+# Create src structure
+mkdir -p "src/$PROJECT_NAME"
+cp "$TEMPLATE_DIR/src/PROJECT_NAME/__init__.py" "src/$PROJECT_NAME/"
 
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-added-large-files
-EOF
+# Copy main.py and base.mplstyle (always include style for potential future use)
+cp "$TEMPLATE_DIR/src/PROJECT_NAME/base.mplstyle" "src/$PROJECT_NAME/"
+cp "$TEMPLATE_DIR/src/PROJECT_NAME/main.py" "src/$PROJECT_NAME/"
+
+# Create tests structure (empty, user can add tests as needed)
+mkdir -p tests
+cp "$TEMPLATE_DIR/tests/__init__.py" tests/
+
+# Replace PROJECT_NAME placeholder in all files
+find . -type f -not -path "./.git/*" -exec sed -i "s/PROJECT_NAME/$PROJECT_NAME/g" {} +
+
+echo "Syncing dependencies..."
+uv sync
 
 echo "Installing pre-commit hooks..."
 uv run pre-commit install
 
+echo ""
 echo "Done! Project $PROJECT_NAME is ready."
+echo ""
+echo "Matplotlib style available at: $PROJECT_NAME.base"
+echo "  Add matplotlib: uv add matplotlib"
+echo "  Use in code: plt.style.use(\"$PROJECT_NAME.base\")"
+echo ""
 echo "Run 'cd $PROJECT_NAME' to get started."

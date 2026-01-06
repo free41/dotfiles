@@ -11,7 +11,7 @@ GIT_USER_EMAIL := your-email@example.com
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help install stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux stow-matplotlib unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib vscode-fetch vscode-push
+.PHONY: all help install stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux unstow-bash unstow-git unstow-vim unstow-tmux vscode-fetch vscode-push
 
 # Default target
 .DEFAULT_GOAL := all
@@ -125,31 +125,27 @@ help:
 	@echo "Available targets:"
 	@echo "  install                   - Install all required dependencies (stow, git, vim, tmux, etc.)"
 	@echo "  all                       - Setup dotfiles (stow all packages + install vim plugins)"
-	@echo "  stow                      - Stow all packages (bash, git, vim, tmux, matplotlib)"
+	@echo "  stow                      - Stow all packages (bash, git, vim, tmux)"
 	@echo "  stow-adopt                - Stow with --adopt (replaces repo files with existing ones)"
 	@echo "  unstow                    - Unstow all packages"
 	@echo "  stow-bash                 - Stow bash configuration"
 	@echo "  stow-git                  - Stow git configuration"
 	@echo "  stow-vim                  - Stow vim configuration and auto-install plugins + coc extensions"
 	@echo "  stow-tmux                 - Stow tmux configuration"
-	@echo "  stow-matplotlib           - Stow matplotlib configuration"
 	@echo "  unstow-bash               - Unstow bash configuration"
 	@echo "  unstow-git                - Unstow git configuration"
 	@echo "  unstow-vim                - Unstow vim configuration"
 	@echo "  unstow-tmux               - Unstow tmux configuration"
-	@echo "  unstow-matplotlib         - Unstow matplotlib configuration"
 	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo (WSL only)"
 	@echo "  vscode-push               - Copy VSCode config from repo to Windows (WSL only)"
 
 # Stow targets
-stow: stow-bash stow-git stow-vim stow-tmux stow-matplotlib
+stow: stow-bash stow-git stow-vim stow-tmux
 	@echo "✓ All packages stowed successfully!"
 
 stow-adopt:
 	@echo "Adopting existing files and stowing..."
 	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim tmux
-	@mkdir -p ~/.config/matplotlib
-	@stow -d $(DOTFILES_DIR) -t ~/.config --adopt matplotlib
 	@echo ""
 	@echo "✓ All packages stowed with --adopt!"
 	@echo ""
@@ -159,7 +155,7 @@ stow-adopt:
 	@echo "  To keep repo version: git restore ."
 	@echo "  To keep adopted version: git add . && git commit"
 
-unstow: unstow-bash unstow-git unstow-vim unstow-tmux unstow-matplotlib
+unstow: unstow-bash unstow-git unstow-vim unstow-tmux
 	@echo "✓ All packages unstowed successfully!"
 
 stow-bash:
@@ -237,16 +233,6 @@ unstow-vim:
 unstow-tmux:
 	@echo "Unstowing tmux..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D tmux
-
-stow-matplotlib:
-	@echo "Stowing matplotlib..."
-	@mkdir -p ~/.config/matplotlib
-	@stow -d $(DOTFILES_DIR) -t ~/.config matplotlib
-	@echo "✓ Matplotlib configuration stowed!"
-
-unstow-matplotlib:
-	@echo "Unstowing matplotlib..."
-	@stow -d $(DOTFILES_DIR) -t ~/.config -D matplotlib
 
 # VSCode targets
 vscode-fetch:
