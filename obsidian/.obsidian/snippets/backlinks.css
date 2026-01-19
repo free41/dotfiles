@@ -1,0 +1,14 @@
+.tasks-backlink {
+    font-size: 0;
+}
+
+.tasks-backlink a {
+    font-size: 0;
+}
+
+.tasks-backlink a:before {
+    content: "\e809";
+    font-family: 'its';
+    font-size: 1rem;
+    margin-left: 8px;
+}
