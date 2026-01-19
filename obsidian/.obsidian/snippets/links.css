@@ -1,18 +1,12 @@
 body {
     /* Resolved internal links */
-    --link-color: #8b5cf6;
-    --link-color-hover: #a78bfa;
     --link-decoration: none;
     --link-decoration-hover: none;
 
     /* Unresolved internal links */
-    --link-unresolved-color: #a78bfa;
-    --link-unresolved-opacity: 0.7;
     --link-unresolved-decoration-style: none;
 
     /* External links */
-    --link-external-color: #7c3aed;
-    --link-external-color-hover: #8b5cf6;
     --link-external-decoration: none;
     --link-external-decoration-hover: none;
 }

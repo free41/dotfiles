@@ -9,24 +9,24 @@ body {
     --h1-style: normal;
     --h1-line-height: 1.2;
 
-    /* H2: Bold */
+    /* H2: Bold italic */
     --h2-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
     --h2-size: 1.9em;
     --h2-weight: 700;
-    --h2-style: normal;
+    --h2-style: italic;
     --h2-line-height: 1.25;
 
-    /* H3: Italic */
+    /* H3: Normal */
     --h3-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
     --h3-size: 1.5em;
     --h3-weight: 400;
-    --h3-style: italic;
+    --h3-style: normal;
     --h3-line-height: 1.3;
 
-    /* H4: Bold italic */
+    /* H4: Normal italic */
     --h4-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
     --h4-size: 1.25em;
-    --h4-weight: 700;
+    --h4-weight: 400;
     --h4-style: italic;
     --h4-line-height: 1.35;
 
