@@ -111,31 +111,21 @@ fi
 # ----------------------------------------------------------------------------
 
 # ls aliases
-alias l='ls --group-directories-first'         # Vertical list, no hidden files
-alias ll='ls -la --group-directories-first'       # Vertical list with hidden files
+alias l='ls -1 --group-directories-first'         # Vertical list, no hidden files
+alias ll='ls -1a --group-directories-first'       # Vertical list with hidden files
+alias lll='ls -la --group-directories-first'       # Vertical list with hidden files
 
 # tree alias with common exclusions
-alias t='tree -I ".git|__pycache__|*.egg-info|node_modules|.venv|venv|dist|build|*.pyc|.pytest_cache|.mypy_cache|.tox"'
+alias t='tree -I ".git|__pycache__|*.egg-info|node_modules|.venv|venv|dist|build|*.pyc|.pytest_cache|.mypy_cache|.tox" --gitignore'
+alias tt='tree -a -I ".git|__pycache__|*.egg-info|node_modules|.venv|venv|dist|build|*.pyc|.pytest_cache|.mypy_cache|.tox"'
 
 # Git aliases
 alias gs='git status'
-alias ga='git add'
-alias gaa='git add --all'
 alias gc='git commit'
 alias gcm='git commit -m'
 alias gacm='git add --all && git commit -m'
-alias gp='git push'
-alias gpl='git pull'
-alias gf='git fetch'
-alias gd='git diff'
 alias gdc='git diff --cached'
 alias gdv='git difftool'
-alias gl='git log --oneline --graph --decorate'
-alias gla='git log --oneline --graph --decorate --all'
-alias gco='git checkout'
-alias gsw='git switch'
-alias gb='git branch'
-alias gba='git branch -a'
 
 # WSL/Windows integration aliases
 alias open='explorer.exe .'
