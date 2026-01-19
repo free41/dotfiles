@@ -19,14 +19,15 @@ OBSIDIAN_VAULT_PATH := ~/Vault
 .DEFAULT_GOAL := all
 
 install:
-	@echo "========================================="
-	@echo "Installing required dependencies..."
-	@echo "========================================="
 	@echo ""
-	@echo "Updating package lists..."
-	@sudo apt update
+	@echo "╔════════════════════════════════════════════════════════════════════════════╗"
+	@echo "║                      Installing required dependencies                      ║"
+	@echo "╚════════════════════════════════════════════════════════════════════════════╝"
 	@echo ""
-	@echo "Installing core packages..."
+	@echo "→ Updating package lists..."
+	@sudo apt update 2>&1 | sed 's/^/  /'
+	@echo ""
+	@echo "→ Installing core packages..."
 	@sudo apt install -y \
 		stow \
 		git \
@@ -37,95 +38,98 @@ install:
 		universal-ctags \
 		ripgrep \
 		tree \
-		xclip
+		xclip 2>&1 | sed 's/^/  /'
 	@echo ""
-	@echo "========================================="
-	@echo "✓ All dependencies installed!"
-	@echo "========================================="
+	@echo "╔════════════════════════════════════════════════════════════════════════════╗"
+	@echo "║                        ✓ All dependencies installed!                       ║"
+	@echo "╚════════════════════════════════════════════════════════════════════════════╝"
 	@echo ""
-	@echo "Checking Node.js installation..."
+	@echo "→ Checking Node.js installation..."
 	@if command -v node >/dev/null 2>&1; then \
 		NODE_VERSION=$$(node -v | sed 's/v//'); \
 		NODE_MAJOR=$$(echo $$NODE_VERSION | cut -d. -f1); \
 		NODE_MINOR=$$(echo $$NODE_VERSION | cut -d. -f2); \
 		if [ $$NODE_MAJOR -gt 14 ] || ([ $$NODE_MAJOR -eq 14 ] && [ $$NODE_MINOR -ge 14 ]); then \
-			echo "✓ Node.js $$NODE_VERSION is installed (coc.nvim requires >= 14.14)"; \
+			echo "  ✓ Node.js $$NODE_VERSION is installed (coc.nvim requires >= 14.14)"; \
 		else \
-			echo "⚠ Node.js $$NODE_VERSION is installed but coc.nvim requires >= 14.14"; \
-			echo "  Please upgrade Node.js"; \
+			echo "  ⚠ Node.js $$NODE_VERSION is installed but coc.nvim requires >= 14.14"; \
+			echo "    Please upgrade Node.js"; \
 		fi; \
 	else \
-		echo "⚠ Node.js not found!"; \
+		echo "  ⚠ Node.js not found!"; \
 		echo ""; \
-		echo "  coc.nvim (LSP support) requires Node.js >= 14.14"; \
+		echo "    coc.nvim (LSP support) requires Node.js >= 14.14"; \
 		echo ""; \
-		echo "  Install Node.js via nvm (Node Version Manager):"; \
-		echo "    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"; \
-		echo "    source ~/.bashrc"; \
-		echo "    nvm install --lts"; \
-		echo "    nvm use --lts"; \
+		echo "    Install Node.js via nvm (Node Version Manager):"; \
+		echo "      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"; \
+		echo "      source ~/.bashrc"; \
+		echo "      nvm install --lts"; \
+		echo "      nvm use --lts"; \
 		echo ""; \
-		echo "  Or skip it - vim will work without LSP features."; \
+		echo "    Or skip it - vim will work without LSP features."; \
 	fi
 	@echo ""
-	@echo "ℹ Optional: Install code-minimap for minimap.vim"
-	@echo "  The minimap plugin requires code-minimap, which needs Rust."
-	@echo "  To install:"
-	@echo "    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
-	@echo "    source ~/.cargo/env"
-	@echo "    cargo install --locked code-minimap"
-	@echo "  Or skip it - minimap.vim will be disabled if not found."
+	@echo "┌─ Optional Installations ───────────────────────────────────────────────────┐"
+	@echo "│                                                                            │"
+	@echo "│  code-minimap (for minimap.vim):                                           │"
+	@echo "│    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh          │"
+	@echo "│    source ~/.cargo/env && cargo install --locked code-minimap              │"
+	@echo "│                                                                            │"
+	@echo "│  uv (Python package and tool manager):                                     │"
+	@echo "│    curl -LsSf https://astral.sh/uv/install.sh | sh                         │"
+	@echo "│                                                                            │"
+	@echo "│  Ruff (Python LSP, requires ruff >= 0.3.3):                                │"
+	@echo "│    uv tool install ruff                                                    │"
+	@echo "│                                                                            │"
+	@echo "└────────────────────────────────────────────────────────────────────────────┘"
 	@echo ""
-	@echo "ℹ Optional: Install uv (Python package and tool manager)"
-	@echo "  To install:"
-	@echo "    curl -LsSf https://astral.sh/uv/install.sh | sh"
-	@echo "    source ~/.bashrc"
-	@echo "  Or skip it - Python tools will work without uv."
+	@echo "┌─ Next Steps ───────────────────────────────────────────────────────────────┐"
+	@echo "│                                                                            │"
+	@echo "│  1. Run 'make all' to setup dotfiles                                       │"
+	@echo "│  2. Restart your shell or run 'source ~/.bashrc'                           │"
+	@echo "│                                                                            │"
+	@echo "└────────────────────────────────────────────────────────────────────────────┘"
 	@echo ""
-	@echo "ℹ Optional: Install Marksman for Markdown LSP support"
-	@echo "  To install:"
-	@echo "    sudo snap install marksman"
-	@echo "  Or skip it - Markdown files will work without LSP features."
-	@echo ""
-	@echo "ℹ Optional: Install Ruff for Python LSP support"
-	@echo "  Ruff has built-in LSP server support (requires ruff >= 0.3.3)"
-	@echo "  To install:"
-	@echo "    uv tool install ruff"
-	@echo "  Or skip it - Python files will work without LSP features."
-	@echo ""
-	@echo "Next steps:"
-	@echo "  1. Run 'make all' to setup dotfiles"
-	@echo "  2. Restart your shell or run 'source ~/.bashrc'"
 
 all:
-	@echo "========================================="
-	@echo "Setting up dotfiles..."
-	@echo "========================================="
 	@echo ""
-	@echo "Initializing git submodules..."
-	@git submodule update --init --recursive
+	@echo "╔════════════════════════════════════════════════════════════════════════════╗"
+	@echo "║                         Setting up dotfiles                                ║"
+	@echo "╚════════════════════════════════════════════════════════════════════════════╝"
 	@echo ""
-	@echo "Stowing all packages..."
-	@if $(MAKE) stow 2>/dev/null; then \
-		echo "✓ All packages stowed successfully!"; \
+	@echo "→ Initializing git submodules..."
+	@git submodule update --init --recursive 2>&1 | sed 's/^/  /'
+	@echo ""
+	@echo "→ Installing packages..."
+	@echo ""
+	@if $(MAKE) --no-print-directory stow 2>/dev/null; then \
+		echo ""; \
+		echo "╔════════════════════════════════════════════════════════════════════════════╗"; \
+		echo "║                           ✓ Setup Complete!                                ║"; \
+		echo "╚════════════════════════════════════════════════════════════════════════════╝"; \
 	else \
 		echo ""; \
-		echo "⚠ Stow failed! This usually happens when files already exist."; \
+		echo "╔════════════════════════════════════════════════════════════════════════════╗"; \
+		echo "║                            ⚠ Setup Failed                                  ║"; \
+		echo "╚════════════════════════════════════════════════════════════════════════════╝"; \
+		echo ""; \
+		echo "  Stow failed! This usually happens when files already exist."; \
 		echo "  Run 'make stow-adopt' to merge existing files into the repo."; \
 		exit 1; \
 	fi
 	@echo ""
-	@echo "========================================="
-	@echo "✓ All dotfiles configured successfully!"
-	@echo "========================================="
+	@echo "┌─ Optional Commands ────────────────────────────────────────────────────────┐"
+	@echo "│                                                                            │"
+	@echo "│  VSCode Sync (WSL only):                                                   │"
+	@echo "│    make vscode-fetch    Copy VSCode config from Windows to repo            │"
+	@echo "│    make vscode-push     Copy VSCode config from repo to Windows            │"
+	@echo "│                                                                            │"
+	@echo "│  Obsidian Vault Sync:                                                      │"
+	@echo "│    make obsidian-fetch  Copy .obsidian settings from vault to repo         │"
+	@echo "│    make obsidian-push   Copy .obsidian settings from repo to vault         │"
+	@echo "│                                                                            │"
+	@echo "└────────────────────────────────────────────────────────────────────────────┘"
 	@echo ""
-	@echo "Optional: Sync VSCode settings (WSL only)"
-	@echo "  make vscode-fetch  - Copy VSCode config from Windows to repo"
-	@echo "  make vscode-push   - Copy VSCode config from repo to Windows"
-	@echo ""
-	@echo "Optional: Sync Obsidian vault settings"
-	@echo "  make obsidian-fetch - Copy .obsidian settings from vault to repo"
-	@echo "  make obsidian-push  - Copy .obsidian settings from repo to vault"
 
 help:
 	@echo "Available targets:"
@@ -149,7 +153,6 @@ help:
 
 # Stow targets
 stow: stow-bash stow-git stow-vim stow-tmux
-	@echo "✓ All packages stowed successfully!"
 
 stow-adopt:
 	@echo "Adopting existing files and stowing..."
@@ -167,61 +170,35 @@ unstow: unstow-bash unstow-git unstow-vim unstow-tmux
 	@echo "✓ All packages unstowed successfully!"
 
 stow-bash:
-	@echo "Stowing bash..."
-	@stow -d $(DOTFILES_DIR) -t ~ bash
+	@printf "  %-20s" "bash"
+	@stow -d $(DOTFILES_DIR) -t ~ bash 2>&1 | sed 's/^/    /' || exit 1
 	@if [ -n "$$BASH_VERSION" ]; then \
-		bash -c "source ~/.bashrc" && echo "✓ Bash configuration stowed and reloaded!"; \
+		bash -c "source ~/.bashrc" && echo "✓"; \
 	else \
-		echo "✓ Bash configuration stowed!"; \
-		echo "  Run 'source ~/.bashrc' to reload in current shell."; \
+		echo "✓"; \
 	fi
 
 stow-git:
-	@echo "Stowing git..."
-	@echo "Generating .gitconfig from template..."
+	@printf "  %-20s" "git"
 	@sed 's/@GIT_USER_NAME@/$(GIT_USER_NAME)/g; s/@GIT_USER_EMAIL@/$(GIT_USER_EMAIL)/g' \
-		$(DOTFILES_DIR)/git/.gitconfig.template > $(DOTFILES_DIR)/git/.gitconfig
-	@stow -d $(DOTFILES_DIR) -t ~ git
-	@echo "✓ Git configuration stowed!"
+		$(DOTFILES_DIR)/git/.gitconfig.template > $(DOTFILES_DIR)/git/.gitconfig 2>&1 | sed 's/^/    /' || exit 1
+	@stow -d $(DOTFILES_DIR) -t ~ git 2>&1 | sed 's/^/    /' || exit 1
+	@echo "✓"
 
 stow-vim:
-	@echo "Stowing vim..."
-	@stow -d $(DOTFILES_DIR) -t ~ vim
-	@echo "✓ Vim configuration stowed!"
-	@echo "Installing Vim plugins..."
-	@vim +PlugInstall +qall 2>/dev/null || echo "  ⚠ Plugin install failed. Run ':PlugInstall' manually in vim."
-	@echo "✓ Vim plugins installed!"
-	@echo ""
-	@echo "ℹ coc.nvim extensions will auto-install when you first open vim"
-	@echo "  Extensions: coc-yaml, coc-json"
-	@echo "  Language servers: ruff (Python), marksman (Markdown)"
-	@echo ""
-	@if ! command -v node >/dev/null 2>&1; then \
-		echo "  ⚠ Node.js not found! coc.nvim requires Node.js >= 14.14"; \
-		echo "  Install via nvm:"; \
-		echo "    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"; \
-		echo "    source ~/.bashrc"; \
-		echo "    nvm install --lts"; \
-	fi
-	@if ! command -v ruff >/dev/null 2>&1; then \
-		echo "  ⚠ Ruff not found! Python LSP requires ruff"; \
-		echo "  Install with: uv tool install ruff"; \
-	fi
+	@printf "  %-20s" "vim"
+	@stow -d $(DOTFILES_DIR) -t ~ vim 2>&1 | sed 's/^/    /' || exit 1
+	@vim +PlugInstall +qall >/dev/null 2>&1 || (echo "⚠ (plugin install failed)" && exit 1)
+	@echo "✓"
 
 stow-tmux:
-	@echo "Stowing tmux..."
-	@stow -d $(DOTFILES_DIR) -t ~ tmux
-	@echo "Installing TPM plugins..."
+	@printf "  %-20s" "tmux"
+	@stow -d $(DOTFILES_DIR) -t ~ tmux 2>&1 | sed 's/^/    /' || exit 1
 	@if [ ! -d ~/.tmux/plugins/tpm ]; then \
-		echo "  ⚠ TPM not found. Run 'git submodule update --init --recursive' first."; \
+		echo "⚠ (TPM not found)"; \
 	else \
-		~/.tmux/plugins/tpm/bin/install_plugins 2>/dev/null || echo "  ⚠ TPM plugin install failed. Press Prefix + I in tmux to install manually."; \
-	fi
-	@if [ -n "$$TMUX" ]; then \
-		tmux source-file ~/.tmux.conf && echo "✓ Tmux configuration stowed and reloaded!"; \
-	else \
-		echo "✓ Tmux configuration stowed!"; \
-		echo "  Config will load on next tmux session."; \
+		~/.tmux/plugins/tpm/bin/install_plugins >/dev/null 2>&1 || (echo "⚠ (plugin install failed)" && exit 1); \
+		echo "✓"; \
 	fi
 
 unstow-bash:
@@ -244,80 +221,81 @@ unstow-tmux:
 
 # VSCode targets
 vscode-fetch:
-	@echo "Fetching VSCode configuration from Windows..."
+	@echo ""
+	@echo "┌─ VSCode Fetch ───────────────────────────────────────────────────────────────┐"
 	@mkdir -p $(VSCODE_DIR)
 	@if [ -f "$(VSCODE_WIN_USER)/settings.json" ]; then \
 		cp "$(VSCODE_WIN_USER)/settings.json" "$(VSCODE_DIR)/settings.json"; \
-		echo "  ✓ Copied settings.json"; \
+		echo "│  ✓ settings.json"; \
 	else \
-		echo "  ⚠ settings.json not found at $(VSCODE_WIN_USER)"; \
+		echo "│  ⚠ settings.json not found"; \
 	fi
 	@if [ -f "$(VSCODE_WIN_USER)/keybindings.json" ]; then \
 		cp "$(VSCODE_WIN_USER)/keybindings.json" "$(VSCODE_DIR)/keybindings.json"; \
-		echo "  ✓ Copied keybindings.json"; \
+		echo "│  ✓ keybindings.json"; \
 	else \
-		echo "  ⚠ keybindings.json not found"; \
+		echo "│  ⚠ keybindings.json not found"; \
 	fi
-	@echo "Backing up VSCode extensions list..."
 	@cmd.exe /c "code --list-extensions" 2>/dev/null | sed 's/\r$$//' > $(VSCODE_DIR)/extensions.txt
-	@echo "  ✓ Saved $(shell wc -l < $(VSCODE_DIR)/extensions.txt 2>/dev/null || echo 0) extensions to extensions.txt"
-	@echo "✓ VSCode config and extensions fetched!"
+	@echo "│  ✓ extensions.txt ($(shell wc -l < $(VSCODE_DIR)/extensions.txt 2>/dev/null || echo 0) extensions)"
+	@echo "└──────────────────────────────────────────────────────────────────────────────┘"
+	@echo ""
 
 vscode-push:
-	@echo "Pushing VSCode configuration to Windows..."
+	@echo ""
+	@echo "┌─ VSCode Push ────────────────────────────────────────────────────────────────┐"
 	@if [ -f "$(VSCODE_DIR)/settings.json" ]; then \
 		cp "$(VSCODE_DIR)/settings.json" "$(VSCODE_WIN_USER)/settings.json"; \
-		echo "  ✓ Copied settings.json to Windows"; \
+		echo "│  ✓ settings.json"; \
 	else \
-		echo "  ⚠ settings.json not found in repo"; \
+		echo "│  ⚠ settings.json not found"; \
 	fi
 	@if [ -f "$(VSCODE_DIR)/keybindings.json" ]; then \
 		cp "$(VSCODE_DIR)/keybindings.json" "$(VSCODE_WIN_USER)/keybindings.json"; \
-		echo "  ✓ Copied keybindings.json to Windows"; \
+		echo "│  ✓ keybindings.json"; \
 	else \
-		echo "  ⚠ keybindings.json not found in repo"; \
+		echo "│  ⚠ keybindings.json not found"; \
 	fi
-	@echo "Installing VSCode extensions..."
 	@if [ ! -f "$(VSCODE_DIR)/extensions.txt" ]; then \
-		echo "  ⚠ extensions.txt not found! Skipping extension install."; \
+		echo "│  ⚠ extensions.txt not found"; \
 	else \
-		echo "  Installing $(shell wc -l < $(VSCODE_DIR)/extensions.txt) extensions..."; \
+		echo "│  → Installing $(shell wc -l < $(VSCODE_DIR)/extensions.txt) extensions..."; \
 		for ext in $$(cat $(VSCODE_DIR)/extensions.txt); do \
 			cmd.exe /c "code --install-extension $$ext" 2>/dev/null | sed 's/\r$$//' || true; \
 		done; \
-		echo "  ✓ Extensions installation complete!"; \
+		echo "│  ✓ Extensions installed"; \
 	fi
-	@echo "✓ VSCode config and extensions pushed!"
+	@echo "└──────────────────────────────────────────────────────────────────────────────┘"
+	@echo ""
 
 # Obsidian targets
 obsidian-fetch:
-	@echo "Fetching Obsidian settings from vault..."
+	@echo ""
+	@echo "┌─ Obsidian Fetch ─────────────────────────────────────────────────────────────┐"
 	@if [ ! -d "$(OBSIDIAN_VAULT_PATH)" ]; then \
-		echo "  ⚠ Vault not found at $(OBSIDIAN_VAULT_PATH)"; \
-		echo "  Set OBSIDIAN_VAULT_PATH in config.mk"; \
+		echo "│  ⚠ Vault not found at $(OBSIDIAN_VAULT_PATH)"; \
+		echo "│  Set OBSIDIAN_VAULT_PATH in config.mk"; \
+		echo "└──────────────────────────────────────────────────────────────────────────────┘"; \
 		exit 1; \
 	fi
 	@mkdir -p $(OBSIDIAN_DIR)/.obsidian $(OBSIDIAN_DIR)/templates
-	@# Sync .obsidian folder - only copy files that already exist in repo
-	@echo "Syncing .obsidian settings..."
 	@COPIED=0; \
-	for file in $(OBSIDIAN_DIR)/.obsidian/*; do \
-		if [ -f "$$file" ]; then \
-			filename=$$(basename "$$file"); \
-			if [ -f "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$filename" ]; then \
-				cp "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$filename" "$(OBSIDIAN_DIR)/.obsidian/$$filename"; \
-				echo "  ✓ .obsidian/$$filename"; \
+	if [ -d "$(OBSIDIAN_DIR)/.obsidian" ]; then \
+		for file in $$(cd $(OBSIDIAN_DIR)/.obsidian && find . -type f); do \
+			relpath=$${file#./}; \
+			if [ -f "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$relpath" ]; then \
+				mkdir -p "$$(dirname "$(OBSIDIAN_DIR)/.obsidian/$$relpath")"; \
+				cp "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$relpath" "$(OBSIDIAN_DIR)/.obsidian/$$relpath"; \
+				echo "│  ✓ .obsidian/$$relpath"; \
 				COPIED=$$((COPIED + 1)); \
 			else \
-				echo "  ⚠ .obsidian/$$filename not found in vault"; \
+				echo "│  ⚠ .obsidian/$$relpath not found in vault"; \
 			fi; \
-		fi; \
-	done; \
+		done; \
+	fi; \
 	if [ $$COPIED -eq 0 ]; then \
-		echo "  ⚠ No .obsidian files copied (add files to $(OBSIDIAN_DIR)/.obsidian first)"; \
+		echo "│  ⚠ No .obsidian files copied (add files to $(OBSIDIAN_DIR)/.obsidian first)"; \
 	fi
-	@# Sync templates folder - only copy files that already exist in repo
-	@echo "Syncing templates..."
 	@COPIED=0; \
 	if [ -d "$(OBSIDIAN_VAULT_PATH)/templates" ]; then \
 		for file in $(OBSIDIAN_DIR)/templates/*; do \
@@ -325,56 +303,57 @@ obsidian-fetch:
 				filename=$$(basename "$$file"); \
 				if [ -f "$(OBSIDIAN_VAULT_PATH)/templates/$$filename" ]; then \
 					cp "$(OBSIDIAN_VAULT_PATH)/templates/$$filename" "$(OBSIDIAN_DIR)/templates/$$filename"; \
-					echo "  ✓ templates/$$filename"; \
+					echo "│  ✓ templates/$$filename"; \
 					COPIED=$$((COPIED + 1)); \
 				else \
-					echo "  ⚠ templates/$$filename not found in vault"; \
+					echo "│  ⚠ templates/$$filename not found in vault"; \
 				fi; \
 			fi; \
 		done; \
 	else \
-		echo "  ⚠ templates folder not found in vault"; \
+		echo "│  ⚠ templates folder not found in vault"; \
 	fi; \
 	if [ $$COPIED -eq 0 ]; then \
-		echo "  ⚠ No template files copied (add files to $(OBSIDIAN_DIR)/templates first)"; \
+		echo "│  ⚠ No template files copied"; \
 	fi
-	@echo "✓ Obsidian fetch complete!"
+	@echo "└──────────────────────────────────────────────────────────────────────────────┘"
+	@echo ""
 
 obsidian-push:
-	@echo "Pushing Obsidian settings to vault..."
+	@echo ""
+	@echo "┌─ Obsidian Push ──────────────────────────────────────────────────────────────┐"
 	@if [ ! -d "$(OBSIDIAN_VAULT_PATH)" ]; then \
-		echo "  ⚠ Vault not found at $(OBSIDIAN_VAULT_PATH)"; \
-		echo "  Set OBSIDIAN_VAULT_PATH in config.mk"; \
+		echo "│  ⚠ Vault not found at $(OBSIDIAN_VAULT_PATH)"; \
+		echo "│  Set OBSIDIAN_VAULT_PATH in config.mk"; \
+		echo "└──────────────────────────────────────────────────────────────────────────────┘"; \
 		exit 1; \
 	fi
-	@# Sync .obsidian folder
-	@echo "Pushing .obsidian settings..."
 	@mkdir -p "$(OBSIDIAN_VAULT_PATH)/.obsidian"
 	@COPIED=0; \
-	for file in $(OBSIDIAN_DIR)/.obsidian/*; do \
-		if [ -f "$$file" ]; then \
-			filename=$$(basename "$$file"); \
-			cp "$$file" "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$filename"; \
-			echo "  ✓ .obsidian/$$filename"; \
+	if [ -d "$(OBSIDIAN_DIR)/.obsidian" ]; then \
+		for file in $$(cd $(OBSIDIAN_DIR)/.obsidian && find . -type f); do \
+			relpath=$${file#./}; \
+			mkdir -p "$$(dirname "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$relpath")"; \
+			cp "$(OBSIDIAN_DIR)/.obsidian/$$relpath" "$(OBSIDIAN_VAULT_PATH)/.obsidian/$$relpath"; \
+			echo "│  ✓ .obsidian/$$relpath"; \
 			COPIED=$$((COPIED + 1)); \
-		fi; \
-	done; \
+		done; \
+	fi; \
 	if [ $$COPIED -eq 0 ]; then \
-		echo "  ⚠ No .obsidian files to push"; \
+		echo "│  ⚠ No .obsidian files to push"; \
 	fi
-	@# Sync templates folder
-	@echo "Pushing templates..."
 	@mkdir -p "$(OBSIDIAN_VAULT_PATH)/templates"
 	@COPIED=0; \
 	for file in $(OBSIDIAN_DIR)/templates/*; do \
 		if [ -f "$$file" ]; then \
 			filename=$$(basename "$$file"); \
 			cp "$$file" "$(OBSIDIAN_VAULT_PATH)/templates/$$filename"; \
-			echo "  ✓ templates/$$filename"; \
+			echo "│  ✓ templates/$$filename"; \
 			COPIED=$$((COPIED + 1)); \
 		fi; \
 	done; \
 	if [ $$COPIED -eq 0 ]; then \
-		echo "  ⚠ No template files to push"; \
+		echo "│  ⚠ No template files to push"; \
 	fi
-	@echo "✓ Obsidian push complete!"
+	@echo "└──────────────────────────────────────────────────────────────────────────────┘"
+	@echo ""
