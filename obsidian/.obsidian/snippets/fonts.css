@@ -1,4 +1,5 @@
 body {
     --font-text: "Fira Code", monospace;
     --font-monospace: "Fira Code", monospace;
+    --font-text-size: 10px;
 }
