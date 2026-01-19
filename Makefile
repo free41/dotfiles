@@ -148,8 +148,8 @@ help:
 	@echo "  unstow-tmux               - Unstow tmux configuration"
 	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo (WSL only)"
 	@echo "  vscode-push               - Copy VSCode config from repo to Windows (WSL only)"
-	@echo "  obsidian-fetch            - Copy .obsidian settings from vault to repo (existing files only)"
-	@echo "  obsidian-push             - Copy .obsidian settings from repo to vault"
+	@echo "  obsidian-fetch            - Copy .obsidian, templates, scripts from vault to repo (existing files only)"
+	@echo "  obsidian-push             - Copy .obsidian, templates, scripts from repo to vault"
 
 # Stow targets
 stow: stow-bash stow-git stow-vim stow-tmux
@@ -316,6 +316,27 @@ obsidian-fetch:
 	if [ $$COPIED -eq 0 ]; then \
 		echo "│  ⚠ No template files copied"; \
 	fi
+	@mkdir -p $(OBSIDIAN_DIR)/scripts
+	@COPIED=0; \
+	if [ -d "$(OBSIDIAN_VAULT_PATH)/scripts" ]; then \
+		for file in $(OBSIDIAN_DIR)/scripts/*; do \
+			if [ -f "$$file" ]; then \
+				filename=$$(basename "$$file"); \
+				if [ -f "$(OBSIDIAN_VAULT_PATH)/scripts/$$filename" ]; then \
+					cp "$(OBSIDIAN_VAULT_PATH)/scripts/$$filename" "$(OBSIDIAN_DIR)/scripts/$$filename"; \
+					echo "│  ✓ scripts/$$filename"; \
+					COPIED=$$((COPIED + 1)); \
+				else \
+					echo "│  ⚠ scripts/$$filename not found in vault"; \
+				fi; \
+			fi; \
+		done; \
+	else \
+		echo "│  ⚠ scripts folder not found in vault"; \
+	fi; \
+	if [ $$COPIED -eq 0 ]; then \
+		echo "│  ⚠ No script files copied (add files to $(OBSIDIAN_DIR)/scripts first)"; \
+	fi
 	@echo "└──────────────────────────────────────────────────────────────────────────────┘"
 	@echo ""
 
@@ -354,6 +375,19 @@ obsidian-push:
 	done; \
 	if [ $$COPIED -eq 0 ]; then \
 		echo "│  ⚠ No template files to push"; \
+	fi
+	@mkdir -p "$(OBSIDIAN_VAULT_PATH)/scripts"
+	@COPIED=0; \
+	for file in $(OBSIDIAN_DIR)/scripts/*; do \
+		if [ -f "$$file" ]; then \
+			filename=$$(basename "$$file"); \
+			cp "$$file" "$(OBSIDIAN_VAULT_PATH)/scripts/$$filename"; \
+			echo "│  ✓ scripts/$$filename"; \
+			COPIED=$$((COPIED + 1)); \
+		fi; \
+	done; \
+	if [ $$COPIED -eq 0 ]; then \
+		echo "│  ⚠ No script files to push"; \
 	fi
 	@echo "└──────────────────────────────────────────────────────────────────────────────┘"
 	@echo ""
