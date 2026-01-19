@@ -291,6 +291,7 @@ if has('patch-9.0.0438') || has('nvim-0.8.0')
 let g:coc_global_extensions = [
   \ 'coc-yaml',
   \ 'coc-json',
+  \ 'coc-jedi',
   \ ]
 
 " Use tab for trigger completion with characters ahead and navigate

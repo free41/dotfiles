@@ -1,18 +1,5 @@
 {
   "inlayHint.enable": false,
-  "python.analysis.inlayHints.variableTypes": false,
-  "python.analysis.inlayHints.functionReturnTypes": false,
-  "python.analysis.inlayHints.pytestParameters": false,
-  "pyright.inlayHints.variableTypes": false,
-  "pyright.inlayHints.functionReturnTypes": false,
-
-  "python.analysis.diagnosticSeverityOverrides": {
-    "reportGeneralTypeIssues": "none",
-    "reportOptionalMemberAccess": "none",
-    "reportAttributeAccessIssue": "none",
-    "reportCallIssue": "none",
-    "reportArgumentType": "none"
-  },
 
   "yaml.schemas": {
     "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json": [
@@ -24,11 +11,6 @@
   },
 
   "languageserver": {
-    "marksman": {
-      "command": "marksman",
-      "args": ["server"],
-      "filetypes": ["markdown"]
-    },
     "ruff": {
       "command": "ruff",
       "args": ["server"],
