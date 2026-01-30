@@ -10,17 +10,15 @@
     ]
   },
 
+  "jedi.executable.command": "uvx",
+  "jedi.executable.args": ["jedi-language-server"],
+
   "languageserver": {
     "ruff": {
       "command": "ruff",
       "args": ["server"],
       "filetypes": ["python"],
       "settings": {}
-    },
-    "jedi": {
-      "command": "uvx",
-      "args": ["jedi-language-server"],
-      "filetypes": ["python"]
     }
   }
 }
