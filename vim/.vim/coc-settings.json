@@ -16,6 +16,11 @@
       "args": ["server"],
       "filetypes": ["python"],
       "settings": {}
+    },
+    "jedi": {
+      "command": "uvx",
+      "args": ["jedi-language-server"],
+      "filetypes": ["python"]
     }
   }
 }
