@@ -167,6 +167,49 @@ gdd() {
     fi
 }
 
+# Git worktree add
+# Usage: gwa <branch-name>  - add worktree above repo root, tracking remote or creating new branch
+gwa() {
+    if [ -z "$1" ]; then
+        echo "Usage: gwa <branch-name>"
+        return 1
+    fi
+
+    local branch="$1"
+    local git_root
+    git_root=$(git rev-parse --show-toplevel 2>/dev/null)
+    if [ $? -ne 0 ]; then
+        echo "Error: not in a git repository"
+        return 1
+    fi
+
+    local parent_dir
+    parent_dir=$(dirname "$git_root")
+    local worktree_path="$parent_dir/$branch"
+
+    git fetch --all --prune
+
+    if git ls-remote --heads origin "$branch" | grep -q "$branch"; then
+        git worktree add "$worktree_path" "$branch"
+    else
+        git worktree add -b "$branch" "$worktree_path"
+    fi
+
+    if [ $? -ne 0 ]; then
+        echo "Error: failed to add worktree"
+        return 1
+    fi
+
+    cd "$worktree_path" || return 1
+
+    if [ -f ".pre-commit-config.yaml" ]; then
+        echo "Found .pre-commit-config.yaml, installing pre-commit hooks..."
+        uvx pre-commit install
+    fi
+
+    echo "Worktree created at $worktree_path"
+}
+
 # Alert alias for long running commands
 # Usage: sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
