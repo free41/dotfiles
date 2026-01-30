@@ -127,6 +127,9 @@ alias gacm='git add --all && git commit -m'
 alias gdc='git diff --cached'
 alias gdv='git difftool'
 
+# Ranger - source so cd-on-exit works
+alias r='. ranger'
+
 # WSL/Windows integration aliases
 alias open='explorer.exe .'
 alias e='explorer.exe .'
