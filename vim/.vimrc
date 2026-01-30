@@ -36,6 +36,9 @@ endif
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
+" Syntax highlighting
+Plug 'sheerun/vim-polyglot'
+
 " Editing
 Plug 'tpope/vim-commentary'              " Easy commenting with gc
 Plug 'tpope/vim-surround'                " Manipulate surrounding quotes/brackets
