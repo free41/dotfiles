@@ -249,6 +249,11 @@ fi
 # Add ~/.local/bin to PATH
 export PATH="$HOME/.local/bin:$PATH"
 
+# Disable mouse reporting if not in tmux (prevents scroll producing escape codes)
+if [ -z "$TMUX" ]; then
+    printf '\e[?1000l'
+fi
+
 # FZF configuration - use git ls-files in git repos, respecting .gitignore
 export FZF_DEFAULT_COMMAND='git ls-files --cached --others --exclude-standard 2>/dev/null || find . -type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
