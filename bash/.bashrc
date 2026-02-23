@@ -214,15 +214,51 @@ gwa() {
 }
 
 # Fetch and merge branch from remote
-# Usage: gfm [branch]  - fetch and merge branch (defaults to dev) into current branch
+# Usage: gfm [branch]  - fetch, pull current branch, and merge branch (defaults to dev) into current branch
 gfm() {
     local branch="${1:-dev}"
+    local current_branch
+    current_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
-    echo "Fetching $branch from remote..."
-    git fetch origin "$branch" || return 1
+    if [ $? -ne 0 ]; then
+        echo "Error: not in a git repository"
+        return 1
+    fi
+
+    echo "Fetching from remote..."
+    git fetch --all || return 1
+
+    echo "Pulling current branch ($current_branch)..."
+    git pull || {
+        echo "Warning: could not pull current branch (may not have upstream set)"
+    }
 
     echo "Merging origin/$branch into current branch..."
     git merge "origin/$branch"
+}
+
+# Fetch and diff current branch against target branch in vim
+# Usage: gfd [branch]  - fetch, pull, and diff current branch vs branch (defaults to dev) in vim
+gfd() {
+    local target_branch="${1:-dev}"
+    local current_branch
+    current_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+    if [ $? -ne 0 ]; then
+        echo "Error: not in a git repository"
+        return 1
+    fi
+
+    echo "Fetching from remote..."
+    git fetch --all || return 1
+
+    echo "Pulling current branch ($current_branch)..."
+    git pull || {
+        echo "Warning: could not pull current branch (may not have upstream set)"
+    }
+
+    echo "Opening diff: $current_branch vs origin/$target_branch in vim..."
+    git difftool "origin/$target_branch...HEAD"
 }
 
 # Alert alias for long running commands

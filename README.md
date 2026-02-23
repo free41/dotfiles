@@ -205,6 +205,9 @@ The style is distributed as part of your package, so it works anywhere your pack
 | `gb`     | `git branch`                      | List, create, or delete branches                 |
 | `gba`    | `git branch -a`                   | List all branches (local and remote)             |
 | `gdd`    | `gdd [options] [file]`            | Git diff against dev branch (see below)          |
+| `gfm`    | `gfm [branch]`                    | Fetch, pull, and merge branch into current (see below) |
+| `gfd`    | `gfd [branch]`                    | Fetch, pull, and diff in vim (see below)         |
+| `gwa`    | `gwa <branch>`                    | Create git worktree (see below)                  |
 
 #### gdd - Git Diff Against Dev Branch
 
@@ -216,6 +219,44 @@ gdd filename     # Show diff of specific file vs dev
 gdd -v           # Open full diff in vim using git difftool
 gdd -v filename  # Open specific file diff in vim
 ```
+
+#### gfm - Git Fetch and Merge
+
+Fetch and merge a branch from remote into your current branch:
+
+```bash
+gfm              # Fetch all, pull current branch, merge origin/dev
+gfm feature-123  # Fetch all, pull current branch, merge origin/feature-123
+```
+
+This command:
+1. Fetches all branches from remote
+2. Pulls the current branch to ensure it's up to date
+3. Merges the specified branch (defaults to `dev`) into your current branch
+
+#### gfd - Git Fetch and Diff in Vim
+
+Fetch both branches and open a diff in vim:
+
+```bash
+gfd              # Fetch all, pull current branch, diff vs origin/dev in vim
+gfd feature-123  # Fetch all, pull current branch, diff vs origin/feature-123 in vim
+```
+
+This command:
+1. Fetches all branches from remote
+2. Pulls the current branch
+3. Opens `git difftool` to show the diff between current branch and `origin/<branch>` in vim
+
+#### gwa - Git Worktree Add
+
+Create a new git worktree in a sibling directory:
+
+```bash
+gwa feature-123  # Create worktree for feature-123 (tracks remote or creates new branch)
+```
+
+This command creates a worktree above the repository root and automatically installs pre-commit hooks if `.pre-commit-config.yaml` is present.
 
 > **Note**: Custom aliases can be added to `~/.bash_aliases` (git-ignored) and
 > will be loaded automatically.
