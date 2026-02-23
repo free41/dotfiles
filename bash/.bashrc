@@ -213,6 +213,18 @@ gwa() {
     echo "Worktree created at $worktree_path"
 }
 
+# Fetch and merge branch from remote
+# Usage: gfm [branch]  - fetch and merge branch (defaults to dev) into current branch
+gfm() {
+    local branch="${1:-dev}"
+
+    echo "Fetching $branch from remote..."
+    git fetch origin "$branch" || return 1
+
+    echo "Merging origin/$branch into current branch..."
+    git merge "origin/$branch"
+}
+
 # Alert alias for long running commands
 # Usage: sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
