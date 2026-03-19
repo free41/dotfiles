@@ -172,7 +172,7 @@ set autoread
 autocmd FocusGained,BufEnter * :checktime
 
 " Trigger autoread on cursor hold (after 'updatetime' milliseconds of inactivity)
-set updatetime=300
+set updatetime=500
 autocmd CursorHold * :checktime
 
 " ----------------------------------------------------------------------------
@@ -339,6 +339,7 @@ endfunction
 
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
+autocmd CursorHold * silent call CocActionAsync('doHover')
 
 " Symbol renaming
 nmap <leader>rn <Plug>(coc-rename)
