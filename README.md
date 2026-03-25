@@ -99,6 +99,28 @@ The matplotlib style includes:
 - Cycles through both colors and marker symbols (o, s, ^, v, D, p, *)
 - Default: markers only (no lines)
 
+### Color Scheme
+
+Nord is used consistently across vim, tmux, and the terminal. The preferred
+palette is based on Nord but with colors adjusted for better contrast against
+the dark background (`#2E3440`) — matching what Windows Terminal produces with
+"Automatically adjust lightness of indistinguishable text" enabled.
+
+| # | Role | Standard Nord | Preferred |
+|---|------|--------------|-----------|
+| foreground | Normal text | `#D8DEE9` | `#BAC6DD` |
+| 8 | Bright black / comments | `#4C566A` | `#626B7A` |
+| 2 | Green | `#A3BE8C` | `#B2CD9B` |
+| 4 | Blue | `#81A1C1` | `#A8C9EB` |
+| 6 | Cyan | `#88C0D0` | `#96CFDF` |
+| 14 | Bright cyan | `#8FBCBB` | `#A1CFCE` |
+| 1 | Red | `#BF616A` | `#FF9FA7` |
+
+Yellow (`#EBCB8B`), magenta (`#B48EAD`), and white (`#E5E9F0`/`#ECEFF4`) are
+unchanged — they already have sufficient contrast on the dark background.
+
+The Cosmic Terminal theme (`cosmic/Nord.ron`) uses the preferred values.
+
 ### Vim Configuration
 - **Theme**: Nord
 - **Leader key**: Space
