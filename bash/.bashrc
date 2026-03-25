@@ -296,6 +296,7 @@ fi
 
 # Add ~/.local/bin to PATH
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$PATH:$HOME/.lmstudio/bin"
 
 # Disable mouse reporting if not in tmux (prevents scroll producing escape codes)
 if [ -z "$TMUX" ]; then

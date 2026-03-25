@@ -10,3 +10,7 @@ bash/.bash_aliases
 # Tmux plugins (except tpm submodule)
 tmux/.tmux/plugins/*
 !tmux/.tmux/plugins/tpm
+
+# Vim plugins and generated files
+vim/.vim/plugged/
+vim/.vim/autoload/

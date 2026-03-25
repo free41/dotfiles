@@ -1,6 +1,9 @@
 # Dotfiles Makefile
 # Manages symlinks between dotfiles repo and system locations
 
+SHELL := /bin/bash
+.SHELLFLAGS := -o pipefail -c
+
 # Default variables
 DOTFILES_DIR := $(shell pwd)
 VSCODE_DIR := $(DOTFILES_DIR)/vscode
@@ -80,6 +83,9 @@ install:
 	@echo "│                                                                            │"
 	@echo "│  Ruff (Python LSP, requires ruff >= 0.3.3):                                │"
 	@echo "│    uv tool install ruff                                                    │"
+	@echo "│                                                                            │"
+	@echo "│  tailscale                                                                 │"
+	@echo "│    curl -fsSL https://tailscale.com/install.sh | sh                        │"
 	@echo "│                                                                            │"
 	@echo "└────────────────────────────────────────────────────────────────────────────┘"
 	@echo ""
