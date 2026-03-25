@@ -34,6 +34,7 @@ install:
 	@sudo apt install -y \
 		stow \
 		git \
+		fonts-firacode \
 		tmux \
 		vim-gtk3 \
 		curl \
