@@ -1,0 +1,78 @@
+-- ============================================================================
+-- LSP CONFIGURATION (Neovim 0.11+ native API)
+-- Install servers via uv:
+--   uv tool install ty
+--   uv tool install ruff
+-- ============================================================================
+
+-- ty: type checking (https://docs.astral.sh/ty/editors/#neovim)
+vim.lsp.config('ty', {
+  cmd          = { 'ty', 'server' },
+  filetypes    = { 'python' },
+  root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', '.git' },
+})
+vim.lsp.enable('ty')
+
+-- ruff: linting + formatting (https://docs.astral.sh/ruff/editors/setup/#neovim)
+vim.lsp.config('ruff', {
+  cmd          = { 'ruff', 'server' },
+  filetypes    = { 'python' },
+  root_markers = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', '.git' },
+  init_options = {
+    settings = {
+      -- ruff-specific settings here, e.g.:
+      -- logLevel = 'warn',
+    },
+  },
+})
+vim.lsp.enable('ruff')
+
+-- Disable ruff's hover so ty handles it (ty owns type info, ruff owns lint)
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('ruff_no_hover', { clear = true }),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == 'ruff' then
+      client.server_capabilities.hoverProvider = false
+    end
+  end,
+})
+
+-- Keybindings applied whenever any LSP attaches
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('lsp_keymaps', { clear = true }),
+  callback = function(ev)
+    local map = function(keys, func, desc)
+      vim.keymap.set('n', keys, func, { buffer = ev.buf, silent = true, desc = desc })
+    end
+
+    -- Navigation (matches old coc.nvim bindings)
+    map('gd', vim.lsp.buf.definition,      'Go to definition')
+    map('gy', vim.lsp.buf.type_definition,  'Go to type definition')
+    map('gi', vim.lsp.buf.implementation,  'Go to implementation')
+    map('gr', vim.lsp.buf.references,      'References')
+    map('K',  vim.lsp.buf.hover,           'Hover docs')
+
+    -- Diagnostics (matches old [g / ]g)
+    map('[g', vim.diagnostic.goto_prev, 'Previous diagnostic')
+    map(']g', vim.diagnostic.goto_next, 'Next diagnostic')
+
+    -- Refactoring
+    map('<leader>rn', vim.lsp.buf.rename,      'Rename symbol')
+    map('<leader>qf', vim.lsp.buf.code_action, 'Code action / quickfix')
+
+    -- Format with ruff
+    map('<leader>F', function()
+      vim.lsp.buf.format({ async = true })
+    end, 'Format buffer')
+  end,
+})
+
+-- Diagnostic display
+vim.diagnostic.config({
+  virtual_text     = { prefix = '●' },
+  signs            = true,
+  underline        = true,
+  update_in_insert = false,
+  float            = { border = 'rounded' },
+})

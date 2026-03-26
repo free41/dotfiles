@@ -414,3 +414,63 @@ make unstow-vim
 The bashrc exports:
 - `PATH`: Includes `~/.local/bin`
 
+### Migrating from vim to neovim
+
+ ---
+  Do you need to uninstall TPM and coc?
+
+  TPM: The new tmux.conf no longer calls run '~/.tmux/plugins/tpm/tpm' and has no plugins, so TPM is just dead weight.
+  The TPM submodule (tmux/.tmux/plugins/tpm) is still in the repo but won't be sourced. You have two options:
+  - Leave it (harmless, just takes up space)
+  - Remove it properly: git submodule deinit tmux/.tmux/plugins/tpm && git rm tmux/.tmux/plugins/tpm (I'd suggest doing
+   this — want me to?)
+
+  The installed nord-tmux plugin at ~/.tmux/plugins/nord-tmux can be deleted: rm -rf ~/.tmux/plugins/
+
+  coc.nvim: You're switching to neovim with native LSP — coc is vim-only and won't be used. The installed coc data
+  lives at ~/.config/coc/. You can safely rm -rf ~/.config/coc. The vim plugin itself lives in ~/.vim/plugged/coc.nvim
+  and will persist unless you do vim +PlugClean or delete ~/.vim/plugged/.
+
+  ---
+  Summary of what was created/changed:
+
+  ┌───────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────┐
+  │           File            │                                    What changed                                     │
+  ├───────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
+  │ nvim/nvim/init.lua        │ New — lazy.nvim bootstrap, loads modules                                            │
+  ├───────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
+  │ nvim/nvim/lua/options.lua │ New — all vim options + autocommands in Lua                                         │
+  ├───────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
+  │ nvim/nvim/lua/keymaps.lua │ New — all non-plugin keymaps                                                        │
+  ├───────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
+  │ nvim/nvim/lua/plugins.lua │ New — all plugins with inline config                                                │
+  ├───────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
+  │ tmux/.tmux.conf           │ Removed TPM/nord-tmux, inlined Nord colors, fixed true color                        │
+  ├───────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────┤
+  │ Makefile                  │ Added stow-nvim/unstow-nvim, added neovim to apt install, removed Node/coc          │
+  │                           │ references                                                                          │
+  └───────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────┘
+
+  Key plugin substitutions with same bindings:
+
+  ┌────────────────┬───────────────────────────────────┬───────────────────────────────────────────────────┐
+  │      Old       │                New                │                      Binding                      │
+  ├────────────────┼───────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ NERDTree       │ neo-tree.nvim                     │ <leader>n                                         │
+  ├────────────────┼───────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ Tagbar         │ aerial.nvim (LSP, no ctags)       │ <leader>t                                         │
+  ├────────────────┼───────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ fzf.vim        │ telescope.nvim                    │ <leader>f, <C-p>, <leader>b, <leader>g, <leader>/ │
+  ├────────────────┼───────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ vim-commentary │ Comment.nvim                      │ gc, <C-_>                                         │
+  ├────────────────┼───────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ vim-polyglot   │ nvim-treesitter                   │ automatic                                         │
+  ├────────────────┼───────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ coc.nvim       │ nvim-lspconfig + mason + nvim-cmp │ gd, gr, [g, ]g, <leader>rn, etc.                  │
+  ├────────────────┼───────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ nord-vim       │ shaunsingh/nord.nvim              │ with color customization hooks                    │
+  └────────────────┴───────────────────────────────────┴───────────────────────────────────────────────────┘
+
+  Run make stow-nvim to deploy. On first open, lazy.nvim will auto-install everything, then mason will auto-install
+  ruff and basedpyright.
+

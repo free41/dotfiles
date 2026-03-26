@@ -16,7 +16,7 @@ OBSIDIAN_VAULT_PATH := ~/Vault
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help install stow unstow stow-adopt stow-bash stow-git stow-vim stow-tmux unstow-bash unstow-git unstow-vim unstow-tmux vscode-fetch vscode-push obsidian-fetch obsidian-push
+.PHONY: all help install stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux vscode-fetch vscode-push obsidian-fetch obsidian-push
 
 # Default target
 .DEFAULT_GOAL := all
@@ -27,6 +27,9 @@ install:
 	@echo "║                      Installing required dependencies                      ║"
 	@echo "╚════════════════════════════════════════════════════════════════════════════╝"
 	@echo ""
+	@echo "→ Adding neovim PPA (latest stable builds)..."
+	@sudo add-apt-repository -y ppa:neovim-ppa/unstable 2>&1 | sed 's/^/  /'
+	@echo ""
 	@echo "→ Updating package lists..."
 	@sudo apt update 2>&1 | sed 's/^/  /'
 	@echo ""
@@ -36,54 +39,35 @@ install:
 		git \
 		fonts-firacode \
 		tmux \
+		neovim \
 		vim-gtk3 \
 		curl \
 		build-essential \
-		universal-ctags \
 		ripgrep \
 		tree \
-		xclip 2>&1 | sed 's/^/  /'
+		xclip \
+		fzf 2>&1 | sed 's/^/  /'
 	@echo ""
 	@echo "╔════════════════════════════════════════════════════════════════════════════╗"
 	@echo "║                        ✓ All dependencies installed!                       ║"
 	@echo "╚════════════════════════════════════════════════════════════════════════════╝"
 	@echo ""
-	@echo "→ Checking Node.js installation..."
-	@if command -v node >/dev/null 2>&1; then \
-		NODE_VERSION=$$(node -v | sed 's/v//'); \
-		NODE_MAJOR=$$(echo $$NODE_VERSION | cut -d. -f1); \
-		NODE_MINOR=$$(echo $$NODE_VERSION | cut -d. -f2); \
-		if [ $$NODE_MAJOR -gt 14 ] || ([ $$NODE_MAJOR -eq 14 ] && [ $$NODE_MINOR -ge 14 ]); then \
-			echo "  ✓ Node.js $$NODE_VERSION is installed (coc.nvim requires >= 14.14)"; \
-		else \
-			echo "  ⚠ Node.js $$NODE_VERSION is installed but coc.nvim requires >= 14.14"; \
-			echo "    Please upgrade Node.js"; \
-		fi; \
+	@echo "→ Checking neovim version..."
+	@if command -v nvim >/dev/null 2>&1; then \
+		NVIM_VERSION=$$(nvim --version | head -1 | sed 's/NVIM v//'); \
+		echo "  ✓ Neovim $$NVIM_VERSION is installed"; \
 	else \
-		echo "  ⚠ Node.js not found!"; \
-		echo ""; \
-		echo "    coc.nvim (LSP support) requires Node.js >= 14.14"; \
-		echo ""; \
-		echo "    Install Node.js via nvm (Node Version Manager):"; \
-		echo "      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"; \
-		echo "      source ~/.bashrc"; \
-		echo "      nvm install --lts"; \
-		echo "      nvm use --lts"; \
-		echo ""; \
-		echo "    Or skip it - vim will work without LSP features."; \
+		echo "  ⚠ Neovim not found (was just installed above, try restarting shell)"; \
 	fi
 	@echo ""
 	@echo "┌─ Optional Installations ───────────────────────────────────────────────────┐"
 	@echo "│                                                                            │"
-	@echo "│  code-minimap (for minimap.vim):                                           │"
-	@echo "│    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh          │"
-	@echo "│    source ~/.cargo/env && cargo install --locked code-minimap              │"
-	@echo "│                                                                            │"
 	@echo "│  uv (Python package and tool manager):                                     │"
 	@echo "│    curl -LsSf https://astral.sh/uv/install.sh | sh                         │"
 	@echo "│                                                                            │"
-	@echo "│  Ruff (Python LSP, requires ruff >= 0.3.3):                                │"
-	@echo "│    uv tool install ruff                                                    │"
+	@echo "│  Python LSP servers (install manually, neovim picks them up automatically): │"
+	@echo "│    uv tool install ruff                  # linting + formatting            │"
+	@echo "│    uv tool install ty                     # type checking (Astral)         │"
 	@echo "│                                                                            │"
 	@echo "│  tailscale                                                                 │"
 	@echo "│    curl -fsSL https://tailscale.com/install.sh | sh                        │"
@@ -140,17 +124,19 @@ all:
 
 help:
 	@echo "Available targets:"
-	@echo "  install                   - Install all required dependencies (stow, git, vim, tmux, etc.)"
-	@echo "  all                       - Setup dotfiles (stow all packages + install vim plugins)"
-	@echo "  stow                      - Stow all packages (bash, git, vim, tmux)"
+	@echo "  install                   - Install all required dependencies (stow, git, neovim, tmux, etc.)"
+	@echo "  all                       - Setup dotfiles (stow all packages + install plugins)"
+	@echo "  stow                      - Stow all packages (bash, git, nvim, vim, tmux)"
 	@echo "  stow-adopt                - Stow with --adopt (replaces repo files with existing ones)"
 	@echo "  unstow                    - Unstow all packages"
 	@echo "  stow-bash                 - Stow bash configuration"
 	@echo "  stow-git                  - Stow git configuration"
-	@echo "  stow-vim                  - Stow vim configuration and auto-install plugins + coc extensions"
+	@echo "  stow-nvim                 - Stow neovim config and sync lazy.nvim plugins"
+	@echo "  stow-vim                  - Stow vim configuration and auto-install plugins"
 	@echo "  stow-tmux                 - Stow tmux configuration"
 	@echo "  unstow-bash               - Unstow bash configuration"
 	@echo "  unstow-git                - Unstow git configuration"
+	@echo "  unstow-nvim               - Unstow neovim configuration"
 	@echo "  unstow-vim                - Unstow vim configuration"
 	@echo "  unstow-tmux               - Unstow tmux configuration"
 	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo (WSL only)"
@@ -159,11 +145,13 @@ help:
 	@echo "  obsidian-push             - Copy .obsidian, templates, scripts from repo to vault"
 
 # Stow targets
-stow: stow-bash stow-git stow-vim stow-tmux
+stow: stow-bash stow-git stow-nvim stow-vim stow-tmux
 
 stow-adopt:
 	@echo "Adopting existing files and stowing..."
 	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim tmux
+	@mkdir -p ~/.config
+	@stow -d $(DOTFILES_DIR) -t ~/.config --adopt nvim
 	@echo ""
 	@echo "✓ All packages stowed with --adopt!"
 	@echo ""
@@ -173,7 +161,7 @@ stow-adopt:
 	@echo "  To keep repo version: git restore ."
 	@echo "  To keep adopted version: git add . && git commit"
 
-unstow: unstow-bash unstow-git unstow-vim unstow-tmux
+unstow: unstow-bash unstow-git unstow-nvim unstow-vim unstow-tmux
 	@echo "✓ All packages unstowed successfully!"
 
 stow-bash:
@@ -198,15 +186,20 @@ stow-vim:
 	@vim +PlugInstall +qall >/dev/null 2>&1 || (echo "⚠ (plugin install failed)" && exit 1)
 	@echo "✓"
 
+stow-nvim:
+	@printf "  %-20s" "nvim"
+	@mkdir -p ~/.config
+	@stow -d $(DOTFILES_DIR) -t ~/.config nvim 2>&1 | sed 's/^/    /' || exit 1
+	@if command -v nvim >/dev/null 2>&1; then \
+		nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1 && echo "✓" || echo "⚠ (lazy.nvim sync failed, run :Lazy sync manually)"; \
+	else \
+		echo "⚠ (nvim not found, install with: sudo apt install neovim)"; \
+	fi
+
 stow-tmux:
 	@printf "  %-20s" "tmux"
 	@stow -d $(DOTFILES_DIR) -t ~ tmux 2>&1 | sed 's/^/    /' || exit 1
-	@if [ ! -d ~/.tmux/plugins/tpm ]; then \
-		echo "⚠ (TPM not found)"; \
-	else \
-		~/.tmux/plugins/tpm/bin/install_plugins >/dev/null 2>&1 || (echo "⚠ (plugin install failed)" && exit 1); \
-		echo "✓"; \
-	fi
+	@echo "✓"
 
 unstow-bash:
 	@echo "Unstowing bash..."
@@ -221,6 +214,10 @@ unstow-git:
 unstow-vim:
 	@echo "Unstowing vim..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D vim
+
+unstow-nvim:
+	@echo "Unstowing nvim..."
+	@stow -d $(DOTFILES_DIR) -t ~/.config -D nvim
 
 unstow-tmux:
 	@echo "Unstowing tmux..."
