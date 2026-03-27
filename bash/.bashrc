@@ -127,6 +127,9 @@ alias gacm='git add --all && git commit -m'
 alias gdc='git diff --cached'
 alias gdv='git difftool'
 
+# Neovim
+alias vim='nvim'
+
 # Ranger - source so cd-on-exit works
 alias r='. ranger'
 

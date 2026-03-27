@@ -2,40 +2,85 @@
 -- PLUGINS (lazy.nvim)
 -- ============================================================================
 
+-- Nord palette — single source of truth for all color references below
+local c = {
+  -- Polar Night
+  nord0  = "#2E3440",
+  nord1  = "#3B4252",
+  nord2  = "#434C5E",
+  nord3  = "#4C566A",
+  -- Snow Storm
+  nord4  = "#D8DEE9",
+  nord5  = "#E5E9F0",
+  nord6  = "#ECEFF4",
+  -- Frost
+  nord7  = "#8FBCBB",
+  nord8  = "#88C0D0",
+  nord9  = "#81A1C1",
+  nord10 = "#5E81AC",
+  -- Aurora
+  nord11 = "#BF616A",  -- red
+  nord12 = "#D08770",  -- orange
+  nord13 = "#EBCB8B",  -- yellow
+  nord14 = "#A3BE8C",  -- green
+  nord15 = "#B48EAD",  -- purple
+  -- Custom
+  comment = "#616E88",
+}
+
 require("lazy").setup({
 
   -- ==========================================================================
   -- Color Scheme: Nord
   -- ==========================================================================
-  -- See all options: https://github.com/shaunsingh/nord.nvim#configuration
   {
     "shaunsingh/nord.nvim",
     lazy = false,
     priority = 1000,
     config = function()
-      -- Set before calling nord.set()
-      vim.g.nord_contrast = true              -- darker bg on non-focused windows
-      vim.g.nord_borders = true               -- visible borders between splits
-      vim.g.nord_italic = false               -- disable italics
-      vim.g.nord_bold = true
+      vim.g.nord_contrast = true
+      vim.g.nord_borders = true
+      vim.g.nord_italic = false
+      vim.g.nord_bold = false
       vim.g.nord_uniform_diff_background = true
       vim.g.nord_enable_sidebar_background = true
       vim.g.nord_cursorline_transparent = false
+      vim.g.nord_disable_background = true
 
       require("nord").set()
 
-      -- Fine-tune specific highlights after loading.
-      -- Nord palette:
-      --   nord0=#2E3440  nord1=#3B4252  nord2=#434C5E  nord3=#4C566A
-      --   nord4=#D8DEE9  nord5=#E5E9F0  nord6=#ECEFF4
-      --   nord7=#8FBCBB  nord8=#88C0D0  nord9=#81A1C1  nord10=#5E81AC
-      --   nord11=#BF616A nord12=#D08770 nord13=#EBCB8B
-      --   nord14=#A3BE8C nord15=#B48EAD
-      vim.api.nvim_set_hl(0, "Comment",      { fg = "#616E88", italic = true })
-      vim.api.nvim_set_hl(0, "LineNr",       { fg = "#4C566A" })
-      vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#88C0D0", bold = true })
-      vim.api.nvim_set_hl(0, "MatchParen",   { fg = "#ECEFF4", bg = "#5E81AC", bold = true })
+      vim.api.nvim_set_hl(0, "Comment",      { fg = c.comment, italic = true })
+      vim.api.nvim_set_hl(0, "LineNr",       { fg = c.nord3 })
+      vim.api.nvim_set_hl(0, "CursorLineNr", { fg = c.nord8, bold = true })
+      vim.api.nvim_set_hl(0, "MatchParen",   { fg = c.nord6, bg = c.nord10, bold = true })
+
+      -- Neo-tree git status
+      vim.api.nvim_set_hl(0, "NeoTreeGitAdded",     { fg = c.nord14 })
+      vim.api.nvim_set_hl(0, "NeoTreeGitModified",  { fg = c.nord9 })
+      vim.api.nvim_set_hl(0, "NeoTreeGitDeleted",   { fg = c.nord11 })
+      vim.api.nvim_set_hl(0, "NeoTreeGitConflict",  { fg = c.nord11, bold = true })
+      vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = c.nord3 })
     end,
+  },
+
+  -- ==========================================================================
+  -- Markdown: visual heading backgrounds and code block shading
+  -- ==========================================================================
+  -- nord.nvim defines Headline1-6, CodeBlock, Dash, Quote automatically
+  {
+    "lukas-reineke/headlines.nvim",
+    ft = { "markdown", "org", "norg" },
+    opts = {
+      markdown = {
+        headline_highlights = {
+          "Headline1", "Headline2", "Headline3",
+          "Headline4", "Headline5", "Headline6",
+        },
+        codeblock_highlight = "CodeBlock",
+        dash_highlight       = "Dash",
+        quote_highlight      = "Quote",
+      },
+    },
   },
 
   -- ==========================================================================
@@ -176,7 +221,6 @@ require("lazy").setup({
   -- Git
   -- ==========================================================================
   { "tpope/vim-fugitive", cmd = { "Git", "G" } },
-
 
   -- ==========================================================================
   -- Minimap: replaces minimap.vim. Pure Lua, no binary needed.
