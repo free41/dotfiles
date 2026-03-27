@@ -53,49 +53,54 @@ fi
 # Prompt Configuration
 # ----------------------------------------------------------------------------
 
-# Function to get current git branch
-parse_git_branch() {
-    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+# Nerd Font prompt characters
+_NRD_L_CAP=$'\ue0b6'   # left rounded opening cap
+_NRD_R_CAP=$'\ue0b4'   # right rounded closing cap
+_NRD_SEP=$'\ue0b0'     # right chevron — interlocking segment divider
+_NRD_BRANCH=$'\ue0a0'  # git branch icon
+_E=$'\e'               # ESC — not expanded in double quotes, must use variable
+
+_set_prompt() {
+    local last_exit=$?
+    local branch short_path="${PWD/#$HOME/~}"
+    branch=$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+
+    local c_host="163;190;140"   # green
+    local c_path="129;161;193"   # blue
+    local c_branch="235;203;139" # yellow (clean)
+    local c_dark="46;52;64"
+
+    if [ -n "$branch" ] && [[ $(git status --porcelain 2>/dev/null) ]]; then
+        c_branch="191;97;106"    # red (dirty)
+    fi
+
+    # Build PS1 as the full segment bar on one line
+    # \001/\002 mark non-printing sequences so bash measures line width correctly
+    local o=$'\001' c=$'\002'
+    PS1=""
+    PS1+="${o}${_E}[38;2;${c_host}m${c}${_NRD_L_CAP}"
+    PS1+="${o}${_E}[48;2;${c_host}m${_E}[38;2;${c_dark}m${c} ${HOSTNAME%%.*} "
+    PS1+="${o}${_E}[48;2;${c_path}m${_E}[38;2;${c_host}m${c}${_NRD_SEP}"
+    PS1+="${o}${_E}[48;2;${c_path}m${_E}[38;2;${c_dark}m${c} ${short_path} "
+
+    if [ -n "$branch" ]; then
+        PS1+="${o}${_E}[48;2;${c_branch}m${_E}[38;2;${c_path}m${c}${_NRD_SEP}"
+        PS1+="${o}${_E}[48;2;${c_branch}m${_E}[38;2;${c_dark}m${c} ${_NRD_BRANCH} ${branch} "
+        PS1+="${o}${_E}[0m${_E}[38;2;${c_branch}m${c}${_NRD_R_CAP}"
+    else
+        PS1+="${o}${_E}[0m${_E}[38;2;${c_path}m${c}${_NRD_R_CAP}"
+    fi
+
+    PS1+="${o}${_E}[0m${c} "
+
+    case "$TERM" in
+    xterm*|rxvt*)
+        PS1="\[\e]0;\u@\h: \w\a\]$PS1"
+        ;;
+    esac
 }
 
-# Function to get git dirty indicator
-parse_git_dirty() {
-    [[ $(git status --porcelain 2>/dev/null) ]] && echo "*"
-}
-
- # Set a fancy prompt (non-color, unless we know we "want" color)
- case "$TERM" in
-     xterm-color|*-256color) color_prompt=yes;;
- esac
-
- # Uncomment for a colored prompt, if the terminal has the capability
-force_color_prompt=yes
-
- if [ -n "$force_color_prompt" ]; then
-     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
- 	# We have color support; assume it's compliant with Ecma-48 (ISO/IEC-6429)
- 	color_prompt=yes
-     else
- 	color_prompt=
-     fi
- fi
-
- # Configure the prompt based on color support
- if [ "$color_prompt" = yes ]; then
-     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;33m\]$(parse_git_branch)\[\033[01;31m\]$(parse_git_dirty)\[\033[00m\]\$ '
- else
-     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch)$(parse_git_dirty)\$ '
- fi
- unset color_prompt force_color_prompt
-
- # If this is an xterm set the title to user@host:dir
- case "$TERM" in
- xterm*|rxvt*)
-     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-     ;;
- *)
-     ;;
- esac
+PROMPT_COMMAND=_set_prompt
 
 # Enable color support of ls and add handy aliases
 if [ -x /usr/bin/dircolors ]; then
