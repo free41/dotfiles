@@ -53,6 +53,12 @@ Then `make all` will:
 4. Install tmux plugins via TPM
 5. Auto-install coc.nvim extensions (coc-yaml, coc-json) on first vim launch
 
+## Fonts
+
+Recommend Fira Code Nerd Font:
+
+https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.zip
+
 ## VSCode Setup
 
 VSCode settings are synced between WSL and Windows via copy commands (not
