@@ -13,8 +13,8 @@ require("lazy").setup({
     priority = 1000,
     config = function()
       vim.g.everforest_background = "hard"
-      vim.g.everforest_enable_italic = 0
-      vim.g.everforest_disable_italic_comment = 1
+      vim.g.everforest_enable_italic = 1
+      vim.g.everforest_disable_italic_comment = 0
       vim.g.everforest_better_performance = 1
       vim.g.everforest_transparent_background = 2
 

@@ -55,7 +55,9 @@ fi
 
 # Nerd Font prompt characters
 _NRD_L_CAP=$'\ue0b6'   # left rounded opening cap
+_NRD_L_CAP=''   # left rounded opening cap
 _NRD_R_CAP=$'\ue0b4'   # right rounded closing cap
+_NRD_R_CAP=$'\ue0b0'     # right chevron — interlocking segment divider
 _NRD_SEP=$'\ue0b0'     # right chevron — interlocking segment divider
 _NRD_BRANCH=$'\ue0a0'  # git branch icon
 _E=$'\e'               # ESC — not expanded in double quotes, must use variable
@@ -79,7 +81,7 @@ _set_prompt() {
     local o=$'\001' c=$'\002'
     PS1=""
     PS1+="${o}${_E}[38;2;${c_host}m${c}${_NRD_L_CAP}"
-    PS1+="${o}${_E}[48;2;${c_host}m${_E}[38;2;${c_dark}m${c} ${HOSTNAME%%.*} "
+    PS1+="${o}${_E}[48;2;${c_host}m${_E}[38;2;${c_dark}m${c} \u@${HOSTNAME%%.*} "
     PS1+="${o}${_E}[48;2;${c_path}m${_E}[38;2;${c_host}m${c}${_NRD_SEP}"
     PS1+="${o}${_E}[48;2;${c_path}m${_E}[38;2;${c_dark}m${c} ${short_path} "
 
