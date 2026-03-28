@@ -59,9 +59,10 @@ make vscode-extensions-install  # Install extensions from vscode/extensions.txt
 ## Important Configuration Details
 
 ### Color Scheme
-- **Theme**: Nord color scheme is used consistently across vim, tmux, and Windows Terminal
-- **Vim**: Uses `arcticicestudio/nord-vim` plugin
-- **Tmux**: Uses `arcticicestudio/nord-tmux` plugin via TPM
+- **Theme**: Everforest Dark Hard color scheme is used consistently across neovim, tmux, and bash prompt
+- **Neovim**: Uses `sainnhe/everforest` plugin
+- **Tmux**: Inline Everforest colors (no TPM required)
+- **Bash**: Prompt uses Everforest RGB colors (green/blue/yellow/red segments)
 
 ### Vim (vim/.vimrc)
 - Nord color scheme with true color support
@@ -70,7 +71,7 @@ make vscode-extensions-install  # Install extensions from vscode/extensions.txt
 - Auto-generates ctags on save for common file types
 
 ### Tmux (tmux/.tmux.conf)
-- Nord color scheme via TPM
+- Everforest Dark Hard color scheme (inline, no TPM)
 - Prefix: Ctrl+a (instead of Ctrl+b)
 - Seamless navigation with vim using Ctrl+hjkl
 - TPM plugins are installed automatically by `make stow-tmux`

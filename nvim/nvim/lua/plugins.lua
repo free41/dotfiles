@@ -2,71 +2,67 @@
 -- PLUGINS (lazy.nvim)
 -- ============================================================================
 
--- Nord palette — single source of truth for all color references below
+-- Everforest Dark Hard palette — single source of truth for all color references below
 local c = {
-  -- Polar Night
-  nord0  = "#2E3440",
-  nord1  = "#3B4252",
-  nord2  = "#434C5E",
-  nord3  = "#4C566A",
-  -- Snow Storm
-  nord4  = "#D8DEE9",
-  nord5  = "#E5E9F0",
-  nord6  = "#ECEFF4",
-  -- Frost
-  nord7  = "#8FBCBB",
-  nord8  = "#88C0D0",
-  nord9  = "#81A1C1",
-  nord10 = "#5E81AC",
-  -- Aurora
-  nord11 = "#BF616A",  -- red
-  nord12 = "#D08770",  -- orange
-  nord13 = "#EBCB8B",  -- yellow
-  nord14 = "#A3BE8C",  -- green
-  nord15 = "#B48EAD",  -- purple
+  -- Backgrounds
+  bg_dim = "#1e2326",
+  bg0    = "#272e33",
+  bg1    = "#2e383c",
+  bg2    = "#374145",
+  bg3    = "#414b50",
+  bg4    = "#495156",
+  -- Foreground
+  fg     = "#d3c6aa",
+  grey0  = "#7a8478",
+  grey1  = "#859289",
+  grey2  = "#9da9a0",
+  -- Colors
+  red    = "#e67e80",
+  orange = "#e69875",
+  yellow = "#dbbc7f",
+  green  = "#a7c080",
+  aqua   = "#83c092",
+  blue   = "#7fbbb3",
+  purple = "#d699b6",
   -- Custom
-  comment = "#616E88",
+  comment = "#859289",
 }
 
 require("lazy").setup({
 
   -- ==========================================================================
-  -- Color Scheme: Nord
+  -- Color Scheme: Everforest
   -- ==========================================================================
   {
-    "shaunsingh/nord.nvim",
+    "sainnhe/everforest",
     lazy = false,
     priority = 1000,
     config = function()
-      vim.g.nord_contrast = true
-      vim.g.nord_borders = true
-      vim.g.nord_italic = false
-      vim.g.nord_bold = false
-      vim.g.nord_uniform_diff_background = true
-      vim.g.nord_enable_sidebar_background = true
-      vim.g.nord_cursorline_transparent = false
-      vim.g.nord_disable_background = true
+      vim.g.everforest_background = "hard"
+      vim.g.everforest_enable_italic = 0
+      vim.g.everforest_disable_italic_comment = 1
+      vim.g.everforest_better_performance = 1
+      vim.g.everforest_transparent_background = 2
 
-      require("nord").set()
+      vim.cmd.colorscheme("everforest")
 
       vim.api.nvim_set_hl(0, "Comment",      { fg = c.comment, italic = true })
-      vim.api.nvim_set_hl(0, "LineNr",       { fg = c.nord3 })
-      vim.api.nvim_set_hl(0, "CursorLineNr", { fg = c.nord8, bold = true })
-      vim.api.nvim_set_hl(0, "MatchParen",   { fg = c.nord6, bg = c.nord10, bold = true })
+      vim.api.nvim_set_hl(0, "LineNr",       { fg = c.grey0 })
+      vim.api.nvim_set_hl(0, "CursorLineNr", { fg = c.aqua, bold = true })
+      vim.api.nvim_set_hl(0, "MatchParen",   { fg = c.fg, bg = c.blue, bold = true })
 
       -- Neo-tree git status
-      vim.api.nvim_set_hl(0, "NeoTreeGitAdded",     { fg = c.nord14 })
-      vim.api.nvim_set_hl(0, "NeoTreeGitModified",  { fg = c.nord9 })
-      vim.api.nvim_set_hl(0, "NeoTreeGitDeleted",   { fg = c.nord11 })
-      vim.api.nvim_set_hl(0, "NeoTreeGitConflict",  { fg = c.nord11, bold = true })
-      vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = c.nord3 })
+      vim.api.nvim_set_hl(0, "NeoTreeGitAdded",     { fg = c.green })
+      vim.api.nvim_set_hl(0, "NeoTreeGitModified",  { fg = c.blue })
+      vim.api.nvim_set_hl(0, "NeoTreeGitDeleted",   { fg = c.red })
+      vim.api.nvim_set_hl(0, "NeoTreeGitConflict",  { fg = c.red, bold = true })
+      vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = c.grey0 })
     end,
   },
 
   -- ==========================================================================
   -- Markdown: visual heading backgrounds and code block shading
   -- ==========================================================================
-  -- nord.nvim defines Headline1-6, CodeBlock, Dash, Quote automatically
   {
     "lukas-reineke/headlines.nvim",
     ft = { "markdown", "org", "norg" },
@@ -191,6 +187,28 @@ require("lazy").setup({
   },
 
   -- ==========================================================================
+  -- Completion
+  -- ==========================================================================
+  {
+    "saghen/blink.cmp",
+    version = "*",
+    opts = {
+      keymap = {
+        preset    = "super-tab",  -- Tab/S-Tab to navigate, CR to confirm
+        ["<C-u>"] = { "scroll_documentation_up",   "fallback" },
+        ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+      },
+      appearance = { nerd_font_variant = "mono" },
+      completion = {
+        documentation = { auto_show = true, auto_show_delay_ms = 200 },
+      },
+      sources = {
+        default = { "lsp", "path", "buffer" },
+      },
+    },
+  },
+
+  -- ==========================================================================
   -- Editing
   -- ==========================================================================
 
@@ -261,7 +279,7 @@ require("lazy").setup({
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       options = {
-        theme = "nord",
+        theme = "everforest",
         component_separators = { left = "|", right = "|" },
         section_separators   = { left = "",  right = "" },
       },
