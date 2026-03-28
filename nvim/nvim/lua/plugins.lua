@@ -61,25 +61,6 @@ require("lazy").setup({
   },
 
   -- ==========================================================================
-  -- Markdown: visual heading backgrounds and code block shading
-  -- ==========================================================================
-  {
-    "lukas-reineke/headlines.nvim",
-    ft = { "markdown", "org", "norg" },
-    opts = {
-      markdown = {
-        headline_highlights = {
-          "Headline1", "Headline2", "Headline3",
-          "Headline4", "Headline5", "Headline6",
-        },
-        codeblock_highlight = "CodeBlock",
-        dash_highlight       = "Dash",
-        quote_highlight      = "Quote",
-      },
-    },
-  },
-
-  -- ==========================================================================
   -- Navigation
   -- ==========================================================================
 
