@@ -28,12 +28,6 @@ vim.lsp.config('ruff', {
   cmd          = { 'ruff', 'server' },
   filetypes    = { 'python' },
   root_markers = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', '.git' },
-  init_options = {
-    settings = {
-      -- ruff-specific settings here, e.g.:
-      -- logLevel = 'warn',
-    },
-  },
 })
 vim.lsp.enable('ruff')
 
