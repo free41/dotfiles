@@ -5,6 +5,16 @@
 --   uv tool install ruff
 -- ============================================================================
 
+-- Neovim 0.11 unconditionally calls vim.treesitter.start() in hover floats.
+-- Wrap it so a missing parser falls back to basic syntax instead of erroring.
+local _ts_start = vim.treesitter.start
+vim.treesitter.start = function(bufnr, lang)
+  local ok = pcall(_ts_start, bufnr, lang)
+  if not ok then
+    pcall(function() vim.bo[bufnr].syntax = lang end)
+  end
+end
+
 -- ty: type checking (https://docs.astral.sh/ty/editors/#neovim)
 vim.lsp.config('ty', {
   cmd          = { 'ty', 'server' },
