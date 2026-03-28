@@ -65,13 +65,13 @@ _set_prompt() {
     local branch short_path="${PWD/#$HOME/~}"
     branch=$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 
-    local c_host="163;190;140"   # green
-    local c_path="129;161;193"   # blue
-    local c_branch="235;203;139" # yellow (clean)
-    local c_dark="46;52;64"
+    local c_host="167;192;128"   # everforest green (#a7c080)
+    local c_path="127;187;179"   # everforest blue (#7fbbb3)
+    local c_branch="219;188;127" # everforest yellow (#dbbc7f, clean)
+    local c_dark="46;56;60"      # everforest bg1 (#2e383c)
 
     if [ -n "$branch" ] && [[ $(git status --porcelain 2>/dev/null) ]]; then
-        c_branch="191;97;106"    # red (dirty)
+        c_branch="230;126;128"   # everforest red (#e67e80, dirty)
     fi
 
     # Build PS1 as the full segment bar on one line
