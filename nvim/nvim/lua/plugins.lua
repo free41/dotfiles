@@ -2,32 +2,6 @@
 -- PLUGINS (lazy.nvim)
 -- ============================================================================
 
--- Everforest Dark Hard palette — single source of truth for all color references below
-local c = {
-  -- Backgrounds
-  bg_dim = "#1e2326",
-  bg0    = "#272e33",
-  bg1    = "#2e383c",
-  bg2    = "#374145",
-  bg3    = "#414b50",
-  bg4    = "#495156",
-  -- Foreground
-  fg     = "#d3c6aa",
-  grey0  = "#7a8478",
-  grey1  = "#859289",
-  grey2  = "#9da9a0",
-  -- Colors
-  red    = "#e67e80",
-  orange = "#e69875",
-  yellow = "#dbbc7f",
-  green  = "#a7c080",
-  aqua   = "#83c092",
-  blue   = "#7fbbb3",
-  purple = "#d699b6",
-  -- Custom
-  comment = "#859289",
-}
-
 require("lazy").setup({
 
   -- ==========================================================================
@@ -261,8 +235,6 @@ require("lazy").setup({
     opts = {
       options = {
         theme = "everforest",
-        component_separators = { left = "|", right = "|" },
-        section_separators   = { left = "",  right = "" },
       },
       sections = {
         lualine_a = { "mode" },
