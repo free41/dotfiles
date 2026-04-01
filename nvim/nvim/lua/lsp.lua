@@ -31,6 +31,26 @@ vim.lsp.config('ruff', {
 })
 vim.lsp.enable('ruff')
 
+-- pyright: completions only (ty owns diagnostics/hover, ruff owns lint)
+vim.lsp.config('pyright', {
+  cmd          = { 'pyright-langserver', '--stdio' },
+  filetypes    = { 'python' },
+  root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', '.git' },
+  settings = {
+    pyright = {
+      -- disable pyright's own diagnostics; ty handles those
+      disableOrganizeImports = true,
+    },
+    python = {
+      analysis = {
+        diagnosticMode   = 'off',
+        typeCheckingMode = 'off',
+      },
+    },
+  },
+})
+vim.lsp.enable('pyright')
+
 -- Disable ruff's hover so ty handles it (ty owns type info, ruff owns lint)
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('ruff_no_hover', { clear = true }),
@@ -38,6 +58,20 @@ vim.api.nvim_create_autocmd('LspAttach', {
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if client and client.name == 'ruff' then
       client.server_capabilities.hoverProvider = false
+    end
+    if client and client.name == 'pyright' then
+      client.server_capabilities.hoverProvider              = false
+      client.server_capabilities.diagnosticProvider         = false
+      client.server_capabilities.referencesProvider         = false
+      client.server_capabilities.definitionProvider         = false
+      client.server_capabilities.typeDefinitionProvider     = false
+      client.server_capabilities.implementationProvider     = false
+      client.server_capabilities.renameProvider             = false
+      -- Ensure '(' and ',' trigger kwarg completions
+      local cp = client.server_capabilities.completionProvider
+      if cp then
+        cp.triggerCharacters = vim.list_extend(cp.triggerCharacters or {}, { '(', ',' })
+      end
     end
   end,
 })

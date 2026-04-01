@@ -160,7 +160,7 @@ require("lazy").setup({
     version = "*",
     opts = {
       keymap = {
-        preset    = "super-tab",  -- Tab/S-Tab to navigate, CR to confirm
+        preset    = "enter",
         ["<C-u>"] = { "scroll_documentation_up",   "fallback" },
         ["<C-d>"] = { "scroll_documentation_down", "fallback" },
       },
@@ -170,6 +170,19 @@ require("lazy").setup({
       },
       sources = {
         default = { "lsp", "path", "buffer" },
+        providers = {
+          lsp = {
+            -- Float kwargs (label ends with '=') to the top of the list
+            transform_items = function(_, items)
+              for _, item in ipairs(items) do
+                if item.label:match("=$") then
+                  item.score_offset = (item.score_offset or 0) + 10
+                end
+              end
+              return items
+            end,
+          },
+        },
       },
     },
   },
