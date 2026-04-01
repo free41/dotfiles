@@ -20,6 +20,17 @@ require("lazy").setup({
 
       vim.cmd.colorscheme("everforest")
 
+      -- Everforest Dark Hard palette
+      local c = {
+        comment = "#859289",
+        grey0   = "#7a8478",
+        aqua    = "#83c092",
+        fg      = "#d3c6aa",
+        blue    = "#7fbbb3",
+        green   = "#a7c080",
+        red     = "#e67e80",
+      }
+
       vim.api.nvim_set_hl(0, "Comment",      { fg = c.comment, italic = true })
       vim.api.nvim_set_hl(0, "LineNr",       { fg = c.grey0 })
       vim.api.nvim_set_hl(0, "CursorLineNr", { fg = c.aqua, bold = true })
