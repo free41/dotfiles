@@ -27,9 +27,14 @@ install:
 	@echo "║                      Installing required dependencies                      ║"
 	@echo "╚════════════════════════════════════════════════════════════════════════════╝"
 	@echo ""
-	@echo "→ Adding neovim PPA (latest stable builds)..."
-	@sudo add-apt-repository -y ppa:neovim-ppa/unstable 2>&1 | sed 's/^/  /'
-	@echo ""
+	@if grep -qi 'ID=ubuntu' /etc/os-release 2>/dev/null; then \
+		echo "→ Ubuntu detected: adding neovim PPA (latest stable builds)..."; \
+		sudo add-apt-repository -y ppa:neovim-ppa/unstable 2>&1 | sed 's/^/  /'; \
+		echo ""; \
+	else \
+		echo "→ Debian/PiOS detected: skipping Ubuntu PPA, using distro neovim..."; \
+		echo ""; \
+	fi
 	@echo "→ Updating package lists..."
 	@sudo apt update 2>&1 | sed 's/^/  /'
 	@echo ""
@@ -37,10 +42,8 @@ install:
 	@sudo apt install -y \
 		stow \
 		git \
-		fonts-firacode \
 		tmux \
 		neovim \
-		vim-gtk3 \
 		curl \
 		build-essential \
 		ripgrep \

@@ -140,9 +140,11 @@ alias vim='nvim'
 # Ranger - source so cd-on-exit works
 alias r='. ranger'
 
-# WSL/Windows integration aliases
-alias open='explorer.exe .'
-alias e='explorer.exe .'
+# WSL/Windows integration aliases (only in WSL)
+if grep -qi microsoft /proc/version 2>/dev/null; then
+    alias open='explorer.exe .'
+    alias e='explorer.exe .'
+fi
 
 # Git diff against dev branch
 # Usage: gdd [file]           - diff current branch vs dev
