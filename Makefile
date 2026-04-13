@@ -16,12 +16,16 @@ OBSIDIAN_VAULT_PATH := ~/Vault
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help install stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux vscode-fetch vscode-push obsidian-fetch obsidian-push
+.PHONY: all help install install-server _apt-setup stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux vscode-fetch vscode-push obsidian-fetch obsidian-push
+
+# Package lists
+PACKAGES_BASE   := stow git tmux curl build-essential ripgrep tree fzf make
+PACKAGES_DESKTOP := neovim xclip
 
 # Default target
 .DEFAULT_GOAL := all
 
-install:
+_apt-setup:
 	@echo ""
 	@echo "╔════════════════════════════════════════════════════════════════════════════╗"
 	@echo "║                      Installing required dependencies                      ║"
@@ -32,45 +36,23 @@ install:
 		sudo add-apt-repository -y ppa:neovim-ppa/unstable 2>&1 | sed 's/^/  /'; \
 		echo ""; \
 	else \
-		echo "→ Debian/PiOS detected: skipping Ubuntu PPA, using distro neovim..."; \
+		echo "→ Debian/PiOS detected: skipping Ubuntu PPA, using distro packages..."; \
 		echo ""; \
 	fi
 	@echo "→ Updating package lists..."
 	@sudo apt update 2>&1 | sed 's/^/  /'
 	@echo ""
-	@echo "→ Installing core packages..."
-	@sudo apt install -y \
-		stow \
-		git \
-		tmux \
-		neovim \
-		curl \
-		build-essential \
-		ripgrep \
-		tree \
-		xclip \
-		fzf 2>&1 | sed 's/^/  /'
+
+_apt-done:
 	@echo ""
 	@echo "╔════════════════════════════════════════════════════════════════════════════╗"
 	@echo "║                        ✓ All dependencies installed!                       ║"
 	@echo "╚════════════════════════════════════════════════════════════════════════════╝"
 	@echo ""
-	@echo "→ Checking neovim version..."
-	@if command -v nvim >/dev/null 2>&1; then \
-		NVIM_VERSION=$$(nvim --version | head -1 | sed 's/NVIM v//'); \
-		echo "  ✓ Neovim $$NVIM_VERSION is installed"; \
-	else \
-		echo "  ⚠ Neovim not found (was just installed above, try restarting shell)"; \
-	fi
-	@echo ""
 	@echo "┌─ Optional Installations ───────────────────────────────────────────────────┐"
 	@echo "│                                                                            │"
 	@echo "│  uv (Python package and tool manager):                                     │"
 	@echo "│    curl -LsSf https://astral.sh/uv/install.sh | sh                         │"
-	@echo "│                                                                            │"
-	@echo "│  Python LSP servers (install manually, neovim picks them up automatically): │"
-	@echo "│    uv tool install ruff                  # linting + formatting            │"
-	@echo "│    uv tool install ty                     # type checking (Astral)         │"
 	@echo "│                                                                            │"
 	@echo "│  tailscale                                                                 │"
 	@echo "│    curl -fsSL https://tailscale.com/install.sh | sh                        │"
@@ -86,6 +68,24 @@ install:
 	@echo "│  3. Restart your shell or run 'source ~/.bashrc'                           │"
 	@echo "│                                                                            │"
 	@echo "└────────────────────────────────────────────────────────────────────────────┘"
+
+install: _apt-setup
+	@echo "→ Installing packages..."
+	@sudo apt install -y $(PACKAGES_BASE) $(PACKAGES_DESKTOP) 2>&1 | sed 's/^/  /'
+	@echo ""
+	@echo "→ Checking neovim version..."
+	@if command -v nvim >/dev/null 2>&1; then \
+		NVIM_VERSION=$$(nvim --version | head -1 | sed 's/NVIM v//'); \
+		echo "  ✓ Neovim $$NVIM_VERSION is installed"; \
+	else \
+		echo "  ⚠ Neovim not found (was just installed above, try restarting shell)"; \
+	fi
+	@$(MAKE) --no-print-directory _apt-done
+
+install-server: _apt-setup
+	@echo "→ Installing packages (server, no neovim)..."
+	@sudo apt install -y $(PACKAGES_BASE) vim 2>&1 | sed 's/^/  /'
+	@$(MAKE) --no-print-directory _apt-done
 	@echo ""
 
 all:
@@ -130,7 +130,8 @@ all:
 
 help:
 	@echo "Available targets:"
-	@echo "  install                   - Install all required dependencies (stow, git, neovim, tmux, etc.)"
+	@echo "  install                   - Install all dependencies including neovim"
+	@echo "  install-server            - Install dependencies without neovim (uses vim)"
 	@echo "  all                       - Setup dotfiles (stow all packages + install plugins)"
 	@echo "  stow                      - Stow all packages (bash, git, nvim, vim, tmux)"
 	@echo "  stow-adopt                - Stow with --adopt (replaces repo files with existing ones)"
