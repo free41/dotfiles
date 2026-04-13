@@ -19,7 +19,7 @@ OBSIDIAN_VAULT_PATH := ~/Vault
 .PHONY: all help install install-server _apt-setup stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux vscode-fetch vscode-push obsidian-fetch obsidian-push
 
 # Package lists
-PACKAGES_BASE   := stow git tmux curl build-essential ripgrep tree fzf make
+PACKAGES_BASE   := stow git tmux curl build-essential ripgrep tree fzf make iperf3 net-tools traceroute
 PACKAGES_DESKTOP := neovim xclip
 
 # Default target
