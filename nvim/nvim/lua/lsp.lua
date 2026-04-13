@@ -17,25 +17,28 @@ end
 
 -- ty: type checking (https://docs.astral.sh/ty/editors/#neovim)
 vim.lsp.config('ty', {
-  cmd          = { 'ty', 'server' },
-  filetypes    = { 'python' },
-  root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', '.git' },
+  cmd               = { 'ty', 'server' },
+  filetypes         = { 'python' },
+  root_markers      = { 'pyproject.toml', 'setup.py', 'setup.cfg', '.git' },
+  capabilities      = { general = { positionEncodings = { 'utf-16' } } },
 })
 vim.lsp.enable('ty')
 
 -- ruff: linting + formatting (https://docs.astral.sh/ruff/editors/setup/#neovim)
 vim.lsp.config('ruff', {
-  cmd          = { 'ruff', 'server' },
-  filetypes    = { 'python' },
-  root_markers = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', '.git' },
+  cmd               = { 'ruff', 'server' },
+  filetypes         = { 'python' },
+  root_markers      = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', '.git' },
+  capabilities      = { general = { positionEncodings = { 'utf-16' } } },
 })
 vim.lsp.enable('ruff')
 
 -- pyright: completions only (ty owns diagnostics/hover, ruff owns lint)
 vim.lsp.config('pyright', {
-  cmd          = { 'pyright-langserver', '--stdio' },
-  filetypes    = { 'python' },
-  root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', '.git' },
+  cmd               = { 'pyright-langserver', '--stdio' },
+  filetypes         = { 'python' },
+  root_markers      = { 'pyproject.toml', 'setup.py', 'setup.cfg', '.git' },
+  capabilities      = { general = { positionEncodings = { 'utf-16' } } },
   settings = {
     pyright = {
       -- disable pyright's own diagnostics; ty handles those
@@ -84,11 +87,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.keymap.set('n', keys, func, { buffer = ev.buf, silent = true, desc = desc })
     end
 
-    -- Navigation (matches old coc.nvim bindings)
-    map('gd', vim.lsp.buf.definition,      'Go to definition')
-    map('gy', vim.lsp.buf.type_definition,  'Go to type definition')
-    map('gi', vim.lsp.buf.implementation,  'Go to implementation')
-    map('gr', vim.lsp.buf.references,      'References')
+    -- Navigation via Telescope pickers
+    map('gd', '<cmd>Telescope lsp_definitions<CR>',      'Go to definition')
+    map('gy', '<cmd>Telescope lsp_type_definitions<CR>',  'Go to type definition')
+    map('gi', '<cmd>Telescope lsp_implementations<CR>',  'Go to implementation')
+    map('gr', '<cmd>Telescope lsp_references<CR>',      'References')
     map('K',  vim.lsp.buf.hover,           'Hover docs')
 
     -- Diagnostics (matches old [g / ]g)

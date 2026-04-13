@@ -113,7 +113,7 @@ require("lazy").setup({
   -- ==========================================================================
   {
     "nvim-telescope/telescope.nvim",
-    tag = "0.1.8",
+    version = "*",
     dependencies = {
       "nvim-lua/plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
@@ -124,7 +124,7 @@ require("lazy").setup({
       { "<leader>b", ":Telescope buffers<CR>",                   desc = "Buffers" },
       { "<leader>g", ":Telescope live_grep<CR>",                 desc = "Live grep" },
       { "<leader>/", ":Telescope current_buffer_fuzzy_find<CR>", desc = "Buffer search" },
-      { "<leader>s", ":Telescope lsp_document_symbols<CR>",      desc = "Symbols" },
+      { "<leader>s", ":Telescope lsp_workspace_symbols<CR>",      desc = "Workspace symbols" },
     },
     config = function()
       local telescope = require("telescope")
