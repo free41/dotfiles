@@ -79,8 +79,11 @@ install:
 	@echo ""
 	@echo "┌─ Next Steps ───────────────────────────────────────────────────────────────┐"
 	@echo "│                                                                            │"
-	@echo "│  1. Run 'make all' to setup dotfiles                                       │"
-	@echo "│  2. Restart your shell or run 'source ~/.bashrc'                           │"
+	@echo "│  1. Import SSH keys from GitHub:                                           │"
+	@echo "│       ssh-import-id gh:<github-username>                                   │"
+	@echo "│                                                                            │"
+	@echo "│  2. Run 'make all' to setup dotfiles                                       │"
+	@echo "│  3. Restart your shell or run 'source ~/.bashrc'                           │"
 	@echo "│                                                                            │"
 	@echo "└────────────────────────────────────────────────────────────────────────────┘"
 	@echo ""
@@ -186,7 +189,7 @@ stow-git:
 stow-vim:
 	@printf "  %-20s" "vim"
 	@stow -d $(DOTFILES_DIR) -t ~ vim 2>&1 | sed 's/^/    /' || exit 1
-	@vim +PlugInstall +qall >/dev/null 2>&1 || (echo "⚠ (plugin install failed)" && exit 1)
+	@rm -rf ~/.vim/plugged ~/.vim/autoload
 	@echo "✓"
 
 stow-nvim:
