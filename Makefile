@@ -16,7 +16,7 @@ OBSIDIAN_VAULT_PATH := ~/Vault
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help install install-server _apt-setup stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux vscode-fetch vscode-push obsidian-fetch obsidian-push
+.PHONY: all help install install-server _apt-setup stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux stow-streamlit unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux unstow-streamlit vscode-fetch vscode-push obsidian-fetch obsidian-push
 
 # Package lists
 PACKAGES_BASE   := stow git tmux curl build-essential ripgrep tree fzf make iperf3 net-tools traceroute
@@ -133,7 +133,7 @@ help:
 	@echo "  install                   - Install all dependencies including neovim"
 	@echo "  install-server            - Install dependencies without neovim (uses vim)"
 	@echo "  all                       - Setup dotfiles (stow all packages + install plugins)"
-	@echo "  stow                      - Stow all packages (bash, git, nvim, vim, tmux)"
+	@echo "  stow                      - Stow all packages (bash, git, nvim, vim, tmux, streamlit)"
 	@echo "  stow-adopt                - Stow with --adopt (replaces repo files with existing ones)"
 	@echo "  unstow                    - Unstow all packages"
 	@echo "  stow-bash                 - Stow bash configuration"
@@ -141,22 +141,24 @@ help:
 	@echo "  stow-nvim                 - Stow neovim config and sync lazy.nvim plugins"
 	@echo "  stow-vim                  - Stow vim configuration and auto-install plugins"
 	@echo "  stow-tmux                 - Stow tmux configuration"
+	@echo "  stow-streamlit            - Stow streamlit configuration"
 	@echo "  unstow-bash               - Unstow bash configuration"
 	@echo "  unstow-git                - Unstow git configuration"
 	@echo "  unstow-nvim               - Unstow neovim configuration"
 	@echo "  unstow-vim                - Unstow vim configuration"
 	@echo "  unstow-tmux               - Unstow tmux configuration"
+	@echo "  unstow-streamlit          - Unstow streamlit configuration"
 	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo (WSL only)"
 	@echo "  vscode-push               - Copy VSCode config from repo to Windows (WSL only)"
 	@echo "  obsidian-fetch            - Copy .obsidian, templates, scripts from vault to repo (existing files only)"
 	@echo "  obsidian-push             - Copy .obsidian, templates, scripts from repo to vault"
 
 # Stow targets
-stow: stow-bash stow-git stow-nvim stow-vim stow-tmux
+stow: stow-bash stow-git stow-nvim stow-vim stow-tmux stow-streamlit
 
 stow-adopt:
 	@echo "Adopting existing files and stowing..."
-	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim tmux
+	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim tmux streamlit
 	@mkdir -p ~/.config
 	@stow -d $(DOTFILES_DIR) -t ~/.config --adopt nvim
 	@echo ""
@@ -168,7 +170,7 @@ stow-adopt:
 	@echo "  To keep repo version: git restore ."
 	@echo "  To keep adopted version: git add . && git commit"
 
-unstow: unstow-bash unstow-git unstow-nvim unstow-vim unstow-tmux
+unstow: unstow-bash unstow-git unstow-nvim unstow-vim unstow-tmux unstow-streamlit
 	@echo "✓ All packages unstowed successfully!"
 
 stow-bash:
@@ -208,6 +210,11 @@ stow-tmux:
 	@stow -d $(DOTFILES_DIR) -t ~ tmux 2>&1 | sed 's/^/    /' || exit 1
 	@echo "✓"
 
+stow-streamlit:
+	@printf "  %-20s" "streamlit"
+	@stow -d $(DOTFILES_DIR) -t ~ streamlit 2>&1 | sed 's/^/    /' || exit 1
+	@echo "✓"
+
 unstow-bash:
 	@echo "Unstowing bash..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D bash
@@ -229,6 +236,10 @@ unstow-nvim:
 unstow-tmux:
 	@echo "Unstowing tmux..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D tmux
+
+unstow-streamlit:
+	@echo "Unstowing streamlit..."
+	@stow -d $(DOTFILES_DIR) -t ~ -D streamlit
 
 # VSCode targets
 vscode-fetch:

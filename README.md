@@ -85,6 +85,7 @@ Each directory represents a package that can be independently installed:
 - `vim/` - Vim configuration (.vimrc with nord theme)
 - `tmux/` - Tmux configuration (.tmux.conf with nord theme)
 - `python/` - Python project templates and tooling
+- `streamlit/` - Streamlit configuration (config.toml, usage stats disabled)
 - `vscode/` - VSCode configuration (settings.json, extensions.txt)
 
 ## Features
