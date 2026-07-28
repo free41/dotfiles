@@ -118,6 +118,7 @@ require("lazy").setup({
       "nvim-lua/plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
+    cmd = "Telescope",
     keys = {
       { "<leader>f", ":Telescope find_files<CR>",                desc = "Find files" },
       { "<C-p>",     ":Telescope find_files<CR>",                desc = "Find files" },
