@@ -34,7 +34,7 @@ require("lazy").setup({
       vim.api.nvim_set_hl(0, "Comment",      { fg = c.comment, italic = true })
       vim.api.nvim_set_hl(0, "LineNr",       { fg = c.grey0 })
       vim.api.nvim_set_hl(0, "CursorLineNr", { fg = c.aqua, bold = true })
-      vim.api.nvim_set_hl(0, "MatchParen",   { fg = c.fg, bg = c.blue, bold = true })
+      vim.api.nvim_set_hl(0, "MatchParen",   { fg = c.aqua, bold = true , underline = true})
 
       -- Neo-tree git status
       vim.api.nvim_set_hl(0, "NeoTreeGitAdded",     { fg = c.green })
@@ -162,12 +162,17 @@ require("lazy").setup({
     opts = {
       keymap = {
         preset    = "enter",
+        ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+        ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
         ["<C-u>"] = { "scroll_documentation_up",   "fallback" },
         ["<C-d>"] = { "scroll_documentation_down", "fallback" },
       },
       appearance = { nerd_font_variant = "mono" },
       completion = {
         documentation = { auto_show = true, auto_show_delay_ms = 200 },
+        list = { 
+            selection = { preselect = false, auto_insert = true }, 
+        },
       },
       sources = {
         default = { "lsp", "path", "buffer" },
