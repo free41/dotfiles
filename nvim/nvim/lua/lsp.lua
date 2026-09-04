@@ -92,6 +92,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     map('gy', '<cmd>Telescope lsp_type_definitions<CR>',  'Go to type definition')
     map('gi', '<cmd>Telescope lsp_implementations<CR>',  'Go to implementation')
     map('gr', '<cmd>Telescope lsp_references<CR>',      'References')
+    map('<leader>s', '<cmd>Telescope lsp_dynamic_workspace_symbols<CR>',      'Workspace symbols')
     map('K',  vim.lsp.buf.hover,           'Hover docs')
 
     -- Diagnostics (matches old [g / ]g)
