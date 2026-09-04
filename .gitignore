@@ -14,3 +14,4 @@ tmux/.tmux/plugins/*
 # Vim plugins and generated files
 vim/.vim/plugged/
 vim/.vim/autoload/
+.cptr
