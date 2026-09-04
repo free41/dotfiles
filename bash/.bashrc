@@ -306,9 +306,12 @@ fi
 # Environment Variables
 # ----------------------------------------------------------------------------
 
-# Add ~/.local/bin to PATH
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$PATH:$HOME/.lmstudio/bin"
+# Add to PATH once, even in nested shells
+path_prepend() { case ":$PATH:" in *":$1:"*) ;; *) PATH="$1:$PATH" ;; esac; }
+path_append()  { case ":$PATH:" in *":$1:"*) ;; *) PATH="$PATH:$1" ;; esac; }
+path_prepend "$HOME/.local/bin"
+path_append  "$HOME/.lmstudio/bin"
+export PATH
 
 # Disable mouse reporting if not in tmux (prevents scroll producing escape codes)
 if [ -z "$TMUX" ]; then
@@ -329,7 +332,4 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # Load nvm bash_completion
 
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/home/brandon/.lmstudio/bin"
-# End of LM Studio CLI section
 
