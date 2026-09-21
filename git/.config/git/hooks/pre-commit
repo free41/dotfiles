@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# Global pre-commit hook — block credentials from entering git.
+# Installed via core.hooksPath (see dotfiles/git/.gitconfig), so it applies to
+# EVERY repo on this machine.
+#
+# Bypass a false positive in three ways:
+#   1. add "pragma: allowlist secret" on the offending line
+#   2. name the file *.example / *.template / *.sample / *.dist
+#   3. git commit --no-verify   (last resort)
+set -uo pipefail
+
+RED=$'\033[31m'; YEL=$'\033[33m'; DIM=$'\033[2m'; OFF=$'\033[0m'
+fail=0
+
+# ── example/template files legitimately show the SHAPE of secrets ────────────
+is_example() {
+  case "${1##*/}" in
+    *.example|*.example.*|*.template|*.tmpl|*.sample|*.dist) return 0 ;;
+  esac
+  return 1
+}
+
+# Obvious placeholders — never real credentials
+PLACEHOLDER='(changeme|change_me|your[-_ ]?[a-z_]*here|yourkey|yourtoken|placeholder|example|dummy|redacted|xxxx+|<[^>]+>|\$\{[^}]+\}|\.\.\.)'
+
+# ── high confidence: real, recognisable credential formats ───────────────────
+# Checked in EVERY file, examples included — these are never legitimate.
+HIGH='AKIA[0-9A-Z]{16}'
+HIGH+='|gh[pousr]_[A-Za-z0-9]{36}'
+HIGH+='|github_pat_[A-Za-z0-9_]{80,}'
+HIGH+='|xox[baprs]-[A-Za-z0-9-]{10,}'
+HIGH+='|sk_live_[A-Za-z0-9]{20,}'
+HIGH+='|-----BEGIN [A-Z ]*PRIVATE KEY-----'
+HIGH+='|eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.'
+HIGH+='|AIza[0-9A-Za-z_-]{35}'
+
+# ── generic: key=value assignments with a long opaque value ──────────────────
+# Skipped in example/template files, where this is exactly the point.
+GENERIC='(password|passwd|pwd|passphrase|secret|token|api[_-]?key|apikey|access[_-]?key|client[_-]?secret|private[_-]?key|credential)'
+GENERIC+='[[:space:]]*[=:][[:space:]]*'
+GENERIC+="['\"]?[A-Za-z0-9/+=_.-]{16,}"
+
+# ── filenames that should never be committed ─────────────────────────────────
+BADNAME='(^|/)(\.env|\.env\.[a-z]+|.*\.pem|.*\.key|.*\.p12|.*\.pfx|.*\.keystore|id_rsa|id_ecdsa|id_ed25519|.*[._-]credentials.*|\.netrc|\.pgpass)$'
+
+report() { printf '  %s%s%s  %s\n' "$RED" "$1" "$OFF" "$2"; fail=1; }
+
+# Only added/changed lines of staged, non-deleted files
+mapfile -t files < <(git diff --cached --name-only --diff-filter=ACMR)
+[ ${#files[@]} -eq 0 ] && exit 0
+
+for f in "${files[@]}"; do
+  # --- filename check (examples exempt) ---
+  if ! is_example "$f" && [[ "$f" =~ $BADNAME ]]; then
+    report "FILENAME" "$f ${DIM}— looks like a credentials file${OFF}"
+    continue
+  fi
+
+  # binary? skip content scan
+  git diff --cached --numstat -- "$f" | grep -q '^-' && continue
+
+  added=$(git diff --cached -U0 -- "$f" | sed -n 's/^+\([^+].*\)/\1/p')
+  [ -z "$added" ] && continue
+  # honour inline allowlist pragma
+  added=$(grep -v 'pragma: allowlist secret' <<<"$added")
+  [ -z "$added" ] && continue
+
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    if grep -qEi "$HIGH" <<<"$line"; then
+      report "SECRET  " "$f ${DIM}— ${line:0:60}${OFF}"
+      continue
+    fi
+    is_example "$f" && continue                       # generic rule off for examples
+    grep -qEi "$PLACEHOLDER" <<<"$line" && continue   # obvious placeholder
+    if grep -qEi "$GENERIC" <<<"$line"; then
+      report "LIKELY  " "$f ${DIM}— ${line:0:60}${OFF}"
+    fi
+  done <<<"$added"
+done
+
+if [ "$fail" -ne 0 ]; then
+  cat >&2 <<EOF
+
+${RED}✖ pre-commit: possible secrets in staged changes${OFF}
+
+  Fix, or if it is a false positive:
+    • add ${YEL}pragma: allowlist secret${OFF} to the line
+    • rename to ${YEL}*.example${OFF} / ${YEL}*.template${OFF} if it is a sample file
+    • ${YEL}git commit --no-verify${OFF} to override
+
+EOF
+  exit 1
+fi
+
+# ── chain to a repo-local hook, since hooksPath shadows .git/hooks ───────────
+local_hook="$(git rev-parse --git-path hooks/pre-commit 2>/dev/null)"
+if [ -x "$local_hook" ] && [ "$(readlink -f "$local_hook")" != "$(readlink -f "$0")" ]; then
+  exec "$local_hook" "$@"
+fi
+exit 0

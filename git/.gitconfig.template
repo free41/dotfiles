@@ -3,6 +3,7 @@
 	email = @GIT_USER_EMAIL@
 
 [core]
+	hooksPath = ~/.config/git/hooks
 	editor = vim
 	autocrlf = input
 
