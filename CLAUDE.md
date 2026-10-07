@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a personal dotfiles repository managed with GNU Stow and Make, designed to work across Windows, WSL, and Linux environments. The repository uses a package-based structure where each directory (`bash/`, `git/`, `vim/`, `tmux/`, `matplotlib/`, `vscode/`) represents an independent configuration package that can be stowed separately.
+This is a personal dotfiles repository managed with GNU Stow and Make, designed to work across Windows, WSL, and Linux environments. The repository uses a package-based structure where each directory (`bash/`, `git/`, `vim/`, `tmux/`, `matplotlib/`, `claude/`, `vscode/`) represents an independent configuration package that can be stowed separately.
 
 ## Key Architecture Decisions
 
@@ -35,17 +35,18 @@ This is a personal dotfiles repository managed with GNU Stow and Make, designed 
 ### Setup and Installation
 ```bash
 make all              # Full setup: init submodules, stow all packages, install plugins
-make stow             # Stow all packages (bash, git, vim, tmux, matplotlib)
+make stow             # Stow all packages (bash, git, vim, tmux, matplotlib, claude)
 make stow-adopt       # Stow with --adopt (useful for initial setup, merges existing files)
 git submodule update --init --recursive  # Initialize TPM and other submodules
 ```
 
 ### Managing Individual Packages
 ```bash
-make stow-<package>    # Install specific package (bash, git, vim, tmux, matplotlib)
+make stow-<package>    # Install specific package (bash, git, vim, tmux, matplotlib, claude)
 make unstow-<package>  # Remove specific package symlinks
 make stow-vim          # Stow vim + auto-install vim-plug plugins
 make stow-tmux         # Stow tmux + auto-install TPM plugins
+make stow-claude       # Stow Claude Code settings and global CLAUDE.md
 ```
 
 ### VSCode Sync (WSL/Windows)
@@ -91,6 +92,12 @@ The `.gitconfig` includes shortcuts:
 - `git br` → branch
 - `git ci` → commit
 - `git lg` → log --oneline --graph --decorate --all
+
+### Claude Code Configuration
+- **Settings**: [claude/.claude/settings.json](claude/.claude/settings.json) - Claude Code preferences (model, plugins, effort level)
+- **Global Instructions**: [claude/CLAUDE.md](claude/CLAUDE.md) - Global guidance applied to all projects
+- **Repository Instructions**: This file ([CLAUDE.md](CLAUDE.md)) - Specific guidance for this dotfiles repository
+- Stowed to `~/.claude/` and `~/CLAUDE.md` - changes to stowed files automatically sync to repo via symlinks
 
 ## Adding New Packages
 
