@@ -16,7 +16,7 @@ OBSIDIAN_VAULT_PATH := ~/Vault
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help install install-server _apt-setup stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux stow-streamlit unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux unstow-streamlit vscode-fetch vscode-push obsidian-fetch obsidian-push
+.PHONY: all help install install-server _apt-setup stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux stow-streamlit stow-claude unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux unstow-streamlit unstow-claude vscode-fetch vscode-push obsidian-fetch obsidian-push
 
 # Package lists
 PACKAGES_BASE   := stow git tmux curl build-essential ripgrep tree fzf make iperf3 net-tools traceroute
@@ -142,23 +142,25 @@ help:
 	@echo "  stow-vim                  - Stow vim configuration and auto-install plugins"
 	@echo "  stow-tmux                 - Stow tmux configuration"
 	@echo "  stow-streamlit            - Stow streamlit configuration"
+	@echo "  stow-claude               - Stow Claude Code configuration"
 	@echo "  unstow-bash               - Unstow bash configuration"
 	@echo "  unstow-git                - Unstow git configuration"
 	@echo "  unstow-nvim               - Unstow neovim configuration"
 	@echo "  unstow-vim                - Unstow vim configuration"
 	@echo "  unstow-tmux               - Unstow tmux configuration"
 	@echo "  unstow-streamlit          - Unstow streamlit configuration"
+	@echo "  unstow-claude             - Unstow Claude Code configuration"
 	@echo "  vscode-fetch              - Copy VSCode config from Windows to repo (WSL only)"
 	@echo "  vscode-push               - Copy VSCode config from repo to Windows (WSL only)"
 	@echo "  obsidian-fetch            - Copy .obsidian, templates, scripts from vault to repo (existing files only)"
 	@echo "  obsidian-push             - Copy .obsidian, templates, scripts from repo to vault"
 
 # Stow targets
-stow: stow-bash stow-git stow-nvim stow-vim stow-tmux stow-streamlit
+stow: stow-bash stow-git stow-nvim stow-vim stow-tmux stow-streamlit stow-claude
 
 stow-adopt:
 	@echo "Adopting existing files and stowing..."
-	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim tmux streamlit
+	@stow -d $(DOTFILES_DIR) -t ~ --adopt bash git vim tmux streamlit claude
 	@mkdir -p ~/.config
 	@stow -d $(DOTFILES_DIR) -t ~/.config --adopt nvim
 	@echo ""
@@ -170,7 +172,7 @@ stow-adopt:
 	@echo "  To keep repo version: git restore ."
 	@echo "  To keep adopted version: git add . && git commit"
 
-unstow: unstow-bash unstow-git unstow-nvim unstow-vim unstow-tmux unstow-streamlit
+unstow: unstow-bash unstow-git unstow-nvim unstow-vim unstow-tmux unstow-streamlit unstow-claude
 	@echo "✓ All packages unstowed successfully!"
 
 stow-bash:
@@ -215,6 +217,11 @@ stow-streamlit:
 	@stow -d $(DOTFILES_DIR) -t ~ streamlit 2>&1 | sed 's/^/    /' || exit 1
 	@echo "✓"
 
+stow-claude:
+	@printf "  %-20s" "claude"
+	@stow -d $(DOTFILES_DIR) -t ~ claude 2>&1 | sed 's/^/    /' || exit 1
+	@echo "✓"
+
 unstow-bash:
 	@echo "Unstowing bash..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D bash
@@ -240,6 +247,10 @@ unstow-tmux:
 unstow-streamlit:
 	@echo "Unstowing streamlit..."
 	@stow -d $(DOTFILES_DIR) -t ~ -D streamlit
+
+unstow-claude:
+	@echo "Unstowing claude..."
+	@stow -d $(DOTFILES_DIR) -t ~ -D claude
 
 # VSCode targets
 vscode-fetch:
