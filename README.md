@@ -86,6 +86,7 @@ Each directory represents a package that can be independently installed:
 - `tmux/` - Tmux configuration (.tmux.conf with nord theme)
 - `python/` - Python project templates and tooling
 - `streamlit/` - Streamlit configuration (config.toml, usage stats disabled)
+- `claude/` - Claude Code configuration (settings.json, global CLAUDE.md)
 - `vscode/` - VSCode configuration (settings.json, extensions.txt)
 
 ## Features
