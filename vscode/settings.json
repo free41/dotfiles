@@ -171,5 +171,6 @@
     "[ipynb]": {
         "files.autoSave": "afterDelay",
         "files.autoSaveDelay": 500
-    }
+    },
+    "editor.largeFileOptimizations": false
 }
