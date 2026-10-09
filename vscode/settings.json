@@ -38,89 +38,57 @@
         "<C-p>": false
     },
     "vim.normalModeKeyBindingsNonRecursive": [
-        // Clear search highlighting with Esc
+        // Clear search highlighting with Esc (keymaps.lua)
         {
             "before": ["<Esc>"],
             "commands": [":nohl"]
         },
-        // Ctrl+hjkl navigation (vim-tmux-navigator style)
-        {
-            "before": ["<C-h>"],
-            "commands": ["workbench.action.navigateLeft"]
-        },
-        {
-            "before": ["<C-j>"],
-            "commands": ["workbench.action.navigateDown"]
-        },
-        {
-            "before": ["<C-k>"],
-            "commands": ["workbench.action.navigateUp"]
-        },
-        {
-            "before": ["<C-l>"],
-            "commands": ["workbench.action.navigateRight"]
-        },
-        // FZF/File navigation
-        {
-            "before": ["<leader>", "f"],
-            "commands": ["workbench.action.quickOpen"]
-        },
-        {
-            "before": ["<C-p>"],
-            "commands": ["workbench.action.quickOpen"]
-        },
-        {
-            "before": ["<leader>", "b"],
-            "commands": ["workbench.action.showAllEditors"]
-        },
-        {
-            "before": ["<leader>", "g"],
-            "commands": ["workbench.action.findInFiles"]
-        },
-        {
-            "before": ["<leader>", "s"],
-            "commands": ["workbench.action.gotoSymbol"]
-        },
-        // Quick save
-        {
-            "before": ["<leader>", "w"],
-            "commands": [":w"]
-        },
-        // Window navigation (alternative)
-        {
-            "before": ["<leader>", "h"],
-            "commands": ["workbench.action.navigateLeft"]
-        },
-        {
-            "before": ["<leader>", "j"],
-            "commands": ["workbench.action.navigateDown"]
-        },
-        {
-            "before": ["<leader>", "k"],
-            "commands": ["workbench.action.navigateUp"]
-        },
-        {
-            "before": ["<leader>", "l"],
-            "commands": ["workbench.action.navigateRight"]
-        },
-        // Tagbar equivalent
-        {
-            "before": ["<leader>", "t"],
-            "commands": ["outline.focus"]
-        },
-        // Spell check shortcuts
-        {
-            "before": ["<leader>", "s", "p"],
-            "commands": ["editor.action.toggleSpellCheck"]
-        },
-        {
-            "before": ["<leader>", "s", "n"],
-            "commands": ["editor.action.marker.nextInFiles"]
-        },
-        {
-            "before": ["<leader>", "s", "b"],
-            "commands": ["editor.action.marker.prevInFiles"]
-        }
+
+        // --- Window navigation: Ctrl+hjkl (vim-tmux-navigator) ---
+        { "before": ["<C-h>"], "commands": ["workbench.action.navigateLeft"] },
+        { "before": ["<C-j>"], "commands": ["workbench.action.navigateDown"] },
+        { "before": ["<C-k>"], "commands": ["workbench.action.navigateUp"] },
+        { "before": ["<C-l>"], "commands": ["workbench.action.navigateRight"] },
+
+        // --- Window navigation: <leader>j/k (keymaps.lua) ---
+        { "before": ["<leader>", "j"], "commands": ["workbench.action.navigateDown"] },
+        { "before": ["<leader>", "k"], "commands": ["workbench.action.navigateUp"] },
+
+        // --- Buffer navigation: <leader>h/l (keymaps.lua :bprevious/:bnext) ---
+        { "before": ["<leader>", "h"], "commands": ["workbench.action.previousEditor"] },
+        { "before": ["<leader>", "l"], "commands": ["workbench.action.nextEditor"] },
+
+        // --- Fuzzy finder (Telescope equivalents, plugins.lua) ---
+        { "before": ["<leader>", "f"], "commands": ["workbench.action.quickOpen"] },      // find files
+        { "before": ["<leader>", "b"], "commands": ["workbench.action.showAllEditors"] }, // buffers
+        { "before": ["<leader>", "g"], "commands": ["workbench.action.findInFiles"] },    // live grep
+        { "before": ["<leader>", "/"], "commands": ["actions.find"] },                    // buffer fuzzy find
+        { "before": ["<leader>", "s"], "commands": ["workbench.action.showAllSymbols"] }, // workspace symbols
+
+        // --- File tree / outline / minimap (plugins.lua) ---
+        { "before": ["<leader>", "n"], "commands": ["workbench.view.explorer"] }, // neo-tree: jump to tree (close side is in keybindings.json)
+        { "before": ["<leader>", "t"], "commands": ["outline.focus"] },               // aerial outline
+        { "before": ["<leader>", "m"], "commands": ["editor.action.toggleMinimap"] }, // mini.map
+
+        // --- File actions (keymaps.lua) ---
+        { "before": ["<leader>", "w"], "commands": [":w"] },                            // save
+        { "before": ["<leader>", "r"], "commands": ["workbench.action.files.revert"] }, // reload
+
+        // --- LSP (lsp.lua); gd and gc/surround are handled natively by vscode-vim ---
+        { "before": ["g", "y"], "commands": ["editor.action.goToTypeDefinition"] },
+        { "before": ["g", "i"], "commands": ["editor.action.goToImplementation"] },
+        { "before": ["g", "r"], "commands": ["editor.action.goToReferences"] },
+        { "before": ["K"],      "commands": ["editor.action.showHover"] },
+        { "before": ["[", "g"], "commands": ["editor.action.marker.prev"] },
+        { "before": ["]", "g"], "commands": ["editor.action.marker.next"] },
+        { "before": ["<leader>", "r", "n"], "commands": ["editor.action.rename"] },
+        { "before": ["<leader>", "q", "f"], "commands": ["editor.action.quickFix"] },
+        { "before": ["<leader>", "F"],      "commands": ["editor.action.formatDocument"] },
+
+        // --- Spell check (keymaps.lua) ---
+        { "before": ["<leader>", "s", "p"], "commands": ["editor.action.toggleSpellCheck"] },
+        { "before": ["<leader>", "s", "n"], "commands": ["editor.action.marker.nextInFiles"] },
+        { "before": ["<leader>", "s", "b"], "commands": ["editor.action.marker.prevInFiles"] }
     ],
     "vim.insertModeKeyBindingsNonRecursive": [
         // Ctrl+hjkl navigation in insert mode
