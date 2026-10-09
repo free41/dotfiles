@@ -1,0 +1,45 @@
+// VSCode keybindings (synced via `make vscode-fetch` / `make vscode-push`)
+[
+    // Ctrl+P → Command Palette (like native Ctrl+Shift+P).
+    // File quick-open stays on <leader>f (see settings.json vim bindings).
+    {
+        "key": "ctrl+p",
+        "command": "workbench.action.showCommands"
+    },
+
+    // <leader>n (space n) close-side of the neo-tree toggle.
+    // The editor side lives in settings.json (vim <leader>n -> focus Explorer);
+    // that vim binding can't fire while the tree is focused, so when the file
+    // tree has focus, space n hides the sidebar (closes the tree).
+    {
+        "key": "space n",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "filesExplorerFocus"
+    },
+
+    // Ctrl+hjkl window navigation from the integrated terminal
+    // (vim-tmux-navigator parity: the vim bindings in settings.json only fire
+    // when the editor is focused, so these cover the terminal). Note: this
+    // takes Ctrl+h/j/k/l away from the shell while the terminal is focused,
+    // same tradeoff as the tmux `select-pane` bindings.
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.navigateLeft",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.navigateDown",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.navigateUp",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.navigateRight",
+        "when": "terminalFocus"
+    }
+]
