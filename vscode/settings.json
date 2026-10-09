@@ -172,5 +172,8 @@
         "files.autoSave": "afterDelay",
         "files.autoSaveDelay": 500
     },
-    "editor.largeFileOptimizations": false
+    "editor.largeFileOptimizations": false,
+    "everforest.darkContrast": "hard",
+    "everforest.darkWorkbench": "flat",
+    "makefile.configureOnOpen": true
 }
