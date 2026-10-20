@@ -231,7 +231,7 @@
       }
     },
     {
-      "id": "8a856bdb-9612-41f3-98ab-a37f16f4eda0",
+      "id": "69840d05-afe8-4408-9d95-6847ac0a3bf1",
       "name": "Atomize Selection",
       "type": "Macro",
       "command": true,
@@ -239,27 +239,185 @@
       "icon": "scissors",
       "macro": {
         "name": "Atomize Selection",
-        "id": "9ff9fe52-9680-44ac-89ec-0e2ba058d762",
+        "id": "fad2cfb1-23c1-4ec4-814d-1607512a2316",
+        "commands": [
+          {
+            "name": "Atomize Selection: create",
+            "type": "NestedChoice",
+            "id": "b8e5b4c8-957d-4ed6-8ca7-3b64e410fcb6",
+            "choice": {
+              "id": "de11c7a3-dcfe-4911-8daa-6aec367b32cd",
+              "name": "Atomize Selection: create",
+              "type": "Template",
+              "command": false,
+              "templatePath": "Templates/atomize.template.md",
+              "fileNameFormat": {
+                "enabled": true,
+                "format": "{{DATE:YYYY}}/{{DATE:MM}}/{{DATE:YYYY-MM-DD HHmm}} {{VALUE:Title}}"
+              },
+              "folder": {
+                "enabled": false,
+                "folders": [],
+                "chooseWhenCreatingNote": false,
+                "createInSameFolderAsActiveFile": false,
+                "chooseFromSubfolders": false
+              },
+              "appendLink": {
+                "enabled": true,
+                "placement": "replaceSelection",
+                "requireActiveFile": true,
+                "linkType": "link",
+                "displayText": "none",
+                "destination": {
+                  "type": "activeFile"
+                }
+              },
+              "openFile": true,
+              "fileOpening": {
+                "location": "tab",
+                "direction": "vertical",
+                "mode": "default",
+                "focus": true
+              },
+              "fileExistsBehavior": {
+                "kind": "prompt"
+              }
+            }
+          },
+          {
+            "name": "Atomize Selection: link in today's note",
+            "type": "NestedChoice",
+            "id": "a3864549-363a-44fa-b95b-43baaff1eb52",
+            "choice": {
+              "id": "0a8d03b6-8f83-4cd2-b2a9-bbb9d7b6a794",
+              "name": "Atomize Selection: link in today's note",
+              "type": "Capture",
+              "command": false,
+              "captureTo": "{{DATE:YYYY/MM/YYYY-MM-DD}}",
+              "captureToActiveFile": false,
+              "captureToCanvasNodeId": "",
+              "activeFileWritePosition": "cursor",
+              "createFileIfItDoesntExist": {
+                "enabled": true,
+                "createWithTemplate": true,
+                "template": "Templates/daily.template.md"
+              },
+              "format": {
+                "enabled": true,
+                "format": "- {{LINKCURRENT}}"
+              },
+              "insertAfter": {
+                "enabled": true,
+                "after": "## Notes",
+                "insertAtEnd": true,
+                "considerSubsections": false,
+                "createIfNotFound": true,
+                "createIfNotFoundLocation": "bottom",
+                "inline": false,
+                "replaceExisting": false,
+                "blankLineAfterMatchMode": "auto",
+                "promptHeading": false
+              },
+              "insertBefore": {
+                "enabled": false,
+                "before": "",
+                "createIfNotFound": false,
+                "createIfNotFoundLocation": "top"
+              },
+              "newLineCapture": {
+                "enabled": false,
+                "direction": "below"
+              },
+              "prepend": false,
+              "task": false,
+              "openFile": false,
+              "fileOpening": {
+                "location": "tab",
+                "direction": "vertical",
+                "mode": "default",
+                "focus": true
+              },
+              "templater": {
+                "afterCapture": "none"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "67467143-cf98-49ba-bd6c-0780cef83c12",
+      "name": "Atomize a Past Daily Note",
+      "type": "Macro",
+      "command": true,
+      "runOnStartup": false,
+      "icon": "history",
+      "macro": {
+        "name": "Atomize a Past Daily Note",
+        "id": "ca5602a2-2f9a-40f0-a306-b5733a218c23",
         "commands": [
           {
             "name": "Cut",
             "type": "EditorCommand",
-            "id": "7e9a8d13-d707-4d27-b197-f228dcc0ceca",
+            "id": "55b469d7-25d7-4812-98a6-e8db07e4d6c9",
             "editorCommandType": "Cut"
           },
           {
             "name": "Save current file",
             "type": "Obsidian",
-            "id": "295466c3-be5a-47e9-8cc8-aff7d4d37c75",
+            "id": "dd44c36a-2c65-4fc5-aaff-462cef4f30a0",
             "commandId": "editor:save-file"
           },
           {
-            "name": "Atomize Selection: link in this note",
+            "name": "Atomize a Past Daily Note: create",
             "type": "NestedChoice",
-            "id": "3d09be15-8ce0-403f-80d8-067162d6efc6",
+            "id": "8b51ba13-799e-4d1a-b93a-79b766c25790",
             "choice": {
-              "id": "4d2d8853-fd9b-466e-867c-8dbfc033f6fe",
-              "name": "Atomize Selection: link in this note",
+              "id": "ad0313dd-3071-4fff-ad5e-4e3aee0543c6",
+              "name": "Atomize a Past Daily Note: create",
+              "type": "Template",
+              "command": false,
+              "templatePath": "Templates/atomize-past.template.md",
+              "fileNameFormat": {
+                "enabled": true,
+                "format": "{{FOLDERCURRENT}}/{{FILENAMECURRENT}} {{VALUE:Title}}"
+              },
+              "folder": {
+                "enabled": false,
+                "folders": [],
+                "chooseWhenCreatingNote": false,
+                "createInSameFolderAsActiveFile": false,
+                "chooseFromSubfolders": false
+              },
+              "appendLink": {
+                "enabled": false,
+                "placement": "afterSelection",
+                "requireActiveFile": true,
+                "linkType": "link",
+                "displayText": "none",
+                "destination": {
+                  "type": "activeFile"
+                }
+              },
+              "openFile": false,
+              "fileOpening": {
+                "location": "tab",
+                "direction": "vertical",
+                "mode": "default",
+                "focus": true
+              },
+              "fileExistsBehavior": {
+                "kind": "prompt"
+              }
+            }
+          },
+          {
+            "name": "Atomize a Past Daily Note: link in this note",
+            "type": "NestedChoice",
+            "id": "18b3ca41-d08f-4ca1-a740-c2c8f0b16558",
+            "choice": {
+              "id": "4c4df392-3e9a-459e-b1d0-681176e3e246",
+              "name": "Atomize a Past Daily Note: link in this note",
               "type": "Capture",
               "command": false,
               "captureTo": "",
@@ -312,47 +470,12 @@
             }
           },
           {
-            "name": "Atomize Selection: create",
-            "type": "NestedChoice",
-            "id": "955816d8-041d-4227-9b1c-e6de0fffbd37",
-            "choice": {
-              "id": "9589f1ac-eaf1-4780-8a9a-df6e40973688",
-              "name": "Atomize Selection: create",
-              "type": "Template",
-              "command": false,
-              "templatePath": "Templates/atomize.template.md",
-              "fileNameFormat": {
-                "enabled": true,
-                "format": "{{FOLDERCURRENT}}/{{FILENAMECURRENT}} {{VALUE:Title}}"
-              },
-              "folder": {
-                "enabled": false,
-                "folders": [],
-                "chooseWhenCreatingNote": false,
-                "createInSameFolderAsActiveFile": false,
-                "chooseFromSubfolders": false
-              },
-              "appendLink": {
-                "enabled": false,
-                "placement": "afterSelection",
-                "requireActiveFile": true,
-                "linkType": "link",
-                "displayText": "none",
-                "destination": {
-                  "type": "activeFile"
-                }
-              },
-              "openFile": true,
-              "fileOpening": {
-                "location": "tab",
-                "direction": "vertical",
-                "mode": "default",
-                "focus": true
-              },
-              "fileExistsBehavior": {
-                "kind": "prompt"
-              }
-            }
+            "name": "Open atom",
+            "type": "OpenFile",
+            "id": "bde2e48b-419c-4f67-b777-796ab7233bb8",
+            "filePath": "{{FOLDERCURRENT}}/{{FILENAMECURRENT}} {{VALUE:Title}}.md",
+            "location": "tab",
+            "focus": true
           }
         ]
       }
