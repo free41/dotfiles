@@ -314,6 +314,12 @@ gwa feature-123  # Create worktree for feature-123 (tracks remote or creates new
 
 Clean up with `git worktree list` and `git worktree remove .worktrees/<branch>`.
 
+`claude -w <name>` does the same: the `WorktreeCreate`/`WorktreeRemove` hooks in
+`claude/.claude/settings.json` (scripts in `claude/.claude/hooks/`) put Claude Code's worktrees in
+`.worktrees/<name>` on branch `<name>` instead of `.claude/worktrees/`, and run `.worktree-setup`.
+On exit, removal deletes the branch only if it is merged. Worktrees made for subagents are not
+removed automatically — clean them up with `git worktree remove`.
+
 > **Note**: Custom aliases can be added to `~/.bash_aliases` (git-ignored) and
 > will be loaded automatically.
 

@@ -40,5 +40,27 @@
   "editorMode": "normal",
   "autoContinueAtUsageLimit": false,
   "agentPushNotifEnabled": false,
-  "useAutoModeDuringPlan": false
+  "useAutoModeDuringPlan": false,
+  "hooks": {
+    "WorktreeCreate": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/dotfiles/claude/.claude/hooks/worktree-create.sh"
+          }
+        ]
+      }
+    ],
+    "WorktreeRemove": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/dotfiles/claude/.claude/hooks/worktree-remove.sh"
+          }
+        ]
+      }
+    ]
+  }
 }
