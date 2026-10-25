@@ -256,7 +256,7 @@ The style is distributed as part of your package, so it works anywhere your pack
 | `gdd`    | `gdd [options] [file]`            | Git diff against dev branch (see below)          |
 | `gfm`    | `gfm [branch]`                    | Fetch, pull, and merge branch into current (see below) |
 | `gfd`    | `gfd [branch]`                    | Fetch, pull, and diff in vim (see below)         |
-| `gwa`    | `gwa <branch>`                    | Create git worktree (see below)                  |
+| `gwa`    | `gwa <branch>`                    | Create git worktree in `.worktrees/` (see below) |
 
 #### gdd - Git Diff Against Dev Branch
 
@@ -299,13 +299,20 @@ This command:
 
 #### gwa - Git Worktree Add
 
-Create a new git worktree in a sibling directory:
+Create a new git worktree inside the repo, at `<repo>/.worktrees/<branch>`:
 
 ```bash
 gwa feature-123  # Create worktree for feature-123 (tracks remote or creates new branch)
 ```
 
-This command creates a worktree above the repository root and automatically installs pre-commit hooks if `.pre-commit-config.yaml` is present.
+- Works from the main checkout or from inside another worktree (it always nests under the main one).
+- Adds `/.worktrees/` to the repo's `.git/info/exclude`, so nothing needs adding to `.gitignore`.
+- Installs pre-commit hooks if `.pre-commit-config.yaml` is present.
+- Runs the repo's own `.worktree-setup` if it exists and is executable, from the new worktree with
+  the main checkout's path as `$1` — e.g. to symlink untracked `.env` files in. It is code from the
+  repo itself, so only use `gwa` on repos you trust.
+
+Clean up with `git worktree list` and `git worktree remove .worktrees/<branch>`.
 
 > **Note**: Custom aliases can be added to `~/.bash_aliases` (git-ignored) and
 > will be loaded automatically.
