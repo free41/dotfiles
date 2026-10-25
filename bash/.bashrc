@@ -284,6 +284,19 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # Python project creation
 alias py-new='$HOME/dotfiles/python/new-project.sh'
 
+# Claude Code against the local llmster (LM Studio) server over Tailscale
+# /model opus → gemma-4-26b-a4b, /model sonnet|haiku → gpt-oss-20b
+# (Qwen chat templates reject Claude Code's requests: "System message must be at the beginning")
+claude-local() {
+    ANTHROPIC_BASE_URL="${LLMSTER_URL:?set LLMSTER_URL in ~/.bash_aliases}" \
+    ANTHROPIC_AUTH_TOKEN=lmstudio \
+    ANTHROPIC_DEFAULT_OPUS_MODEL=google/gemma-4-26b-a4b \
+    ANTHROPIC_DEFAULT_SONNET_MODEL=openai/gpt-oss-20b \
+    ANTHROPIC_DEFAULT_HAIKU_MODEL=openai/gpt-oss-20b \
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 \
+    claude --model sonnet "$@"
+}
+
 # Load custom aliases from ~/.bash_aliases if it exists
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
