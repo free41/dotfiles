@@ -16,11 +16,15 @@ OBSIDIAN_VAULT_PATH := ~/Vault
 # Include machine-specific config if it exists
 -include config.mk
 
-.PHONY: all help install install-server _apt-setup stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux stow-streamlit stow-claude unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux unstow-streamlit unstow-claude vscode-fetch vscode-push obsidian-fetch obsidian-push
+.PHONY: all help install install-server install-gitleaks _apt-setup stow unstow stow-adopt stow-bash stow-git stow-vim stow-nvim stow-tmux stow-streamlit stow-claude unstow-bash unstow-git unstow-vim unstow-nvim unstow-tmux unstow-streamlit unstow-claude vscode-fetch vscode-push obsidian-fetch obsidian-push
 
 # Package lists
 PACKAGES_BASE   := stow git tmux curl build-essential ripgrep tree fzf make iperf3 net-tools traceroute
 PACKAGES_DESKTOP := neovim xclip
+
+# gitleaks (secret scanner used by the global pre-commit hook), installed per-user
+# from GitHub releases so it needs no sudo and stays current with its ruleset
+GITLEAKS_VERSION := 8.30.1
 
 # Default target
 .DEFAULT_GOAL := all
@@ -69,6 +73,28 @@ _apt-done:
 	@echo "│                                                                            │"
 	@echo "└────────────────────────────────────────────────────────────────────────────┘"
 
+install-gitleaks:
+	@echo "→ Installing gitleaks $(GITLEAKS_VERSION) to ~/.local/bin..."
+	@if command -v gitleaks >/dev/null 2>&1 && [ "$$(gitleaks version)" = "$(GITLEAKS_VERSION)" ]; then \
+		echo "  ✓ gitleaks $(GITLEAKS_VERSION) already installed"; \
+	else \
+		case "$$(uname -m)" in \
+			x86_64) arch=x64 ;; aarch64|arm64) arch=arm64 ;; armv7l) arch=armv7 ;; \
+			*) echo "  ✗ unsupported arch $$(uname -m)"; exit 1 ;; \
+		esac; \
+		os=$$(uname -s | tr A-Z a-z); \
+		tar="gitleaks_$(GITLEAKS_VERSION)_$${os}_$${arch}.tar.gz"; \
+		url="https://github.com/gitleaks/gitleaks/releases/download/v$(GITLEAKS_VERSION)"; \
+		tmp=$$(mktemp -d); trap 'rm -rf "$$tmp"' EXIT; \
+		curl -fsSL -o "$$tmp/$$tar" "$$url/$$tar" && \
+		curl -fsSL -o "$$tmp/sums" "$$url/gitleaks_$(GITLEAKS_VERSION)_checksums.txt" && \
+		(cd "$$tmp" && grep " $$tar\$$" sums | sha256sum -c --quiet) && \
+		tar -xzf "$$tmp/$$tar" -C "$$tmp" gitleaks && \
+		mkdir -p "$$HOME/.local/bin" && install -m 755 "$$tmp/gitleaks" "$$HOME/.local/bin/gitleaks" && \
+		echo "  ✓ gitleaks $$("$$HOME/.local/bin/gitleaks" version) installed (checksum verified)"; \
+	fi
+	@echo ""
+
 install: _apt-setup
 	@echo "→ Installing packages..."
 	@sudo apt install -y $(PACKAGES_BASE) $(PACKAGES_DESKTOP) 2>&1 | sed 's/^/  /'
@@ -80,11 +106,14 @@ install: _apt-setup
 	else \
 		echo "  ⚠ Neovim not found (was just installed above, try restarting shell)"; \
 	fi
+	@echo ""
+	@$(MAKE) --no-print-directory install-gitleaks
 	@$(MAKE) --no-print-directory _apt-done
 
 install-server: _apt-setup
 	@echo "→ Installing packages (server, no neovim)..."
 	@sudo apt install -y $(PACKAGES_BASE) vim 2>&1 | sed 's/^/  /'
+	@$(MAKE) --no-print-directory install-gitleaks
 	@$(MAKE) --no-print-directory _apt-done
 	@echo ""
 

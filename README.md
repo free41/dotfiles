@@ -38,6 +38,8 @@ make all      # Setup dotfiles
 The `make install` command will install:
 - **Core tools**: stow, git, tmux, vim, curl, build-essential
 - **Development tools**: universal-ctags, ripgrep, tree, xclip
+- **gitleaks** - secret scanner for the global pre-commit hook, into `~/.local/bin`
+  (no sudo; also `make install-gitleaks` on its own)
 
 `make install` will also display instructions for optional dependencies:
 - **Node.js** (via nvm) - Required for coc.nvim LSP support
@@ -52,6 +54,22 @@ Then `make all` will:
 3. Install vim plugins via vim-plug
 4. Install tmux plugins via TPM
 5. Auto-install coc.nvim extensions (coc-yaml, coc-json) on first vim launch
+
+## Global pre-commit hook
+
+`git/.config/git/hooks/pre-commit` runs in every repo on the machine (via `core.hooksPath`)
+and blocks:
+
+- **Secrets** — built-in patterns for common key formats, plus gitleaks' maintained ruleset when
+  it is installed (it warns and falls back to the built-in patterns when it isn't).
+- **Home paths** — hardcoded `/home/<user>`, `/Users/<user>`, `C:\Users\<user>` (they leak the
+  username; use `$HOME` or `~`). Gitleaks rule `home-path` in `git/.config/git/gitleaks.toml`.
+- **Private info** — LAN/tailnet IPs and `*.ts.net` names, but only in repos whose origin is
+  `github.com/free41/...` and that have no committed `.private-repo` file. Machine names to block
+  go in `~/.config/git-private/terms` (one regex per line), kept outside this public repo.
+
+False positive: add `pragma: allowlist secret` (or `pragma: allowlist private`) to the line,
+or `git commit --no-verify` as a last resort.
 
 ## Fonts
 
@@ -159,6 +177,7 @@ Run `make help` to see all available commands:
 
 - `make install` - Install all required dependencies (stow, git, vim, tmux,
   ctags, ripgrep, code-minimap, etc.)
+- `make install-gitleaks` - Install/upgrade gitleaks to `~/.local/bin` (pinned, checksum-verified)
 - `make all` - Setup everything (stow all packages + install vim plugins)
 - `make stow` - Stow all packages
 - `make unstow` - Remove all symlinks

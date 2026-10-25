@@ -3,6 +3,14 @@
 # Installed via core.hooksPath (see dotfiles/git/.gitconfig), so it applies to
 # EVERY repo on this machine.
 #
+# Three layers:
+#   1. built-in regexes (below) — always run, so a fresh machine is never unguarded
+#   2. gitleaks, if installed — maintained ruleset (Anthropic, OpenAI, Tailscale, …)
+#   3. private info (LAN/tailnet IPs, *.ts.net, machine names) — only in repos
+#      whose origin is github.com/free41 and that have no committed .private-repo
+#      marker. Machine names come from ~/.config/git-private/terms (one ERE per
+#      line), which lives outside this public repo on purpose.
+#
 # Bypass a false positive in three ways:
 #   1. add "pragma: allowlist secret" on the offending line
 #   2. name the file *.example / *.template / *.sample / *.dist
@@ -33,6 +41,8 @@ HIGH+='|sk_live_[A-Za-z0-9]{20,}'
 HIGH+='|-----BEGIN [A-Z ]*PRIVATE KEY-----'
 HIGH+='|eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.'
 HIGH+='|AIza[0-9A-Za-z_-]{35}'
+HIGH+='|sk-ant-[A-Za-z0-9_-]{20,}'
+HIGH+='|tskey-[a-z]+-[A-Za-z0-9-]{20,}'
 
 # ── generic: key=value assignments with a long opaque value ──────────────────
 # Skipped in example/template files, where this is exactly the point.
@@ -79,13 +89,46 @@ for f in "${files[@]}"; do
   done <<<"$added"
 done
 
+# ── gitleaks: maintained ruleset, if installed ───────────────────────────────
+if command -v gitleaks >/dev/null 2>&1; then
+  if ! gitleaks git --pre-commit --staged --redact --no-banner --log-level warn --verbose \
+       --config "$(dirname "$(readlink -f "$0")")/../gitleaks.toml" >&2; then
+    fail=1
+  fi
+else
+  printf '%spre-commit: gitleaks not installed — basic checks only%s\n' "$DIM" "$OFF" >&2
+fi
+
+# ── private info: only in my repos not marked .private-repo ──────────────────
+top=$(git rev-parse --show-toplevel)
+origin=$(git remote get-url origin 2>/dev/null || true)
+if [[ "$origin" =~ github\.com[:/]free41/ ]] && [ ! -e "$top/.private-repo" ]; then
+  PRIV='(^|[^0-9.])(10\.[0-9]{1,3}|172\.(1[6-9]|2[0-9]|3[01])|192\.168)\.[0-9]{1,3}\.[0-9]{1,3}'
+  PRIV+='|(^|[^0-9.])100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\.[0-9]{1,3}\.[0-9]{1,3}'
+  PRIV+='|[a-z0-9-]+\.ts\.net'
+  terms="${XDG_CONFIG_HOME:-$HOME/.config}/git-private/terms"
+  if [ -r "$terms" ]; then
+    while IFS= read -r t; do [ -n "$t" ] && PRIV+="|$t"; done < <(grep -v '^#' "$terms")
+  fi
+  for f in "${files[@]}"; do
+    git diff --cached --numstat -- "$f" | grep -q '^-' && continue
+    while IFS= read -r line; do
+      [[ "$line" == *'pragma: allowlist private'* ]] && continue
+      if grep -qEi "$PRIV" <<<"$line"; then
+        report "PRIVATE " "$f ${DIM}— ${line:0:60}${OFF}"
+      fi
+    done < <(git diff --cached -U0 -- "$f" | sed -n 's/^+\([^+].*\)/\1/p')
+  done
+fi
+
 if [ "$fail" -ne 0 ]; then
   cat >&2 <<EOF
 
-${RED}✖ pre-commit: possible secrets in staged changes${OFF}
+${RED}✖ pre-commit: possible secrets or private info in staged changes${OFF}
 
   Fix, or if it is a false positive:
-    • add ${YEL}pragma: allowlist secret${OFF} to the line
+    • add ${YEL}pragma: allowlist secret${OFF} (or ${YEL}pragma: allowlist private${OFF}) to the line
+    • for a private repo of mine, commit an empty ${YEL}.private-repo${OFF} file
     • rename to ${YEL}*.example${OFF} / ${YEL}*.template${OFF} if it is a sample file
     • ${YEL}git commit --no-verify${OFF} to override
 
