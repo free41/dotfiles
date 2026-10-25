@@ -1,0 +1,22 @@
+# Global gitleaks config for the pre-commit hook: default rules plus the same
+# escape hatches as the hook's built-in scan.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "inline pragma and sample files"
+regexTarget = "line"
+regexes = ['''pragma: allowlist secret''']
+paths = ['''\.(example|template|tmpl|sample|dist)(\.[^/]*)?$''']
+
+# Hardcoded home paths leak the username; use $HOME or ~ instead.
+[[rules]]
+id = "home-path"
+description = "Hardcoded home directory path"
+regex = '''(?i)(?:/home/|/Users/|[a-z]:\\Users\\)([a-z0-9._-]+)'''
+secretGroup = 1
+keywords = ["/home/", "/users/", "\\users\\"]
+
+[[rules.allowlists]]
+description = "placeholder usernames"
+regexes = ['''(?i)^(?:user|username|yourusername|you|me|runner|example)$''']

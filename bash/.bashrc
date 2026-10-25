@@ -183,7 +183,10 @@ gdd() {
 }
 
 # Git worktree add
-# Usage: gwa <branch-name>  - add worktree above repo root, tracking remote or creating new branch
+# Usage: gwa <branch-name>  - add worktree at <repo>/.worktrees/<branch>, tracking remote or creating new branch
+# .worktrees/ is ignored via the repo's .git/info/exclude (local, never committed). If the new
+# worktree has an executable .worktree-setup, it runs there with the main checkout's path as $1
+# (e.g. to link in untracked .env files).
 gwa() {
     if [ -z "$1" ]; then
         echo "Usage: gwa <branch-name>"
@@ -191,16 +194,21 @@ gwa() {
     fi
 
     local branch="$1"
-    local git_root
-    git_root=$(git rev-parse --show-toplevel 2>/dev/null)
+    local common_dir
+    common_dir=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
     if [ $? -ne 0 ]; then
         echo "Error: not in a git repository"
         return 1
     fi
 
-    local parent_dir
-    parent_dir=$(dirname "$git_root")
-    local worktree_path="$parent_dir/$branch"
+    # the main checkout, even when run from inside another worktree
+    local main_root
+    main_root=$(dirname "$common_dir")
+    local worktree_path="$main_root/.worktrees/$branch"
+
+    local exclude="$common_dir/info/exclude"
+    mkdir -p "$(dirname "$exclude")"
+    grep -qxF '/.worktrees/' "$exclude" 2>/dev/null || echo '/.worktrees/' >> "$exclude"
 
     git fetch --all --prune
 
@@ -220,6 +228,11 @@ gwa() {
     if [ -f ".pre-commit-config.yaml" ]; then
         echo "Found .pre-commit-config.yaml, installing pre-commit hooks..."
         uvx pre-commit install
+    fi
+
+    if [ -x ".worktree-setup" ]; then
+        echo "Running .worktree-setup..."
+        ./.worktree-setup "$main_root" || echo "Warning: .worktree-setup failed"
     fi
 
     echo "Worktree created at $worktree_path"
@@ -283,6 +296,19 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 # Python project creation
 alias py-new='$HOME/dotfiles/python/new-project.sh'
+
+# Claude Code against the local llmster (LM Studio) server over Tailscale
+# /model opus → gemma-4-26b-a4b, /model sonnet|haiku → gpt-oss-20b
+# (Qwen chat templates reject Claude Code's requests: "System message must be at the beginning")
+claude-local() {
+    ANTHROPIC_BASE_URL="${LLMSTER_URL:?set LLMSTER_URL in ~/.bash_aliases}" \
+    ANTHROPIC_AUTH_TOKEN=lmstudio \
+    ANTHROPIC_DEFAULT_OPUS_MODEL=google/gemma-4-26b-a4b \
+    ANTHROPIC_DEFAULT_SONNET_MODEL=openai/gpt-oss-20b \
+    ANTHROPIC_DEFAULT_HAIKU_MODEL=openai/gpt-oss-20b \
+    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 \
+    claude --model sonnet "$@"
+}
 
 # Load custom aliases from ~/.bash_aliases if it exists
 if [ -f ~/.bash_aliases ]; then

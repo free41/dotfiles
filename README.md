@@ -38,6 +38,8 @@ make all      # Setup dotfiles
 The `make install` command will install:
 - **Core tools**: stow, git, tmux, vim, curl, build-essential
 - **Development tools**: universal-ctags, ripgrep, tree, xclip
+- **gitleaks** - secret scanner for the global pre-commit hook, into `~/.local/bin`
+  (no sudo; also `make install-gitleaks` on its own)
 
 `make install` will also display instructions for optional dependencies:
 - **Node.js** (via nvm) - Required for coc.nvim LSP support
@@ -52,6 +54,22 @@ Then `make all` will:
 3. Install vim plugins via vim-plug
 4. Install tmux plugins via TPM
 5. Auto-install coc.nvim extensions (coc-yaml, coc-json) on first vim launch
+
+## Global pre-commit hook
+
+`git/.config/git/hooks/pre-commit` runs in every repo on the machine (via `core.hooksPath`)
+and blocks:
+
+- **Secrets** — built-in patterns for common key formats, plus gitleaks' maintained ruleset when
+  it is installed (it warns and falls back to the built-in patterns when it isn't).
+- **Home paths** — hardcoded `/home/<user>`, `/Users/<user>`, `C:\Users\<user>` (they leak the
+  username; use `$HOME` or `~`). Gitleaks rule `home-path` in `git/.config/git/gitleaks.toml`.
+- **Private info** — LAN/tailnet IPs and `*.ts.net` names, but only in repos whose origin is
+  `github.com/free41/...` and that have no committed `.private-repo` file. Machine names to block
+  go in `~/.config/git-private/terms` (one regex per line), kept outside this public repo.
+
+False positive: add `pragma: allowlist secret` (or `pragma: allowlist private`) to the line,
+or `git commit --no-verify` as a last resort.
 
 ## Fonts
 
@@ -159,6 +177,7 @@ Run `make help` to see all available commands:
 
 - `make install` - Install all required dependencies (stow, git, vim, tmux,
   ctags, ripgrep, code-minimap, etc.)
+- `make install-gitleaks` - Install/upgrade gitleaks to `~/.local/bin` (pinned, checksum-verified)
 - `make all` - Setup everything (stow all packages + install vim plugins)
 - `make stow` - Stow all packages
 - `make unstow` - Remove all symlinks
@@ -237,7 +256,7 @@ The style is distributed as part of your package, so it works anywhere your pack
 | `gdd`    | `gdd [options] [file]`            | Git diff against dev branch (see below)          |
 | `gfm`    | `gfm [branch]`                    | Fetch, pull, and merge branch into current (see below) |
 | `gfd`    | `gfd [branch]`                    | Fetch, pull, and diff in vim (see below)         |
-| `gwa`    | `gwa <branch>`                    | Create git worktree (see below)                  |
+| `gwa`    | `gwa <branch>`                    | Create git worktree in `.worktrees/` (see below) |
 
 #### gdd - Git Diff Against Dev Branch
 
@@ -280,13 +299,26 @@ This command:
 
 #### gwa - Git Worktree Add
 
-Create a new git worktree in a sibling directory:
+Create a new git worktree inside the repo, at `<repo>/.worktrees/<branch>`:
 
 ```bash
 gwa feature-123  # Create worktree for feature-123 (tracks remote or creates new branch)
 ```
 
-This command creates a worktree above the repository root and automatically installs pre-commit hooks if `.pre-commit-config.yaml` is present.
+- Works from the main checkout or from inside another worktree (it always nests under the main one).
+- Adds `/.worktrees/` to the repo's `.git/info/exclude`, so nothing needs adding to `.gitignore`.
+- Installs pre-commit hooks if `.pre-commit-config.yaml` is present.
+- Runs the repo's own `.worktree-setup` if it exists and is executable, from the new worktree with
+  the main checkout's path as `$1` — e.g. to symlink untracked `.env` files in. It is code from the
+  repo itself, so only use `gwa` on repos you trust.
+
+Clean up with `git worktree list` and `git worktree remove .worktrees/<branch>`.
+
+`claude -w <name>` does the same: the `WorktreeCreate`/`WorktreeRemove` hooks in
+`claude/.claude/settings.json` (scripts in `claude/.claude/hooks/`) put Claude Code's worktrees in
+`.worktrees/<name>` on branch `<name>` instead of `.claude/worktrees/`, and run `.worktree-setup`.
+On exit, removal deletes the branch only if it is merged. Worktrees made for subagents are not
+removed automatically — clean them up with `git worktree remove`.
 
 > **Note**: Custom aliases can be added to `~/.bash_aliases` (git-ignored) and
 > will be loaded automatically.

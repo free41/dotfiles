@@ -5,11 +5,22 @@
     "gitlab@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
     "mcp-server-dev@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true
   },
   "permissions": {
     "allow": [
-      "Bash(git diff *)",
+      "Bash(git diff)",
+      "Bash(git diff --stat)",
+      "Bash(git diff --staged)",
+      "Bash(git diff --cached)",
+      "Bash(git diff HEAD)",
       "Bash(uv run pytest *)",
       "Bash(uv run ruff check *)",
       "Bash(uv run ruff format *)",
@@ -33,12 +44,41 @@
       "Read(**/*token*)",
       "Read(**/*secret*)",
       "Read(**/*password*)"
+    ],
+    "ask": [
+      "Bash(scp *)",
+      "Bash(sftp *)",
+      "Bash(ssh *)"
     ]
   },
   "effortLevel": "high",
-  "tui": "fullscreen",
+  "tui": "default",
   "editorMode": "normal",
   "autoContinueAtUsageLimit": false,
   "agentPushNotifEnabled": false,
-  "useAutoModeDuringPlan": false
+  "useAutoModeDuringPlan": false,
+  "hooks": {
+    "WorktreeCreate": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/dotfiles/claude/.claude/hooks/worktree-create.sh"
+          }
+        ]
+      }
+    ],
+    "WorktreeRemove": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/dotfiles/claude/.claude/hooks/worktree-remove.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "theme": "dark-daltonized",
+  "verbose": true
 }
